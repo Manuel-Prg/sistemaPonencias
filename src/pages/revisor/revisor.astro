@@ -1,0 +1,162 @@
+---
+import '../styles/stylesRevisor.css';
+import '../styles/main.css';
+import '../styles/logos.css';
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Revisor</title>
+    <!-- Favicon básico -->
+    <link rel ="icon" type="image/x-icon" href="/public/favicon/favicon_io/favicon.ico">
+    <!-- Para diferentes tamaños de favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon_io/favicon-16x16.png">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logos-container">
+            <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
+            <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
+            <img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
+            <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+        </div>
+        <div class="buttons-wrapper">
+            <a href="../revisor/datosRevisor" class="action-button">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                </svg>
+                Mis Datos
+            </a>
+        </div>
+        <div class="logout-button">
+            <button class="action-button" id="logout-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <h1 class="welcome">¡Bienvenido [nombre]!</h1>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card" data-status="pendiente">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Ponencias pendientes</h3>
+                            <p class="stat-number" id="pendiente-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-status="aprobada">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Ponencias aprobadas</h3>
+                            <p class="stat-number" id="aprobada-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-status="rechazada">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Ponencias rechazadas</h3>
+                            <p class="stat-number" id="rechazada-count">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presentations Container -->
+                <div class="ponencias-container">
+                    <h2>Ponencias</h2>
+                    <div class="ponencias-list" id="ponencias-list">
+                        <!-- Presentations will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation for Mobile -->
+        <nav class="bottom-nav">
+            <div class="bottom-nav-items">
+                <a href="../revisor/datosRevisor" class="bottom-nav-item" id="datos-btn-mobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="#ffffff">
+                        <path
+                            d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z" />
+                    </svg>
+                    <span>Mis Datos</span>
+                </a>
+                <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="#ffffff">
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Dialog -->
+    <dialog id="presentation-dialog" class="presentation-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2 id="dialog-title"></h2>
+                <p id="dialog-summary"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Comentarios:</label>
+                <textarea id="comment" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="rating">Calificación:</label>
+                <input type="number" id="rating" min="1" max="10" step="1" />
+            </div>
+
+            <div class="dialog-buttons">
+                <div class="primary-buttons">
+                    <button id="accept-presentation">Aceptar</button>
+                    <button id="reject-presentation">Rechazar</button>
+                </div>
+                <button id="accept-with-corrections">Aceptar con correcciones</button>
+                <button id="close-dialog">Cerrar</button>
+            </div>
+        </div>
+    </dialog>
+</body>
+</html>

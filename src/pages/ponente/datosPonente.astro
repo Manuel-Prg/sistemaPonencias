@@ -1,0 +1,147 @@
+---
+import '../styles/stylesPendientes.css';
+import '../styles/logos.css';
+import '../styles/main.css';
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos para Constancia de Ponente</title>
+    <!-- Favicon básico -->
+    <link rel ="icon" type="image/x-icon" href="/public/favicon/favicon_io/favicon.ico">
+    <!-- Para diferentes tamaños de favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon_io/favicon-16x16.png">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logos-container">
+            <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
+            <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
+            <img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
+            <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+        </div>
+        <div class="header-buttons">
+            <button class="header-btn" id="ponencia-btn" title="Mi Ponencia">
+
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#ffffff">
+                    <path
+                        d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
+                </svg>
+                <span>Mi Ponencia</span>
+            </button>
+            <button class="header-btn" id="logout-btn" title="Cerrar Sesión">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#ffffff">
+                    <path
+                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                </svg>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h1>Datos para Constancia de Ponente</h1>
+            <p class="subtitle">Por favor, ingrese sus datos y los de sus colaboradores para generar las constancias</p>
+
+            <!-- Navegación de autores -->
+            <div class="authors-navigation">
+                <button type="button" class="nav-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+                <span id="authorCounter">Autor 1 de 2</span>
+                <button type="button" class="nav-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="constanciaPonente">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" required
+                        placeholder="Como desea que aparezca en su constancia">
+                </div>
+
+                <div class="form-group">
+                    <label for="institucion">Institución/Organización</label>
+                    <input type="text" id="institucion" name="institucion" required
+                        placeholder="Nombre de su institución">
+                </div>
+
+                <div class="form-group">
+                    <label for="facultad">Facultad/División/Departamento/Área</label>
+                    <input type="text" id="facultad" name="facultad" required
+                        placeholder="Nombre de su facultad, división, departamento o área">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalidad">Modalidad de Presentación</label>
+                    <select id="modalidad" name="modalidad" required>
+                        <option value="">Seleccione la modalidad</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Virtual">Virtual</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Guardar Datos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating add author button -->
+    <button type="button" class="floating-add-author-btn" id="addAuthor" title="Agregar autor">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+            <path
+                d="M500-482q29-32 44.5-73t15.5-85q0-44-15.5-85T500-798q60 8 100 53t40 105q0 60-40 105t-100 53Zm220 322v-120q0-36-16-68.5T662-406q51 18 94.5 46.5T800-280v120h-80Zm80-280v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Zm-480-40q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM0-160v-112q0-34 17.5-62.5T64-378q62-31 126-46.5T320-440q66 0 130 15.5T576-378q29 15 46.5 43.5T640-272v112H0Zm320-400q33 0 56.5-23.5T400-640q0-33-23.5-56.5T320-720q-33 0-56.5 23.5T240-640q0 33 23.5 56.5T320-560ZM80-240h480v-32q0-11-5.5-20T540-306q-54-27-109-40.5T320-360q-56 0-111 13.5T100-306q-9 5-14.5 14T80-272v32Zm240-400Zm0 400Z" />
+        </svg>
+        <span class="add-author-text">Agregar autor</span>
+    </button>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-items">
+            <a href="#" class="bottom-nav-item" id="ponencia-btn-mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#ffffff">
+                    <path
+                        d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
+                </svg>
+
+                <span>Mi Ponencia</span>
+            </a>
+            <a href="#" class="bottom-nav-item" id="addAuthor-btn-mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+                    <path
+                        d="M500-482q29-32 44.5-73t15.5-85q0-44-15.5-85T500-798q60 8 100 53t40 105q0 60-40 105t-100 53Zm220 322v-120q0-36-16-68.5T662-406q51 18 94.5 46.5T800-280v120h-80Zm80-280v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Zm-480-40q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM0-160v-112q0-34 17.5-62.5T64-378q62-31 126-46.5T320-440q66 0 130 15.5T576-378q29 15 46.5 43.5T640-272v112H0Zm320-400q33 0 56.5-23.5T400-640q0-33-23.5-56.5T320-720q-33 0-56.5 23.5T240-640q0 33 23.5 56.5T320-560ZM80-240h480v-32q0-11-5.5-20T540-306q-54-27-109-40.5T320-360q-56 0-111 13.5T100-306q-9 5-14.5 14T80-272v32Zm240-400Zm0 400Z" />
+                </svg>
+                <span class="add-author-text">Agregar autor</span>
+            </a>
+            <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#ffffff">
+                    <path
+                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                </svg>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </nav>
+</body>
+
+</html>

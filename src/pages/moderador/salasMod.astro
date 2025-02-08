@@ -1,0 +1,41 @@
+---
+import '../styles/salasModStyles.css';
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Ponencias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Favicon básico -->
+    <link rel ="icon" type="image/x-icon" href="/public/favicon/favicon_io/favicon.ico">
+    <!-- Para diferentes tamaños de favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon_io/favicon-16x16.png">
+</head>
+
+<div class="main-container">
+    <div class="logo-section">
+		<img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
+		<img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
+		<img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
+		<img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+    </div>
+
+    <div class="content-section">
+        <div class="top-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar ponencia...">
+            </div>
+        </div>
+            <div class="table-body" id="tableBody">
+                <!-- Las filas se generarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+/* Base logo styles */
+header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    height: 80px; /* Added height to header to match logo container */
+  }
+  
+  .logo-dacity {
+    width: 50px;
+    height: auto;
+  }
+  .logo-ujat {
+    width: 80px;
+    height: auto;
+  }
+  .woman-silhouette {
+    width: 50px;
+    height: auto;
+    filter: brightness(0) invert(1); /* Convierte la imagen a blanco */
+  }
+  .woman-silhouette img {
+    width: 100%;
+    max-height: 60px;
+    object-fit: contain;
+  }
+  .logo-dev {
+    width: 50px;
+    height: auto;
+  }
+  .logo {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    height: 80px; /* Match header height */
+  }
+  
+  .logo img {
+    max-height: 60px;
+    object-fit: contain;
+  }
+  
+  @media (max-width: 768px) {
+    .logo-dacity {
+      width: 50px;
+      height: auto;
+    }
+    .logodacity-ujat {
+      width: 50px;
+      height: auto;
+    }
+    .woman-silhouette {
+      width: 50px;
+      height: auto;
+    }
+    .woman-silhouette img {
+      width: 100%;
+      max-height: 60px;
+      object-fit: contain;
+    }
+    .logo-dev {
+      width: 50px;
+      height: auto;
+    }
+  }
+  /* Personalización de la barra de desplazamiento */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  /* Para Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+  }
+  
+  

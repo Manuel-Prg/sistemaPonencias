@@ -1,0 +1,295 @@
+@import "logos.css";
+
+:root {
+  --neon-purple: #5170ff;
+  --neon-pink: #ff66c4;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  background-size: 200% 200%;
+  animation: gradientMove 15s ease infinite;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.register-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-out;
+  width: 100%;
+}
+
+/* Ajustes para el header y logos */
+header {
+  margin-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  padding: 1rem;
+}
+
+/* Media queries */
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  .register-card {
+    padding: 20px;
+  }
+
+  .logo {
+    gap: 1.5rem;
+  }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    width: 100%;
+    padding: 20px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+h2 {
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+    50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 13px;
+    animation: fadeIn 0.8s ease-out 0.2s backwards;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    animation: slideIn 0.5s ease-out backwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.2s; }
+.form-group:nth-child(2) { animation-delay: 0.3s; }
+.form-group:nth-child(3) { animation-delay: 0.4s; }
+
+label {
+    display: block;
+    color: white;
+    margin-bottom: 6px;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(5px);
+}
+
+input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.register-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+.google-btn {
+    width: 100%;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(5px);
+}
+
+.google-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.google-btn:active {
+    transform: translateY(0);
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.google-btn:hover img {
+    transform: scale(1.1);
+}
+
+.login-text {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+    font-size: 14px;
+    animation: fadeIn 0.8s ease-out 0.6s backwards;
+}
+
+.login-text a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    position: relative;
+}
+
+.login-text a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background: white;
+    transition: var(--transition-smooth);
+}
+
+.login-text a:hover {
+    color: white;
+}
+
+.login-text a:hover:after {
+    width: 100%;
+}
+
+.copyright {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 25px;
+    font-size: 12px;
+    animation: fadeIn 0.8s ease-out 0.8s backwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    input, .register-btn, .google-btn {
+        padding: 12px;
+    }
+    
+    h2 {
+        font-size: 22px;
+    }
+}
