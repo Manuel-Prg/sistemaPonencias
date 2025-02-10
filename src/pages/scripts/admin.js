@@ -3,7 +3,7 @@ import {
     arrayUnion, writeBatch
 } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
-import { db, auth } from "../scripts/firebase/firebase-config";
+import { db, auth } from "../../lib/firebase/config";
 
 class AdminPanel {
     constructor() {
