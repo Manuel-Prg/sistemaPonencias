@@ -25,10 +25,11 @@ export class LoginForm {
       const routes: Record<UserRole, string> = {
         [UserRole.PONENTE]: '/ponente/registroValido',
         [UserRole.ADMIN]: '/administrador/vistaAdmin',
-        [UserRole.REVISOR]: '/revisor/revisor'
+        [UserRole.REVISOR]: '/revisor/revisor',
+        [UserRole.ESCRITOR]: '/escritor/escritor',
+        [UserRole.MODERADOR]: '/moderador/moderador'
       };
-
-      const redirectUrl = routes[userData.role] || '/autenticacion/iniciarSesion';
+      const redirectUrl = routes[userData.rol] || '/autenticacion/iniciarSesion';
       window.location.href = redirectUrl;
 
     } catch (error) {

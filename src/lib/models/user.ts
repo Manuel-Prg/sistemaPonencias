@@ -1,14 +1,16 @@
 export interface User {
+    id: string,
     uid: string;
-    email: string;
-    role: UserRole;
-    displayName?: string;
-    createdAt: string;
-    updatedAt: string;
+    rol: UserRole;
+    nombre: string;
+    creado: string;
+    actualizado: string;
   }
   
   export enum UserRole {
     ADMIN = 'admin',
     PONENTE = 'ponente',
-    REVISOR = 'revisor'
+    ESCRITOR = 'escritor',
+    REVISOR = 'revisor',
+    MODERADOR = 'moderador'
   }

@@ -1,9 +1,9 @@
-import { signInWithEmailAndPassword, type Unsubscribe } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type Unsubscribe } from 'firebase/auth';
 import { firebase } from '../../firebase/config';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
 import { UserService } from '../user/user.service';
 import type { User as FirebaseUser } from 'firebase/auth';
-import type { User } from '../../models/user';
+import { UserRole } from '../../models/user';
 
 
 
@@ -26,6 +26,29 @@ export class AuthService {
         user: userData,
         token
       };
+    } catch (error) {
+      throw this.handleAuthError(error);
+    }
+  }
+  
+  async register(credentials: AuthCredentials & { nombre: string}): Promise<void> {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        credentials.email,
+        credentials.password
+      );
+      
+// Crear documento de usuario en Firestore
+await this.userService.createUser({
+  id: userCredential.user.uid,
+  uid: userCredential.user.uid,
+  nombre:  credentials.nombre,
+  rol: UserRole.PONENTE, // Role por defecto
+  creado: new Date().toISOString(),
+  actualizado: new Date().toISOString()
+});      
+
     } catch (error) {
       throw this.handleAuthError(error);
     }
