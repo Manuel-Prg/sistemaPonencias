@@ -1,3 +1,5 @@
+import type { DataPonente } from "./ponente";
+import type { PonenciaAsignada } from "./ponencia";
 export interface User {
     id: string,
     uid: string;
@@ -5,6 +7,8 @@ export interface User {
     nombre: string;
     creado: string;
     actualizado: string;
+    datos?: DataPonente;
+    ponenciasAsignadas?: PonenciaAsignada[];
   }
   
   export enum UserRole {

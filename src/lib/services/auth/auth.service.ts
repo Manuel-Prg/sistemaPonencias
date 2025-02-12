@@ -33,6 +33,7 @@ export class AuthService {
   
   async register(credentials: AuthCredentials & { nombre: string}): Promise<void> {
     try {
+      console.log('credentials', credentials);
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
         credentials.email,
@@ -58,8 +59,20 @@ await this.userService.createUser({
     await this.auth.signOut();
   }
 
+  async signOut(): Promise<void> {
+    try {
+      await this.auth.signOut();
+    } catch (error) {
+      throw this.handleAuthError(error);
+    }
+  }
+
   onAuthStateChanged(callback: (user: FirebaseUser | null) => void): Unsubscribe {
     return this.auth.onAuthStateChanged(callback);
+  }
+
+  getCurrentUser(): FirebaseUser | null {
+    return this.auth.currentUser;
   }
 
    handleAuthError(error: any): Error {
