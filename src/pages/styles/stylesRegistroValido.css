@@ -386,3 +386,61 @@ h4 {
     height: 35px;
     width: auto;
 }
+
+/* Stilos del cuadro de dialogo
+/* Modal Styles */  
+:root {  
+    --primary-color: #5170ff;  
+    --secondary-color: #ff66c4;  
+    --text-color: white; /* Color de texto para el modal */  
+}  
+
+/* Modal Styles */  
+.modal {  
+    display: none; /* Hidden by default */  
+    position: fixed;   
+    z-index: 1;   
+    left: 0;  
+    top: 0;  
+    width: 100%;   
+    height: 100%;  
+    overflow: auto;   
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo más oscuro para contraste */  
+}  
+
+.modal-content {  
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Degradado de fondo */  
+    margin: 15% auto;   
+    padding: 20px;  
+    border-radius: 12px; /* Bordes redondeados */  
+    width: 80%;   
+    max-width: 500px; /* Ancho máximo */  
+    color: var(--text-color); /* Color del texto dentro del modal */  
+    text-align: left; /* Alinear contenido a la izquierda */  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para efecto de profundidad */  
+}  
+
+.close-button {  
+    background-color: var(--secondary-color); /* Color de fondo del botón */  
+    color: var(--text-color); /* Color del texto del botón */  
+    border: none;  
+    padding: 10px 20px;  
+    border-radius: 5px; /* Bordes redondeados para el botón */  
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */  
+    margin-top: 20px; /* Margen en la parte superior */  
+}  
+
+.close-button:hover {  
+    background-color: var(--primary-color); /* Cambia de color al pasar el mouse */  
+}  
+
+h2 {  
+    margin: 0; /* Sin margen en el título */  
+}  
+
+p {  
+    margin-top: 10px; /* Margen para el texto */  
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo sutil para los párrafos */  
+    padding: 10px; /* Espaciado interno */  
+    border-radius: 5px; /* Bordes redondeados para los párrafos */  
+}
