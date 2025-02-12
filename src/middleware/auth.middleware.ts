@@ -45,7 +45,7 @@ export class AuthMiddleware {
     try {
       const userService = new UserService();
       const userData = await userService.getUserById(firebaseUser.uid);
-      return requiredRoles.includes(userData.role);
+      return requiredRoles.includes(userData.rol);
     } catch (error) {
       console.error('Error al verificar rol:', error);
       return false;
