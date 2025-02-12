@@ -18,7 +18,7 @@ export class AuthService {
         email,
         password
       );
-      
+
       const userData = await this.userService.getUserById(userCredential.user.uid);
       const token = await userCredential.user.getIdToken();
 
@@ -30,8 +30,8 @@ export class AuthService {
       throw this.handleAuthError(error);
     }
   }
-  
-  async register(credentials: AuthCredentials & { nombre: string}): Promise<void> {
+
+  async register(credentials: AuthCredentials & { nombre: string }): Promise<void> {
     try {
       console.log('credentials', credentials);
       const userCredential = await createUserWithEmailAndPassword(
@@ -39,16 +39,17 @@ export class AuthService {
         credentials.email,
         credentials.password
       );
-      
-// Crear documento de usuario en Firestore
-await this.userService.createUser({
-  id: userCredential.user.uid,
-  uid: userCredential.user.uid,
-  nombre:  credentials.nombre,
-  rol: UserRole.PONENTE, // Role por defecto
-  creado: new Date().toISOString(),
-  actualizado: new Date().toISOString()
-});      
+
+      // Crear documento de usuario en Firestore
+      await this.userService.createUser({
+        uid: userCredential.user.uid,
+        datos: {
+          nombre: credentials.nombre,
+        },
+        rol: UserRole.PONENTE, // Role por defecto
+        creado: new Date().toISOString(),
+        actualizado: new Date().toISOString()
+      });
 
     } catch (error) {
       throw this.handleAuthError(error);
@@ -75,7 +76,7 @@ await this.userService.createUser({
     return this.auth.currentUser;
   }
 
-   handleAuthError(error: any): Error {
+  handleAuthError(error: any): Error {
     switch (error.code) {
       case 'auth/user-not-found':
         return new Error('Usuario no encontrado');

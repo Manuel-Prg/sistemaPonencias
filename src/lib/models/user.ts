@@ -1,13 +1,10 @@
-import type { DataPonente } from "./ponente";
 import type { PonenciaAsignada } from "./ponencia";
 export interface User {
-    id: string,
     uid: string;
     rol: UserRole;
-    nombre: string;
     creado: string;
     actualizado: string;
-    datos?: DataPonente;
+    datos?: UserData;
     ponenciasAsignadas?: PonenciaAsignada[];
   }
   
@@ -17,4 +14,13 @@ export interface User {
     ESCRITOR = 'escritor',
     REVISOR = 'revisor',
     MODERADOR = 'moderador'
+  }
+
+  export interface UserData {
+    nombre: string;
+    email?: string;
+    grado?: string;
+    institucion?: string;
+    departamento?: string;
+    modalidad?: string;
   }

@@ -1,8 +1,10 @@
+import type { UserData } from "./user";
+
 export interface Ponencia {
     id: string;
     titulo: string;
     resumen: string;
-    autor: string;
+    autores: UserData[];
     creado: Date;
     estado: EstadoPonencia;
     evaluaciones: Evaluacion[];
@@ -21,4 +23,9 @@ export interface Ponencia {
     comentarios?: string;
   }
 
-  type EstadoPonencia = 'pendiente' | 'aprobada' | 'rechazada' | 'aprobada con correcciones';
+export enum EstadoPonencia {
+    PENDIENTE = 'pendiente',
+    ACEPTADA = 'aceptada',
+    RECHAZADA = 'rechazada',
+    ACEPTADA_CON_CORRECCIONES = 'aceptada con correcciones'
+  }

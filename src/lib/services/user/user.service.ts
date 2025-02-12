@@ -21,7 +21,7 @@ export class UserService {
     const docRef = doc(this.db, 'users', uid);
     await updateDoc(docRef, {
       ...data,
-      updatedAt: new Date().toISOString()
+      actualizado: new Date().toISOString()
     });
   }
 
