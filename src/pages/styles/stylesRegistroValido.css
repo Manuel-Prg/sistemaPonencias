@@ -472,6 +472,59 @@ h4 {
     margin-bottom: 15px;
 }
 
+/* Puedes agregar estos estilos a tu archivo CSS existente */
+.file-upload-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.file-upload-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-upload-label:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.file-upload-label svg {
+    margin-right: 10px;
+    fill: currentColor;
+}
+
+.selected-file-name {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.upload-button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.upload-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .modal-content {

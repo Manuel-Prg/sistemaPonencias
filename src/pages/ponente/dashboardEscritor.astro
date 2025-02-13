@@ -4,15 +4,15 @@ import '../styles/logos.css';
 import '../styles/stylesRegistroValido.css';
 ---
 <script>
-    import { ModalHandler } from '../../components/ponente/modalEscritor';
+    import {ModalHandlers} from '../../components/ponente/modalEscritor';
     
-    document.addEventListener("DOMContentLoaded", () => {
-      try {
-        new ModalHandler();
-      } catch (error) {
-        console.error("Error al inicializar el modal:", error);
-      }
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+  try {
+    new ModalHandlers();
+  } catch (error) {
+    console.error('Error al inicializar los manejadores de modal:', error);
+  }
+})
 </script>
 
 <!DOCTYPE html>
@@ -154,6 +154,7 @@ import '../styles/stylesRegistroValido.css';
                 </div>
             </div>
         </div>
+        <!-- Modal para vizualisar la información de la ponencia (LOS DATOS SE OPTENDRAN DE LA BD) -->
         <div id="modalForm" class="modal">
             <div class="modal-content">
                 <span id="closeButton" class="close">&times;</span>
@@ -175,6 +176,34 @@ import '../styles/stylesRegistroValido.css';
                     </button>
                 </div>
             </div>
-        </div>    
+        </div>  
+        <!-- modal para subir archivos doc, docx y pdf -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeUploadModal">&times;</span>
+                
+                <div class="modal-header">
+                    <h2>Subir Archivo</h2>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="file-upload-container">
+                            <label for="fileInput" class="file-upload-label">
+                                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L8 6h3v6h2V6h3l-4-4zM5 18h14v2H5v-2z"/>
+                                </svg>
+                                <span>Seleccionar archivo</span>
+                            </label>
+                            <input type="file" id="fileInput" accept=".pdf,.doc,.docx" style="display: none;">
+                            <p id="selectedFileName" class="selected-file-name"></p>
+                        </div>
+                        <div class="upload-button-container">
+                            <button type="submit" class="upload-btn">Subir Archivo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>  
     </body>
 </html>
