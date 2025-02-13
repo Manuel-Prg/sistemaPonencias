@@ -1,15 +1,11 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type Unsubscribe } from 'firebase/auth';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type Unsubscribe, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { firebase } from '../../firebase/config';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
 import { UserService } from '../user/user.service';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { UserRole } from '../../models/user';
 
-//api para el inicio de sesión con google
-const provider = new GoogleAuthProvider();
-provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-
+// API para el inicio de sesión con Google
 export class AuthService {
   private auth = firebase.getAuth();
   private userService = new UserService();
@@ -32,19 +28,11 @@ export class AuthService {
 
   async login({ email, password }: AuthCredentials): Promise<AuthResponse> {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        this.auth,
-        email,
-        password
-      );
-
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       const userData = await this.userService.getUserById(userCredential.user.uid);
       const token = await userCredential.user.getIdToken();
 
-      return {
-        user: userData,
-        token
-      };
+      return { user: userData, token };
     } catch (error) {
       throw this.handleAuthError(error);
     }
@@ -54,7 +42,7 @@ export class AuthService {
     try {
       const result = await signInWithPopup(this.auth, this.googleProvider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      
+
       if (!result.user) {
         throw new Error('No se pudo obtener la información del usuario');
       }
@@ -62,13 +50,42 @@ export class AuthService {
       const userData = await this.userService.getUserById(result.user.uid);
       const token = await result.user.getIdToken();
 
-      return {
-        user: userData,
-        token
-      };
+      return { user: userData, token };
     } catch (error: any) {
-      const errorMessage = this.handleGoogleAuthError(error);
-      throw new Error(errorMessage);
+      throw new Error(this.handleGoogleAuthError(error));
+    }
+  }
+
+  async registerWithGoogle(): Promise<void> {
+    try {
+      const result = await signInWithPopup(this.auth, this.googleProvider);
+      const user = result.user;
+
+      if (!user) throw new Error('No se pudo obtener la información del usuario');
+
+      const displayName: string = user.displayName ?? '';
+      const nameParts: string[] = displayName.split(' ');
+      const nombre: string = nameParts[0] ?? '';
+      const email: string = user.email ?? '';
+
+      await this.userService.createUser({
+        uid: user.uid,
+        datos: { nombre, email },
+        rol: UserRole.PONENTE,
+        creado: new Date().toISOString(),
+        actualizado: new Date().toISOString()
+      });
+
+      await user.delete();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error en el registro con Google:', error.message);
+        if ((error as any).code === 'auth/popup-closed-by-user') {
+          alert('El registro con Google fue cancelado');
+        }
+      } else {
+        console.error('Error desconocido en el registro con Google:', error);
+      }
     }
   }
 
@@ -90,23 +107,15 @@ export class AuthService {
   async register(credentials: AuthCredentials & { nombre: string }): Promise<void> {
     try {
       console.log('credentials', credentials);
-      const userCredential = await createUserWithEmailAndPassword(
-        this.auth,
-        credentials.email,
-        credentials.password
-      );
+      const userCredential = await createUserWithEmailAndPassword(this.auth, credentials.email, credentials.password);
 
-      // Crear documento de usuario en Firestore
       await this.userService.createUser({
         uid: userCredential.user.uid,
-        datos: {
-          nombre: credentials.nombre,
-        },
-        rol: UserRole.PONENTE, // Role por defecto
+        datos: { nombre: credentials.nombre },
+        rol: UserRole.PONENTE,
         creado: new Date().toISOString(),
         actualizado: new Date().toISOString()
       });
-
     } catch (error) {
       throw this.handleAuthError(error);
     }

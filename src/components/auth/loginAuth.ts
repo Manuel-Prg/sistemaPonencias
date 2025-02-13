@@ -3,7 +3,7 @@ import { AuthService } from '../../lib/services/auth/auth.service';
 export class FormularioLogin {
   private servicioAuth: AuthService;
   private formulario!: HTMLFormElement;
-  private botonGoogle!: HTMLButtonElement; 
+  private botonGoogle!: HTMLButtonElement;
 
   constructor() {
     this.servicioAuth = new AuthService();
@@ -26,11 +26,11 @@ export class FormularioLogin {
 
   private async manejarLoginGoogle(evento: Event): Promise<void> {
     evento.preventDefault();
-    
+
     try {
       this.botonGoogle.disabled = true;
       const respuesta = await this.servicioAuth.loginWithGoogle();
-      
+
       if (respuesta.token && respuesta.user) {
         window.location.href = '/dashboard';
       }
