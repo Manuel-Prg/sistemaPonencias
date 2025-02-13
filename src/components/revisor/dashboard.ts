@@ -34,24 +34,46 @@ export class DashboardManager {
   }
 
   private updateUI(groupedPonencias: GroupedPonencias) {
+    console.log('Actualizando UI con:', groupedPonencias);
+    
     // Update each column
     Object.entries(groupedPonencias).forEach(([status, ponencias]) => {
-      const column = document.querySelector(`#${status}-column .column-content`);
-      if (!column) return;
+        // Corregir el selector para que coincida con los IDs del HTML
+        const column = document.getElementById(`${status}-column`);
+        console.log(`Buscando columna ${status}:`, column);
+        
+        if (!column) {
+            console.warn(`No se encontró la columna para ${status}`);
+            return;
+        }
 
-      column.innerHTML = ponencias.length > 0 
-        ? ponencias.map((ponencia: Ponencia) => this.createPonenciaCard(ponencia)).join('')
-        : '<p class="empty-message">No hay ponencias en esta categoría</p>';
+        column.innerHTML = ponencias.length > 0 
+            ? ponencias.map((ponencia: Ponencia) => this.createPonenciaCard(ponencia)).join('')
+            : '<p class="empty-message">No hay ponencias en esta categoría</p>';
+        
+        // Actualizar contador
+        const counter = document.getElementById(`${status}-counter`);
+        if (counter) {
+            counter.textContent = ponencias.length.toString();
+        }
     });
 
-    // Update counters
-    Object.entries(groupedPonencias).forEach(([status, ponencias]) => {
-      const counter = document.querySelector(`#${status}-counter`);
-      if (counter) {
-        counter.textContent = ponencias.length.toString();
-      }
+    // También actualizar los contadores de las stats cards
+    const statsCounters = {
+        pendiente: document.getElementById('pendiente-count'),
+        aprobada: document.getElementById('aprobada-count'),
+        rechazada: document.getElementById('rechazada-count')
+    };
+
+    Object.entries(statsCounters).forEach(([status, element]) => {
+        if (element) {
+            const count = status === 'aprobada' 
+                ? groupedPonencias.aceptadas.length 
+                : groupedPonencias[status as keyof GroupedPonencias].length;
+            element.textContent = count.toString();
+        }
     });
-  }
+}
 
   private createPonenciaCard(ponencia: Ponencia): string {
     
