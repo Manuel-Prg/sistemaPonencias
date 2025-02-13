@@ -396,29 +396,122 @@ h4 {
 }  
 
 /* Modal Styles */  
-.modal {  
-    display: none; /* Hidden by default */  
-    position: fixed;   
-    z-index: 1;   
-    left: 0;  
-    top: 0;  
-    width: 100%;   
-    height: 100%;  
-    overflow: auto;   
-    background-color: rgba(0, 0, 0, 0.6); /* Fondo más oscuro para contraste */  
-}  
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Aumentado para asegurar que esté por encima de todo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
 
-.modal-content {  
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Degradado de fondo */  
-    margin: 15% auto;   
-    padding: 20px;  
-    border-radius: 12px; /* Bordes redondeados */  
-    width: 80%;   
-    max-width: 500px; /* Ancho máximo */  
-    color: var(--text-color); /* Color del texto dentro del modal */  
-    text-align: left; /* Alinear contenido a la izquierda */  
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para efecto de profundidad */  
-}  
+
+.close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Modal content structure */
+.modal-header {
+    margin-bottom: 20px;
+}
+
+.modal-body {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.modal-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #5170ff, #ff66c4);
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Animation for modal */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal specific text styles */
+.modal h2 {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.modal p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .modal h2 {
+        font-size: 20px;
+    }
+    
+    .modal p {
+        font-size: 14px;
+    }
+}
+
+/* Estado activo del modal */
+.modal.active {
+    display: block;
+}
+
+/* Close button styles */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
 
 .close-button {  
     background-color: var(--secondary-color); /* Color de fondo del botón */  
