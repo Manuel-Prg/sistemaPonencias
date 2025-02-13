@@ -689,3 +689,156 @@ input:focus {
     font-size: 0.9rem;
   }
 }
+
+/* Panel de Ponencias */
+.board-container {
+  margin-top: var(--spacing-lg);
+  width: 100%;
+}
+
+.board-container h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+  letter-spacing: -0.5px;
+}
+
+.board {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.board-column {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.column-header h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.counter {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+}
+
+.column-content {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.ponencia-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ponencia-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-md);
+}
+
+.ponencia-info {
+  flex: 1;
+}
+
+.ponencia-info h3 {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.ponencia-info p {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.ponencia-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-left: var(--spacing-md);
+}
+
+.status-pendiente {
+  background: rgba(147, 51, 234, 0.2);
+  color: rgb(216, 180, 254);
+}
+
+.status-aceptada {
+  background: rgba(16, 185, 129, 0.2);
+  color: rgb(167, 243, 208);
+}
+
+.status-rechazada {
+  background: rgba(239, 68, 68, 0.2);
+  color: rgb(252, 165, 165);
+}
+
+.ponencia-arrow {
+  margin-left: var(--spacing-md);
+  opacity: 0.6;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.ponencia-card:hover .ponencia-arrow {
+  opacity: 1;
+}
+
+.empty-message {
+  text-align: center;
+  padding: var(--spacing-md);
+  color: var(--text-color);
+  opacity: 0.7;
+  font-size: var(--font-size-sm);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+  
+  .ponencia-card {
+    flex-direction: column;
+  }
+  
+  .ponencia-status {
+    margin-left: 0;
+    margin-top: var(--spacing-sm);
+    align-self: flex-start;
+  }
+  
+  .ponencia-arrow {
+    display: none;
+  }
+}
