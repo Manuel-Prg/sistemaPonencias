@@ -1,6 +1,10 @@
 ---
 import '../styles/vistaAdmin.css';
-import '../scripts/admin.js';
+import '../scripts/admin';
+import { Admin } from '../scripts/admin';
+import {type User } from '../../lib/models/user';
+const admin = new Admin();
+const users: User[] = await admin.fetchUsers();
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -98,12 +102,18 @@ import '../scripts/admin.js';
                             </div>
                         </div>
                         <div class="users-grid" id="usersGrid">
-                            <!-- Los usuarios se cargarán dinámicamente aquí -->
+                            {users.map((user) => (
+                                    <div class="user-card">
+                                        <p><strong>ID:</strong> {user.uid}</p>
+                                        <p><strong>Nombre:</strong> {user.datos?.nombre || 'Sin nombre'}</p>
+                                        <p><strong>Grado:</strong> {user.datos?.grado || 'Sin grado'}</p>
+                                        <p><strong>Institución:</strong> {user.datos?.institucion || 'Sin institución'}</p>
+                                    </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </main>
 
