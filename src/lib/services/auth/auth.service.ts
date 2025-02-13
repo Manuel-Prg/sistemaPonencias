@@ -11,6 +11,20 @@ export class AuthService {
   private auth = firebase.getAuth();
   private userService = new UserService();
 
+  constructor() {
+    this.setPersistence();
+  }
+
+  private async setPersistence(): Promise<void> {
+    try {
+        const { browserLocalPersistence, setPersistence } = await import('firebase/auth');
+        await setPersistence(this.auth, browserLocalPersistence);
+    } catch (error) {
+        console.error('Error setting persistence:', error);
+    }
+}
+
+
   async login({ email, password }: AuthCredentials): Promise<AuthResponse> {
     try {
       const userCredential = await signInWithEmailAndPassword(

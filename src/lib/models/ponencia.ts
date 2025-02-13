@@ -8,6 +8,7 @@ export interface Ponencia {
     creado: Date;
     estado: EstadoPonencia;
     evaluaciones: Evaluacion[];
+    userId: string;
   }
 
   export interface Evaluacion {

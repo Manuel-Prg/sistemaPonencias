@@ -18,6 +18,15 @@ export class LoginForm {
       // Login con Firebase
       const { user: firebaseUser } = await this.authService.login(credentials);
       
+      await new Promise<void>((resolve) => {
+        const unsubscribe = this.authService.onAuthStateChanged((user) => {
+            if (user) {
+                unsubscribe();
+                resolve();
+            }
+        });
+    });
+
       // Obtener datos completos del usuario
       const userData = await this.userService.getUserById(firebaseUser.uid);
       

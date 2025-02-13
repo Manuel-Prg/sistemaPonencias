@@ -5,14 +5,11 @@ import '../styles/logos.css';
 ---
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Revisor</title>
-    <!-- Favicon básico -->
-    <link rel ="icon" type="image/x-icon" href="/public/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
+    <link rel="icon" type="image/x-icon" href="/public/favicon/favicon_io/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon_io/favicon-16x16.png">
 </head>
@@ -97,14 +94,43 @@ import '../styles/logos.css';
                     </div>
                 </div>
 
-                <!-- Presentations Container -->
-                <div class="ponencias-container">
-                    <h2>Ponencias</h2>
-                    <div class="ponencias-list" id="ponencias-list">
-                        <!-- Presentations will be dynamically inserted here -->
+                <div class="board-container">
+                    <h2>Panel de Ponencias</h2>
+                    <div class="board">
+                        <!-- Pendientes Column -->
+                        <div class="board-column">
+                            <div class="column-header">
+                                <h3>Pendientes</h3>
+                                <span class="counter" id="pendientes-counter">0</span>
+                            </div>
+                            <div class="column-content" id="pendientes-column">
+                                <p class="empty-message">Cargando...</p>
+                            </div>
+                        </div>
+                
+                        <!-- Aceptadas Column -->
+                        <div class="board-column">
+                            <div class="column-header">
+                                <h3>Aceptadas</h3>
+                                <span class="counter" id="aceptadas-counter">0</span>
+                            </div>
+                            <div class="column-content" id="aceptadas-column">
+                                <p class="empty-message">Cargando...</p>
+                            </div>
+                        </div>
+                
+                        <!-- Rechazadas Column -->
+                        <div class="board-column">
+                            <div class="column-header">
+                                <h3>Rechazadas</h3>
+                                <span class="counter" id="rechazadas-counter">0</span>
+                            </div>
+                            <div class="column-content" id="rechazadas-column">
+                                <p class="empty-message">Cargando...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
         </main>
 
         <!-- Bottom Navigation for Mobile -->
@@ -130,33 +156,19 @@ import '../styles/logos.css';
         </nav>
     </div>
 
-    <!-- Dialog -->
-    <dialog id="presentation-dialog" class="presentation-dialog">
-        <div class="dialog-content">
-            <div class="dialog-header">
-                <h2 id="dialog-title"></h2>
-                <p id="dialog-summary"></p>
-            </div>
-
-            <div class="form-group">
-                <label for="comment">Comentarios:</label>
-                <textarea id="comment" rows="4"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="rating">Calificación:</label>
-                <input type="number" id="rating" min="1" max="10" step="1" />
-            </div>
-
-            <div class="dialog-buttons">
-                <div class="primary-buttons">
-                    <button id="accept-presentation">Aceptar</button>
-                    <button id="reject-presentation">Rechazar</button>
-                </div>
-                <button id="accept-with-corrections">Aceptar con correcciones</button>
-                <button id="close-dialog">Cerrar</button>
-            </div>
-        </div>
-    </dialog>
+    <script>
+        // Importación del script del lado del cliente
+        import { initializeRevisorPage } from "../../components/revisor/dashboard";
+        
+        // Ejecutar la inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeRevisorPage();
+                console.log('Revisor page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing revisor page:', error);
+            }
+        });
+    </script>
 </body>
 </html>
