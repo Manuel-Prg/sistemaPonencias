@@ -142,6 +142,20 @@ import '../styles/main.css';
             </a>
         </div>
     </nav>
+
+    <script>
+        import { initializeDatosPonentePage } from "../../components/ponente/datosPonente";
+        
+        // Ejecutar la inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeDatosPonentePage();
+                console.log('Ponente page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing ponente page:', error);
+            }
+        });
+    </script>
 </body>
 
 </html>

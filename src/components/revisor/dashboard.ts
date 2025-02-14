@@ -109,7 +109,47 @@ export class DashboardManager {
     `;
   }
 
+  private setupNavigationHandlers() {
+    // Manejador para el botón "Mis Datos" en el header
+    const misDatosBtn = document.querySelector('.buttons-wrapper .action-button');
+    misDatosBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '../revisor/datosRevisor';
+    });
+
+    // Manejador para el botón "Cerrar Sesión" en el header
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn?.addEventListener('click', async () => {
+      try {
+        await this.authService.signOut();
+        window.location.href = '/autenticacion/iniciarSesion';
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
+    });
+
+    // Manejadores para los botones de navegación móvil
+    const misDatosBtnMobile = document.getElementById('datos-btn-mobile');
+    misDatosBtnMobile?.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '../revisor/datosRevisor';
+    });
+
+    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+    logoutBtnMobile?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await this.authService.signOut();
+        window.location.href = '/autenticacion/iniciarSesion';
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
+    });
+  }
+
   private setupEventListeners() {
+
+    this.setupNavigationHandlers();
     // Stats cards click handlers
     const statsCards = document.querySelectorAll('.stat-card');
     statsCards.forEach(card => {
@@ -137,6 +177,8 @@ export class DashboardManager {
       });
     });
 
+
+    
     // Ponencia card click handler
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;

@@ -122,4 +122,18 @@ import '../styles/logos.css';
         </div>
     </nav>
 </body>
+<script>
+
+import { initializeDatosRevisorPage } from "../../components/revisor/datosRevisor";
+        
+        // Ejecutar la inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeDatosRevisorPage();
+                console.log('DatosRevisor page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing datosRevisor page:', error);
+            }
+        });
+  </script>
 </html>
