@@ -1,8 +1,18 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type Unsubscribe, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  type Unsubscribe, 
+  sendPasswordResetEmail,
+  type UserCredential,
+  signInWithPopup, 
+  GoogleAuthProvider 
+} from 'firebase/auth';
 import { firebase } from '../../firebase/config';
+import { getDoc, doc } from 'firebase/firestore';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
 import { UserService } from '../user/user.service';
 import type { User as FirebaseUser } from 'firebase/auth';
+import type { User } from '../../models/user';
 import { UserRole } from '../../models/user';
 
 // API para el inicio de sesión con Google
@@ -55,7 +65,25 @@ export class AuthService {
       throw new Error(this.handleGoogleAuthError(error));
     }
   }
+ // -----------------------------------------------------------------------------------------------------
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+    } catch (error) {
+      throw this.handleAuthError(error);
+    }
+  }
 
+  private async getUserData(userCredential: UserCredential): Promise<AuthResponse> {
+    const userData = await this.userService.getUserById(userCredential.user.uid);
+    const token = await userCredential.user.getIdToken();
+
+    return {
+      user: userData,
+      token
+    };
+  }
+//----------------------------------------------------------------------------------------------------------
   async registerWithGoogle(): Promise<void> {
     try {
       const result = await signInWithPopup(this.auth, this.googleProvider);
