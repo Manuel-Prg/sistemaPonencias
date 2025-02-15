@@ -24,7 +24,6 @@ export class AuthService {
   constructor() {
     this.setPersistence();
     this.googleProvider = new GoogleAuthProvider();
-    this.googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
   }
 
   private async setPersistence(): Promise<void> {
@@ -103,8 +102,6 @@ export class AuthService {
         creado: new Date().toISOString(),
         actualizado: new Date().toISOString()
       });
-
-      await user.delete();
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error en el registro con Google:', error.message);
