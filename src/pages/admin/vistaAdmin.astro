@@ -1,10 +1,6 @@
 ---
 import '../styles/vistaAdmin.css';
 import '../scripts/admin';
-import { Admin } from '../scripts/admin';
-import {type User } from '../../lib/models/user';
-const admin = new Admin();
-const users: User[] = await admin.fetchUsers();
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -102,14 +98,6 @@ const users: User[] = await admin.fetchUsers();
                             </div>
                         </div>
                         <div class="users-grid" id="usersGrid">
-                            {users.map((user) => (
-                                    <div class="user-card">
-                                        <p><strong>ID:</strong> {user.uid}</p>
-                                        <p><strong>Nombre:</strong> {user.datos?.nombre || 'Sin nombre'}</p>
-                                        <p><strong>Grado:</strong> {user.datos?.grado || 'Sin grado'}</p>
-                                        <p><strong>Institución:</strong> {user.datos?.institucion || 'Sin institución'}</p>
-                                    </div>
-                            ))}
                         </div>
                     </div>
                 </div>
@@ -148,7 +136,7 @@ const users: User[] = await admin.fetchUsers();
             </div>
         </div>
     </dialog>
-
+    <script src="../scripts/admin.ts"></script>
 </body>
 
 </html>
