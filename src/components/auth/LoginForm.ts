@@ -38,7 +38,7 @@ export class LoginForm {
       // Redirigir según el rol
       const routes: Record<UserRole, string> = {
         [UserRole.PONENTE]: '/ponente/registroValido',
-        [UserRole.ADMIN]: '/administrador/vistaAdmin',
+        [UserRole.ADMIN]: '/admin/vistaAdmin',
         [UserRole.REVISOR]: '/revisor/revisor',
         [UserRole.ESCRITOR]: '/escritor/escritor',
         [UserRole.MODERADOR]: '/moderador/moderador'
@@ -72,7 +72,7 @@ export class LoginForm {
       // Usar la misma lógica de redirección que el login normal
       const routes: Record<UserRole, string> = {
         [UserRole.PONENTE]: '/ponente/registroValido',
-        [UserRole.ADMIN]: '/administrador/vistaAdmin',
+        [UserRole.ADMIN]: '/admin/vistaAdmin',
         [UserRole.REVISOR]: '/revisor/revisor',
         [UserRole.ESCRITOR]: '/escritor/escritor',
         [UserRole.MODERADOR]: '/moderador/moderador'
