@@ -188,7 +188,7 @@ export class DashboardManager {
         const ponenciaId = ponenciaCard.getAttribute('data-id');
         if (ponenciaId) {
           // Redirigir a la página de detalles
-          window.location.href = `/revisor/revision/${ponenciaId}`;
+          window.location.href = `/revisor/${ponenciaId}`;
         }
       }
     });

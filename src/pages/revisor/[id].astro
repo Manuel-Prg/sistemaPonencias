@@ -1,0 +1,113 @@
+---
+// src/pages/ponencias/[id].astro
+import '../styles/stylesRevisarPonencia.css';
+import '../styles/logos.css';
+import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
+import type { Ponencia, EstadoPonencia } from './ponencia';
+
+// Genera las rutas estáticas para cada ponencia
+export async function getStaticPaths() {
+    const ponenciaService = new PonenciaService();
+    const ponencias = await ponenciaService.getPonencias();
+    
+    return ponencias.map((ponencia) => ({
+        params: { id: ponencia.id },
+        props: { ponencia },
+    }));
+}
+
+// Tipo para los props
+interface Props {
+    ponencia: Ponencia;
+}
+
+// Obtiene la ponencia específica de los props
+const { ponencia } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisar Ponencia - {ponencia.titulo}</title>
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
+            <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
+            <img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
+            <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+        </div>
+        <div class="header-buttons">
+            <button class="header-btn" id="logout-btn" title="Regresar">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>
+                <span>Regresar</span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-items">
+            <a href="#" class="bottom-nav-item" id="regresar-btn-mobile">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>
+                <span>Regresar</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="ponencia-card">
+            <h2 class="title">{ponencia.titulo}</h2>
+            <div class="content">
+                <p class="resumen">{ponencia.resumen}</p>
+                <div class="estado">
+                    <p>Estado actual: {ponencia.estado}</p>
+                    {ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
+                        <div class="evaluaciones">
+                            <h3>Evaluaciones previas:</h3>
+                            <ul>
+                                {ponencia.evaluaciones.map((evaluation) => (
+                                    <li>
+                                        <p>Estado: {evaluation.evaluacion}</p>
+                                        {evaluation.correcciones && <p>Correcciones: {evaluation.correcciones}</p>}
+                                        <p>Fecha: {new Date(evaluation.fecha).toLocaleDateString()}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-accept" data-ponencia-id={ponencia.id}>Aceptar</button>
+                <button class="btn btn-reject" data-ponencia-id={ponencia.id}>Rechazar</button>
+                <button class="btn btn-accept-with-obs" data-ponencia-id={ponencia.id}>
+                    Aceptar con observaciones
+                </button>
+            </div>
+        </div>
+
+        <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
+            <div class="dialog">
+                <h2 id="dialogTitle"></h2>
+                <textarea id="dialogComments" placeholder="Escriba sus comentarios aquí"></textarea>
+                <div class="dialog-buttons">
+                    <button id="dialogAccept">Aceptar</button>
+                    <button id="dialogCancel">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../components/revisor/ponencia.ts"></script>
+</body>
+</html>
