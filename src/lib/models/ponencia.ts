@@ -1,10 +1,10 @@
-import type { UserData } from "./user";
+import type { DataPonente } from "./ponente";
 
 export interface Ponencia {
     id: string;
     titulo: string;
     resumen: string;
-    autores: UserData[];
+    autores: DataPonente[];
     creado: Date;
     estado: EstadoPonencia;
     evaluaciones: Evaluacion[];

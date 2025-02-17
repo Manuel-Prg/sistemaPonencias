@@ -8,7 +8,9 @@ import {
     setDoc, 
     updateDoc, 
     type Firestore,
-    Timestamp 
+    Timestamp,
+    query,
+    where
 } from 'firebase/firestore';
 
 export class PonenciaService {
@@ -74,6 +76,35 @@ export class PonenciaService {
             throw error;
         }
     }
+
+    async getPonenciasByUserId(userId: string): Promise<Ponencia[]> {
+        try {
+            const ponenciasRef = collection(this.db, this.COLLECTION);
+            const q = query(ponenciasRef, where(userId, '==', userId));
+            const ponenciasSnapshot = await getDocs(q);
+            const ponencias: Ponencia[] = [];
+            
+            ponenciasSnapshot.forEach(doc => {
+                const data = doc.data();
+                const ponencia: Ponencia = {
+                    ...data,
+                    id: doc.id,
+                    creado: data.creado.toDate(),
+                    evaluaciones: data.evaluaciones ? data.evaluaciones.map((evaluation: any) => ({
+                        ...evaluation,
+                        fecha: evaluation.fecha.toDate()
+                    })) : []
+                } as Ponencia;
+                ponencias.push(ponencia);
+            });
+            
+            return ponencias;
+        } catch (error) {
+            console.error('Error getting ponencias by user ID:', error);
+            throw error;
+        }
+    }
+
 
     async createPonencia(ponencia: Ponencia): Promise<void> {
         try {

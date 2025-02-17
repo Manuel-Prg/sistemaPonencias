@@ -144,6 +144,20 @@ import '../styles/logos.css';
             </div>
         </div>
     </div>
+
+    <script>
+        import { initializeDashboard } from "../../components/ponente/dashboard";
+        
+        // Ejecutar la inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeDashboard();
+                console.log('Dashboard initialized successfully');
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+            }
+        });
+    </script>
 </body>
 
 </html>

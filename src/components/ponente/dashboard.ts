@@ -141,4 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('unload', () => {
     navigationManager.cleanup();
   });
+
+  
 });
+
+export async function initializeDashboard(): Promise<void> {
+  const dashboard = new NavigationManager();
+  console.log('initializeDashboard');
+  await dashboard.initialize();
+}

@@ -2,20 +2,47 @@
 import { AuthService } from '../../lib/services/auth/auth.service';
 import { UserService } from '../../lib/services/user/user.service';
 import type { AuthCredentials } from '../../lib/models/auth';
-import { UserRole } from '../../lib/models/user';
+import { UserRole, type User } from '../../lib/models/user';
+import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
 
 export class LoginForm {
   private authService: AuthService;
   private userService: UserService;
+  private ponenciaService: PonenciaService;
   private form: HTMLFormElement | null;
   private googleButton: HTMLButtonElement | null;
 
   constructor() {
     this.authService = new AuthService();
     this.userService = new UserService();
+    this.ponenciaService = new PonenciaService();
     this.form = null;
     this.googleButton = null;
     this.attachListeners();
+  }
+
+  private async getRedirectUrl(userData: User): Promise<string> {
+    const routes: Record<UserRole, string> = {
+      [UserRole.ADMIN]: '/admin/vistaAdmin',
+      [UserRole.REVISOR]: '/revisor/revisor',
+      [UserRole.ESCRITOR]: '/escritor/escritor',
+      [UserRole.MODERADOR]: '/moderador/moderador',
+      [UserRole.PONENTE]: '/ponente/dashboardPonencia'
+    };
+    console.log(userData);
+
+    // Special handling for PONENTE role
+    if (userData.rol === UserRole.PONENTE) {
+      try {
+        const ponencia = await this.ponenciaService.getPonenciaById(userData.uid);
+        return ponencia ? '/ponente/registroValido' : '/ponente/datosPonencia';
+      } catch (error) {
+        console.error('Error al verificar ponencia:', error);
+        return '/ponente/datosPonencia';
+      }
+    }
+
+    return routes[userData.rol] || '/autenticacion/iniciarSesion';
   }
 
   async handleSubmit(credentials: AuthCredentials): Promise<void> {
@@ -35,15 +62,8 @@ export class LoginForm {
       // Obtener datos completos del usuario
       const userData = await this.userService.getUserById(firebaseUser.uid);
       
-      // Redirigir según el rol
-      const routes: Record<UserRole, string> = {
-        [UserRole.PONENTE]: '/ponente/registroValido',
-        [UserRole.ADMIN]: '/admin/vistaAdmin',
-        [UserRole.REVISOR]: '/revisor/revisor',
-        [UserRole.ESCRITOR]: '/escritor/escritor',
-        [UserRole.MODERADOR]: '/moderador/moderador'
-      };
-      const redirectUrl = routes[userData.rol] || '/autenticacion/iniciarSesion';
+      // Obtener URL de redirección basada en el rol y estado de ponencia
+      const redirectUrl = await this.getRedirectUrl(userData);
       window.location.href = redirectUrl;
 
     } catch (error) {
@@ -70,14 +90,7 @@ export class LoginForm {
       const userData = await this.userService.getUserById(firebaseUser.uid);
       
       // Usar la misma lógica de redirección que el login normal
-      const routes: Record<UserRole, string> = {
-        [UserRole.PONENTE]: '/ponente/registroValido',
-        [UserRole.ADMIN]: '/admin/vistaAdmin',
-        [UserRole.REVISOR]: '/revisor/revisor',
-        [UserRole.ESCRITOR]: '/escritor/escritor',
-        [UserRole.MODERADOR]: '/moderador/moderador'
-      };
-      const redirectUrl = routes[userData.rol] || '/autenticacion/iniciarSesion';
+      const redirectUrl = await this.getRedirectUrl(userData);
       window.location.href = redirectUrl;
     } catch (error) {
       console.error('Error en inicio de sesión con Google:', error);

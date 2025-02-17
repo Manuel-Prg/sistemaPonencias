@@ -8,11 +8,9 @@ import {
   GoogleAuthProvider 
 } from 'firebase/auth';
 import { firebase } from '../../firebase/config';
-import { getDoc, doc } from 'firebase/firestore';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
 import { UserService } from '../user/user.service';
 import type { User as FirebaseUser } from 'firebase/auth';
-import type { User } from '../../models/user';
 import { UserRole } from '../../models/user';
 
 // API para el inicio de sesión con Google
