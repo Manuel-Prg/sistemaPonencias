@@ -3,7 +3,7 @@
 import '../styles/stylesRevisarPonencia.css';
 import '../styles/logos.css';
 import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
-import type { Ponencia, EstadoPonencia } from './ponencia';
+import type { Ponencia, EstadoPonencia } from '../../lib/models/ponencia';
 
 // Genera las rutas estáticas para cada ponencia
 export async function getStaticPaths() {
@@ -108,6 +108,12 @@ const { ponencia } = Astro.props;
         </div>
     </div>
 
-    <script src="../components/revisor/ponencia.ts"></script>
+    <script>
+        import { PonenciaHandlers } from "../../components/revisor/ponencia.ts";
+        document.addEventListener('DOMContentLoaded', () => {
+          const ponenciaId = '${ponencia.id}';
+          new PonenciaHandlers(ponenciaId);
+        });
+      </script>
 </body>
 </html>
