@@ -29,7 +29,6 @@ export class LoginForm {
       [UserRole.MODERADOR]: '/moderador/salasMod',
       [UserRole.PONENTE]: '/ponente/dashboardPonencia'
     };
-    console.log(userData);
 
     // Special handling for PONENTE role
     if (userData.rol === UserRole.PONENTE) {
