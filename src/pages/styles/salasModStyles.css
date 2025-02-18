@@ -227,28 +227,41 @@
     }
   }
   
-  /* Scrollbar personalizada */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
+}
+
+::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
-  }
-  
-  /* Firefox */
-  * {
+}
+
+/* Estilos para Firefox */
+* {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
-  }  
+}
+
+/* Asegurarse de que el contenedor tenga el scroll suave */
+.ponencia-review-container {
+    scroll-behavior: smooth;
+}
+
+/* Para contenedores específicos con scroll */
+.content, 
+.evaluations-section,
+.corrections-container {
+    scrollbar-gutter: stable;
+    overflow-y: auto;
+}

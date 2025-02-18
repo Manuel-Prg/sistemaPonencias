@@ -1,113 +1,197 @@
 ---
 // src/pages/ponencias/[id].astro
-import '../styles/stylesRevisarPonencia.css';
-import '../styles/logos.css';
-import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
-import type { Ponencia, EstadoPonencia } from './ponencia';
+import "../styles/stylesRevisarPonencia.css";
+import "../styles/logos.css";
+import { PonenciaService } from "../../lib/services/ponencias/ponencia.service";
+import type { Ponencia, EstadoPonencia } from "../../lib/models/ponencia";
 
-// Genera las rutas estáticas para cada ponencia
 export async function getStaticPaths() {
-    const ponenciaService = new PonenciaService();
-    const ponencias = await ponenciaService.getPonencias();
-    
-    return ponencias.map((ponencia) => ({
-        params: { id: ponencia.id },
-        props: { ponencia },
-    }));
+  const ponenciaService = new PonenciaService();
+  const ponencias = await ponenciaService.getPonencias();
+
+  return ponencias.map((ponencia) => ({
+    params: { id: ponencia.id },
+    props: { ponencia },
+  }));
 }
 
-// Tipo para los props
 interface Props {
-    ponencia: Ponencia;
+  ponencia: Ponencia;
 }
 
-// Obtiene la ponencia específica de los props
 const { ponencia } = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Revisar Ponencia - {ponencia.titulo}</title>
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<body>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/favicon/favicon_io/favicon.ico"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon_io/favicon-16x16.png"
+    />
+    <style>
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        transition: background 0.3s ease;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Estilos para Firefox */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
+      }
+
+      /* Asegurarse de que el contenedor tenga el scroll suave */
+      .ponencia-review-container {
+        scroll-behavior: smooth;
+      }
+
+      /* Para contenedores específicos con scroll */
+      .content,
+      .evaluations-section,
+      .corrections-container {
+        scrollbar-gutter: stable;
+        overflow-y: auto;
+      }
+    </style></head
+  >
+
+  <body>
     <header class="header">
-        <div class="logo">
-            <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
-            <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
-            <img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
-            <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
-        </div>
-        <div class="header-buttons">
-            <button class="header-btn" id="logout-btn" title="Regresar">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-                </svg>
-                <span>Regresar</span>
-            </button>
-        </div>
+      <div class="logo">
+        <img
+          src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png"
+          alt="Logo-ujat"
+          class="logo-ujat"
+        />
+        <img
+          src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png"
+          alt="Logo-dacity"
+          class="logo-dacity"
+        />
+        <img
+          src="/logo_mujeres/logo_mueres_blanco.png"
+          alt="Logo-mujeres"
+          class="woman-silhouette"
+        />
+        <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+      </div>
+      <div class="header-buttons">
+        <button class="header-btn" id="logout-btn" title="Regresar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path
+              d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"
+            ></path>
+          </svg>
+          <span>Regresar</span>
+        </button>
+      </div>
     </header>
 
-    <nav class="bottom-nav">
-        <div class="bottom-nav-items">
-            <a href="#" class="bottom-nav-item" id="regresar-btn-mobile">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-                </svg>
-                <span>Regresar</span>
-            </a>
-        </div>
-    </nav>
-
     <div class="container">
-        <div class="ponencia-card">
-            <h2 class="title">{ponencia.titulo}</h2>
-            <div class="content">
-                <p class="resumen">{ponencia.resumen}</p>
-                <div class="estado">
-                    <p>Estado actual: {ponencia.estado}</p>
-                    {ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
-                        <div class="evaluaciones">
-                            <h3>Evaluaciones previas:</h3>
-                            <ul>
-                                {ponencia.evaluaciones.map((evaluation) => (
-                                    <li>
-                                        <p>Estado: {evaluation.evaluacion}</p>
-                                        {evaluation.correcciones && <p>Correcciones: {evaluation.correcciones}</p>}
-                                        <p>Fecha: {new Date(evaluation.fecha).toLocaleDateString()}</p>
-                                    </li>
-                                ))}
-                            </ul>
+      <div class="ponencia-card">
+        <div class="content">
+          <!-- Título de la ponencia -->
+          <h2 class="title">{ponencia.titulo}</h2>
+
+          <!-- Resumen -->
+          <div class="resumen">{ponencia.resumen}</div>
+
+          <!-- Información del estado -->
+          <div class="estado-wrapper">
+            <!-- Estado actual -->
+            <div class="estado-actual">
+              <h3>Estado actual</h3>
+              <p class="estado-badge">{ponencia.estado}</p>
+            </div>
+
+            <!-- Evaluaciones previas -->
+            {
+              ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
+                <div class="evaluaciones-section">
+                  <h3>Evaluaciones previas</h3>
+                  <div class="evaluaciones-list">
+                    {ponencia.evaluaciones.map((evaluation) => (
+                      <div class="evaluacion-item">
+                        <div class="evaluacion-header">
+                          <span class="evaluacion-estado">
+                            Estado: {evaluation.evaluacion}
+                          </span>
+                          <span class="evaluacion-fecha">
+                            {new Date(evaluation.fecha).toLocaleDateString()}
+                          </span>
                         </div>
-                    )}
+                        {evaluation.correcciones && (
+                          <div class="evaluacion-correcciones">
+                            <p>Correcciones solicitadas:</p>
+                            <p class="correcciones-texto">
+                              {evaluation.correcciones}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-            </div>
-            <div class="action-buttons">
-                <button class="btn btn-accept" data-ponencia-id={ponencia.id}>Aceptar</button>
-                <button class="btn btn-reject" data-ponencia-id={ponencia.id}>Rechazar</button>
-                <button class="btn btn-accept-with-obs" data-ponencia-id={ponencia.id}>
-                    Aceptar con observaciones
-                </button>
-            </div>
+              )
+            }
+          </div>
         </div>
 
-        <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
-            <div class="dialog">
-                <h2 id="dialogTitle"></h2>
-                <textarea id="dialogComments" placeholder="Escriba sus comentarios aquí"></textarea>
-                <div class="dialog-buttons">
-                    <button id="dialogAccept">Aceptar</button>
-                    <button id="dialogCancel">Cancelar</button>
-                </div>
-            </div>
+        <div class="action-buttons">
+          <button class="btn btn-accept" data-ponencia-id={ponencia.id}
+            >Aceptar</button
+          >
+          <button class="btn btn-reject" data-ponencia-id={ponencia.id}
+            >Rechazar</button
+          >
+          <button
+            class="btn btn-accept-with-obs"
+            data-ponencia-id={ponencia.id}
+          >
+            Aceptar con observaciones
+          </button>
         </div>
+      </div>
     </div>
 
-    <script src="../components/revisor/ponencia.ts"></script>
-</body>
+    <script src="../../components/revisor/ponencia.ts"></script>
+  </body>
 </html>
