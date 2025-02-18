@@ -8,6 +8,7 @@ import { AuthService } from "../../lib/services/auth/auth.service";
 import type { User } from "../../lib/models/user";
 
 interface AdminSalasElements {
+    searchInput: HTMLInputElement;
     salasGrid: HTMLElement;
     logoutBtn: HTMLButtonElement;
     sidebarToggle: HTMLElement;
@@ -32,6 +33,7 @@ export class AdminSalas {
 
     private initElements(): void {
         this.elements = {
+            searchInput: document.getElementById("searchUsers") as HTMLInputElement,
             salasGrid: document.getElementById("salasGrid") as HTMLElement,
             logoutBtn: document.getElementById("logout-btn") as HTMLButtonElement,
             sidebarToggle: document.getElementById("sidebarToggle") as HTMLElement,
@@ -65,7 +67,12 @@ export class AdminSalas {
             });
         }
 
-        // Este event listener se añade siempre, pero se comprueba que los elementos existan
+        // Agregar event listener al input de búsqueda para filtrar salas según el moderador
+        if (this.elements.searchInput) {
+            this.elements.searchInput.addEventListener("input", this.debounce(this.applyFiltersAndRender.bind(this), 300));
+        }
+
+        // Event listener para cerrar sidebar en móvil
         document.addEventListener("click", (e) => {
             const target = e.target as HTMLElement;
             if (
@@ -81,7 +88,13 @@ export class AdminSalas {
         });
     }
 
-
+    private debounce(func: (...args: any[]) => void, delay: number): (...args: any[]) => void {
+        let timeout: number;
+        return (...args: any[]) => {
+            clearTimeout(timeout);
+            timeout = window.setTimeout(() => func(...args), delay);
+        };
+    }
 
     private initSidebarCollapse(): void {
         if (!this.elements.sidebarCollapseBtn) {
@@ -159,15 +172,33 @@ export class AdminSalas {
                     fecha: data.fecha ?? "",
                 } as Sala;
             });
-            this.renderSalas();
+            this.applyFiltersAndRender();
         } catch (error) {
             console.error("Error al obtener salas:", error);
         }
     }
 
-    private renderSalas(): void {
+    // Función de filtrado: busca salas cuyo moderador incluya el término de búsqueda.
+    private applyFiltersAndRender(): void {
+        const searchTerm = this.elements.searchInput.value.toLowerCase();
+        let filteredSalas = this.salas;
+        if (searchTerm) {
+            filteredSalas = filteredSalas.filter((sala) => {
+                const foundUser = this.users.find((user) => user.uid === sala.moderador);
+                const moderadorName = foundUser?.datos?.nombre?.toLowerCase() || "";
+                return moderadorName.includes(searchTerm);
+            });
+        }
+        this.renderSalas(filteredSalas);
+    }
+
+    private renderSalas(salas: (Sala & { [key: string]: any })[]): void {
+        if (!this.elements.salasGrid) {
+            console.warn("No se encontró el elemento salasGrid para renderizar las salas.");
+            return;
+        }
         this.elements.salasGrid.innerHTML = "";
-        this.salas.forEach((sala) => {
+        salas.forEach((sala) => {
             const card = this.createSalaCard(sala);
             this.elements.salasGrid.appendChild(card);
         });

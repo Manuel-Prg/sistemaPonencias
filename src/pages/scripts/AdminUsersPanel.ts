@@ -182,23 +182,24 @@ export class AdminUsers {
   }
 
   private async searchUsersToConvert(): Promise<void> {
-    const searchTerm = this.elements.userSearchInput.value.trim();
+    const searchTerm = this.elements.userSearchInput.value.trim().toLowerCase();
     if (searchTerm.length < 2) {
       this.elements.searchResultsContainer.innerHTML = "";
       return;
     }
     try {
-      const searchQuery = query(
-          collection(this.db, "users"),
-          where("nombre", ">=", searchTerm),
-          where("nombre", "<=", searchTerm + "\uf8ff")
-      );
-      const querySnapshot = await getDocs(searchQuery);
-      this.renderSearchResults(querySnapshot.docs);
+      const usersSnapshot = await getDocs(collection(this.db, "users"));
+      const filteredDocs = usersSnapshot.docs.filter((doc) => {
+        const data = doc.data();
+        const nombre = (data.nombre || "").toLowerCase();
+        return nombre.includes(searchTerm);
+      });
+      this.renderSearchResults(filteredDocs);
     } catch (error) {
       console.error("User search error:", error);
     }
   }
+
 
   private renderSearchResults(users: any[]): void {
     const container = this.elements.searchResultsContainer;
