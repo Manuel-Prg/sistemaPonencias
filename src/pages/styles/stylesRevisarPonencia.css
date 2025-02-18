@@ -29,9 +29,100 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 60%; /* Reducido del 80% original */
+  max-width: 60%;
   transition: all 0.3s ease-in-out;
-  margin: 0 auto; /* Centrar la tarjeta */
+  margin: 0 auto;
+}
+
+/* Ajuste fino para el espaciado entre elementos */
+.ponencia-card > * + * {
+  margin-top: 0.75rem;
+}
+.evaluaciones-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+}
+
+.evaluaciones-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #e8eaed;
+}
+.evaluaciones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.estado p, .evaluaciones li p {
+  line-height: 1.4;
+}
+.evaluacion-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.evaluacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.evaluacion-estado {
+  font-weight: 500;
+}
+
+.evaluacion-fecha {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.evaluacion-correcciones {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.evaluacion-correcciones p:first-child {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.correcciones-texto {
+  line-height: 1.5;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+.estado-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.2rem;
+}
+.estado-actual {
+  margin-bottom: 1.0rem;
+}
+
+.estado-actual h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #e8eaed;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(81, 112, 255, 0.2);
+  border-radius: 8px;
+  font-weight: 500;
 }
 
 /* Área de observaciones (derecha, más estrecha) */
@@ -49,7 +140,26 @@
   transform: translateX(50px);
   transition: all 0.3s ease-in-out;
 }
+.ponencia-card .title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
 
+.ponencia-card .estado-actual {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ponencia-card .evaluaciones-previas {
+  margin-top: 1rem;
+}
+
+.ponencia-card .evaluaciones-previas h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
 .comentarios-card.visible {
   display: flex;
   opacity: 1;
@@ -59,9 +169,9 @@
 
 .title {
   color: white;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-bottom: 1.0rem;
 }
 
 .content {
@@ -76,6 +186,33 @@
   margin-bottom: 1rem;
 }
 
+.resumen {
+  margin-bottom: 1rem;
+  line-height: 1.0;
+}
+
+.estado {
+  margin-bottom: 1.5rem;
+}
+.evaluaciones h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.evaluaciones ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.evaluaciones li {
+  margin-bottom: 0.5rem;
+}
+
+.evaluaciones p {
+  margin: 0.25rem 0;
+}
 /* Tarjeta de comentarios */
 .dialog-overlay {
   flex: 1;
@@ -128,10 +265,6 @@
   transition: all 0.3s ease;
 }
 
-.btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .container {
@@ -148,6 +281,11 @@
 
   .container.with-comments .ponencia-card {
     max-width: 100% !important;
+  }
+
+  .content, .evaluaciones h3 {
+      font-size: 0.9rem;
+      padding: 1rem;
   }
 
   .dialog-overlay {
@@ -185,6 +323,10 @@
 
   .btn {
     width: 100%;
+  }
+  .evaluacion-header {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 
@@ -383,5 +525,153 @@ textarea:focus {
   .woman-silhouette,
   .logo-dev {
     height: 30px;
+  }
+}
+.ponencia-review-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: white;
+}
+
+.ponencia-header {
+  margin-bottom: 2.5rem;
+}
+
+.ponencia-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.status-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.current-status h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.status-badge.pending {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffd54f;
+}
+
+.status-badge.approved {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.evaluations-section {
+  margin-top: 2.5rem;
+}
+
+.evaluations-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.evaluation-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.evaluation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.evaluation-date {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.corrections-container {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.corrections-container h3 {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.75rem;
+}
+
+.corrections-content {
+  color: white;
+  line-height: 1.5;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.action-btn.accept {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.action-btn.reject {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.action-btn.accept-with-obs {
+  background: rgba(33, 150, 243, 0.2);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .ponencia-review-container {
+      padding: 1rem;
+  }
+
+  .evaluation-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+  }
+
+  .action-buttons {
+      flex-direction: column;
+  }
+
+  .action-btn {
+      width: 100%;
   }
 }

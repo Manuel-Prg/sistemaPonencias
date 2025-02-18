@@ -1,5 +1,5 @@
 import { firebase } from "../../firebase/config";
-import type { Ponencia } from "../../models/ponencia";
+import type { EstadoPonencia, Ponencia } from "../../models/ponencia";
 import { 
     collection, 
     getDocs, 
@@ -10,7 +10,8 @@ import {
     type Firestore,
     Timestamp,
     query,
-    where
+    where,
+    arrayUnion
 } from 'firebase/firestore';
 
 export class PonenciaService {
@@ -149,6 +150,33 @@ export class PonenciaService {
         } catch (error) {
             console.error('Error updating ponencia:', error);
             throw error;
+        }
+    }
+
+    async updatePonenciaStatus(
+        id: string, 
+        estado: EstadoPonencia, 
+        comentarios?: string
+    ): Promise<boolean> {
+        try {
+            const ponenciaRef = doc(this.db, 'ponencias', id);
+            
+            await updateDoc(ponenciaRef, {
+                estado: estado,
+                // Add the new evaluation to the evaluaciones array
+                evaluaciones: arrayUnion({
+                    evaluacion: estado,
+                    correcciones: comentarios || '',
+                    fecha: new Date().toISOString()
+                }),
+                // Update the last modified timestamp
+                updatedAt: new Date().toISOString()
+            });
+
+            return true;
+        } catch (error) {
+            console.error('Error updating ponencia in Firebase:', error);
+            return false;
         }
     }
 }
