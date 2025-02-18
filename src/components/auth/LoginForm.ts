@@ -26,7 +26,7 @@ export class LoginForm {
       [UserRole.ADMIN]: '/admin/vistaAdmin',
       [UserRole.REVISOR]: '/revisor/revisor',
       [UserRole.ESCRITOR]: '/escritor/escritor',
-      [UserRole.MODERADOR]: '/moderador/moderador',
+      [UserRole.MODERADOR]: '/moderador/salasMod',
       [UserRole.PONENTE]: '/ponente/dashboardPonencia'
     };
     console.log(userData);

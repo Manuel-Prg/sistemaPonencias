@@ -172,6 +172,8 @@ export class AuthService {
         return new Error('Contraseña incorrecta');
       case 'auth/invalid-email':
         return new Error('Correo electrónico inválido');
+      case 'auth/invalid-credential':
+        return new Error('Correo y/o contraseña incorrectos');
       case 'auth/user-disabled':
         return new Error('Usuario deshabilitado');
       case 'auth/email-already-in-use':
