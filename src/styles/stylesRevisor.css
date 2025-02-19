@@ -62,8 +62,10 @@
   width: 20px;
   height: 20px;
   stroke: white;
-  fill: none;
   stroke-width: 2;
+}
+.datos-btn{
+  margin-left: 1rem;
 }
 
 .logout-button {
@@ -197,7 +199,7 @@
 
 .stat-card svg {
   stroke: var(--text-color);
-  fill: none;
+
   stroke-width: 2;
   width: 32px;
   height: 32px;
