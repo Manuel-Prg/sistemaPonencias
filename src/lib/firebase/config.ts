@@ -9,15 +9,32 @@ class FirebaseClient {
   private firestore: Firestore;
 
   private constructor() {
-    const config = {
-        apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
-        authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
-        projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
-        storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.PUBLIC_FIREBASE_APP_ID,
-        measurementId: import.meta.env.PUBLIC_FIREBASE_MEASUREMENT_ID
+    const isProd = import.meta.env.PROD;
+    
+    // Configuración para producción (Netlify) usando VITE_
+    const prodConfig = {
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+      appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
     };
+
+    // Configuración para desarrollo local usando PUBLIC_
+    const devConfig = {
+      apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
+      authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+      projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
+      storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      appId: import.meta.env.PUBLIC_FIREBASE_APP_ID,
+      measurementId: import.meta.env.PUBLIC_FIREBASE_MEASUREMENT_ID
+    };
+
+    const config = isProd ? prodConfig : devConfig;
+    console.log(`Running in ${isProd ? 'production' : 'development'} mode`);
 
     this.app = initializeApp(config);
     this.auth = getAuth(this.app);
