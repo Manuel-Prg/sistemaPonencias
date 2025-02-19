@@ -4,6 +4,11 @@ import type { User as FirebaseUser } from "firebase/auth";
 import type { DataPonente } from "../../lib/models/ponente";
 import { ponenteDataMapping } from "../../lib/models/ponente";
 
+export const ROUTES = {
+    LOGIN: '/autenticacion/iniciarSesion',
+    DATOS: '/ponente/registroValido'
+}
+
 export class PonenteDataManager {
     private authService: AuthService;
     private ponenciaService: PonenciaService;
@@ -202,16 +207,34 @@ export class PonenteDataManager {
             e.preventDefault();
             this.handleLogout();
         });
+
+
+        document.getElementById('ponencia-btn')?.addEventListener('click', () => {
+            this.handleDatos();
+        });
+
+        document.getElementById('ponencia-btn-mobile')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleDatos();
+        });
     }
 
-    private async handleLogout(): Promise<void> {
-        try {
-            await this.authService.signOut();
-            console.log('Logged out');
-        } catch (error) {
-            console.error('Error during logout:', error);
+
+    async handleDatos(): Promise<void> {
+        console.log('handleDatos');
+        if (this.authService.getCurrentUser()) {
+          window.location.href = ROUTES.DATOS;
         }
+      }
+
+  async handleLogout(): Promise<void> {
+    try {
+      await this.authService.signOut();
+      window.location.href = ROUTES.LOGIN;
+    } catch (error) {
+      console.error('Error durante el cierre de sesión:', error);
     }
+  }
 
     private showSuccessMessage(): void {
         const container = document.querySelector('.form-container');

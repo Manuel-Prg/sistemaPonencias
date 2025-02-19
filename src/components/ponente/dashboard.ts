@@ -105,13 +105,16 @@ class NavigationManager {
     }
   }
 
+  async handleDatos(): Promise<void> {
+    console.log('handleDatos');
+    if (this.currentUser) {
+      window.location.href = ROUTES.DATOS;
+    }
+  }
+
   setupNavigation(): void {
     // Desktop navigation
-    document.getElementById('datos-btn')?.addEventListener('click', () => {
-      if (this.currentUser) {
-        window.location.href = ROUTES.DATOS;
-      }
-    });
+    document.getElementById('datos-btn')?.addEventListener('click', () => this.handleDatos());
     
     document.getElementById('logout-btn')?.addEventListener('click', () => this.handleLogout());
 
@@ -148,5 +151,5 @@ document.addEventListener('DOMContentLoaded', () => {
 export async function initializeDashboard(): Promise<void> {
   const dashboard = new NavigationManager();
   console.log('initializeDashboard');
-  await dashboard.initialize();
+   dashboard.initialize();
 }
