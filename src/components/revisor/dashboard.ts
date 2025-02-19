@@ -6,8 +6,7 @@ import type { User as FirebaseUser } from 'firebase/auth';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
-  aceptadas: Ponencia[];
-  rechazadas: Ponencia[];
+  evaluadas: Ponencia[];
 }
 
 export class DashboardManager {
@@ -15,7 +14,7 @@ export class DashboardManager {
   private userService: UserService;
   private revisorService: RevisorService;
   private ponenciasData: Ponencia[] = [];
-  private currentActiveStatus: 'pendientes' | 'aceptadas' | 'rechazadas' = 'pendientes';
+  private currentActiveStatus: 'pendientes' | 'evaluadas' = 'pendientes';
 
   constructor() {
     this.authService = new AuthService();
@@ -26,30 +25,17 @@ export class DashboardManager {
   private groupPonencias(ponencias: Ponencia[]): GroupedPonencias {
     return {
       pendientes: ponencias.filter(p => p.estado === 'pendiente'),
-      aceptadas: ponencias.filter(p => 
+      evaluadas: ponencias.filter(p => 
         p.estado === 'aceptada' || 
-        p.estado === 'aceptada con correcciones'
-      ),
-      rechazadas: ponencias.filter(p => p.estado === 'rechazada')
+        p.estado === 'aceptada con correcciones' ||
+        p.estado === 'rechazada'
+      )
     };
   }
 
+
   private updateUI(groupedPonencias: GroupedPonencias) {
-    // Update stats cards counters
-    const statsMapping = {
-      pendientes: 'pendiente-count',
-      aceptadas: 'aprobada-count',
-      rechazadas: 'rechazada-count'
-    };
-
-    Object.entries(statsMapping).forEach(([key, elementId]) => {
-      const element = document.getElementById(elementId);
-      if (element && groupedPonencias[key as keyof GroupedPonencias]) {
-        element.textContent = groupedPonencias[key as keyof GroupedPonencias].length.toString();
-      }
-    });
-
-    // Show only the current active status cards
+    // Mostrar solo la columna activa
     const board = document.querySelector('.board');
     if (board) {
       board.innerHTML = `
@@ -66,7 +52,32 @@ export class DashboardManager {
         </div>
       `;
     }
+
+    // Update stats cards counters
+    const pendienteCount = document.getElementById('pendiente-count');
+    const evaluadaCount = document.getElementById('evaluada-count');
+
+    if (pendienteCount) {
+      pendienteCount.textContent = groupedPonencias.pendientes.length.toString();
+    }
+    if (evaluadaCount) {
+      evaluadaCount.textContent = groupedPonencias.evaluadas.length.toString();
+    }
+
+    // Actualizar estado activo de las stat-cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+      const status = card.getAttribute('data-status');
+      if (status === 'pendiente' && this.currentActiveStatus === 'pendientes') {
+        card.classList.add('active');
+      } else if (status === 'aprobada' && this.currentActiveStatus === 'evaluadas') {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    });
   }
+
 
   private capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -87,9 +98,12 @@ export class DashboardManager {
       day: 'numeric'
     });
 
-    const statusBadge = ponencia.estado === 'aceptada con correcciones'
-      ? '<div class="status-badge">Con correcciones</div>'
-      : '';
+    let statusBadge = '';
+    if (ponencia.estado === 'aceptada con correcciones') {
+      statusBadge = '<div class="status-badge">Con correcciones</div>';
+    } else if (ponencia.estado !== 'pendiente') {
+      statusBadge = `<div class="status-badge">${this.capitalizeFirst(ponencia.estado)}</div>`;
+    }
 
     return `
       <div class="ponencia-card" data-id="${ponencia.id}">
@@ -111,7 +125,7 @@ export class DashboardManager {
 
   private setupNavigationHandlers() {
     // Manejador para el botón "Mis Datos" en el header
-    const misDatosBtn = document.querySelector('.buttons-wrapper .action-button');
+    const misDatosBtn = document.querySelector('datos-btn');
     misDatosBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       window.location.href = '../revisor/datosRevisor';
@@ -148,37 +162,9 @@ export class DashboardManager {
   }
 
   private setupEventListeners() {
-
     this.setupNavigationHandlers();
-    // Stats cards click handlers
-    const statsCards = document.querySelectorAll('.stat-card');
-    statsCards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        const status = card.getAttribute('data-status');
-        switch(status) {
-          case 'pendiente':
-            this.currentActiveStatus = 'pendientes';
-            break;
-          case 'aprobada':
-            this.currentActiveStatus = 'aceptadas';
-            break;
-          case 'rechazada':
-            this.currentActiveStatus = 'rechazadas';
-            break;
-        }
-        
-        // Update UI with current status
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
-        
-        // Update active state of stats cards
-        statsCards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-      });
-    });
+    this.setupStatCardHandlers();
 
-
-    
     // Ponencia card click handler
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
@@ -187,12 +173,35 @@ export class DashboardManager {
       if (ponenciaCard) {
         const ponenciaId = ponenciaCard.getAttribute('data-id');
         if (ponenciaId) {
-          // Redirigir a la página de detalles
           window.location.href = `/revisor/${ponenciaId}`;
         }
       }
     });
   }
+
+  private setupStatCardHandlers() {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const status = card.getAttribute('data-status');
+        if (status === 'pendiente') {
+          this.currentActiveStatus = 'pendientes';
+        } else if (status === 'evaluada') {
+          this.currentActiveStatus = 'evaluadas';
+        }
+        
+        const groupedPonencias = this.groupPonencias(this.ponenciasData);
+        this.updateUI(groupedPonencias);
+      });
+    });
+  }
+  private async updateWelcomeMessage(userData: any) {
+    const welcomeElement = document.querySelector('.welcome');
+    if (welcomeElement) {
+      welcomeElement.textContent = `¡Bienvenido ${userData.nombre}!`;
+    }
+  }
+
 
   public async initialize(): Promise<void> {
     console.log('initialize');
@@ -217,10 +226,11 @@ export class DashboardManager {
         throw new Error('Usuario no tiene permisos de revisor');
       }
 
-      // Set pending as active by default
+      await this.updateWelcomeMessage(userData);
+
+      // Activar por defecto la tarjeta de pendientes
       const pendingCard = document.querySelector('.stat-card[data-status="pendiente"]');
       pendingCard?.classList.add('active');
-
       // Setup initial event listeners
       this.setupEventListeners();
 
@@ -236,8 +246,7 @@ export class DashboardManager {
           this.ponenciasData = [];
           this.updateUI({
             pendientes: [],
-            aceptadas: [],
-            rechazadas: []
+            evaluadas: []
           });
         }
       });

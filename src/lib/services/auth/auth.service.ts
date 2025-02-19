@@ -62,7 +62,7 @@ export class AuthService {
       throw new Error(this.handleGoogleAuthError(error));
     }
   }
- // -----------------------------------------------------------------------------------------------------
+
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.auth, email);
@@ -92,6 +92,11 @@ export class AuthService {
       const nameParts: string[] = displayName.split(' ');
       const nombre: string = nameParts[0] ?? '';
       const email: string = user.email ?? '';
+
+      const userExists = await this.userService.checkUserExists(user.uid);
+      if (userExists) {
+        throw new Error('El usuario ya existe');
+      }
 
       await this.userService.createUser({
         uid: user.uid,

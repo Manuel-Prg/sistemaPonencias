@@ -64,7 +64,7 @@ import '../../styles/logos.css';
                             <p class="stat-number" id="pendiente-count">0</p>
                         </div>
                     </div>
-                    <div class="stat-card" data-status="aprobada">
+                    <div class="stat-card" data-status="evaluada">
                         <div class="stat-icon">
                             <svg xmlns="http://www.w3.org/2000/svg"
                              height="24px"
@@ -75,7 +75,7 @@ import '../../styles/logos.css';
                         </div>
                         <div class="stat-info">
                             <h3>Ponencias evaluadas</h3>
-                            <p class="stat-number" id="aprobada-count">0</p>
+                            <p class="stat-number" id="evaluada-count">0</p>
                         </div>
                     </div>
                 </div>
@@ -94,27 +94,17 @@ import '../../styles/logos.css';
                             </div>
                         </div>
                 
-                        <!-- Aceptadas Column -->
                         <div class="board-column">
                             <div class="column-header">
-                                <h3>Aceptadas</h3>
-                                <span class="counter" id="aceptadas-counter">0</span>
+                                <h3>Evaluadas</h3>
+                                <span class="counter" id="evaluadas-counter">0</span>
                             </div>
-                            <div class="column-content" id="aceptadas-column">
+                            <div class="column-content" id="evaluadas-column">
                                 <p class="empty-message">Cargando...</p>
                             </div>
                         </div>
                 
-                        <!-- Rechazadas Column -->
-                        <div class="board-column">
-                            <div class="column-header">
-                                <h3>Rechazadas</h3>
-                                <span class="counter" id="rechazadas-counter">0</span>
-                            </div>
-                            <div class="column-content" id="rechazadas-column">
-                                <p class="empty-message">Cargando...</p>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
         </main>
