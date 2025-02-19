@@ -28,7 +28,7 @@ import "../../styles/vistaAdmin.css"
     <nav class="sidebar-nav">
         <ul>
             <li>
-                <a href="/admin/vistaAdmin" class="sidebar-link active">
+                <a href="/admin/vistaAdmin" class="sidebar-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     </svg>
@@ -109,4 +109,21 @@ import "../../styles/vistaAdmin.css"
 </div>
 
 </body>
+<script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+        const currentPath = window.location.pathname.replace(/\/$/, '').toLowerCase();
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        Array.from(sidebarLinks).forEach((link) => {
+            const linkPath = new URL(link.href, window.location.origin)
+                .pathname.replace(/\/$/, '')
+                .toLowerCase();
+
+            if (linkPath === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    });
+</script>
 </html>

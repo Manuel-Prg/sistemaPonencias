@@ -164,6 +164,7 @@ export class AdminSalas {
             const salasSnapshot = await getDocs(collection(this.db, "salas"));
             this.salas = salasSnapshot.docs.map((doc) => {
                 const data = doc.data() as Partial<Sala>;
+
                 return {
                     id: doc.id,
                     moderador: data.moderador ?? "",
@@ -207,8 +208,8 @@ export class AdminSalas {
         const foundUser = this.users.find((user) => user.uid === sala.moderador);
         const moderadorName = foundUser?.datos?.nombre ?? "Sin nombre";
         let fechaStr = "No especificada";
-        if (sala.fecha) {
-            fechaStr = sala.fecha.toDate().toLocaleString();
+        if (sala.fecha && (sala.fecha as any).toDate) {
+            fechaStr = (sala.fecha as any).toDate().toLocaleDateString();
         }
         const card = document.createElement("div");
         card.className = "user-card";

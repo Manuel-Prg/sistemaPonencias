@@ -36,7 +36,7 @@ export class SigninForm {
     e.preventDefault();
     try {
       await this.authService.registerWithGoogle();
-      window.location.href = '/autenticacion/iniciarSesion';
+      window.location.href = '/ponente/datosPonencia';
     } catch (error) {
       console.error('Error en registro con Google:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';

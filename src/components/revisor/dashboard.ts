@@ -225,6 +225,10 @@ export class DashboardManager {
       if (userData.rol !== 'revisor') {
         throw new Error('Usuario no tiene permisos de revisor');
       }
+      const welcomeElement = document.querySelector('.welcome');
+      if (welcomeElement) {
+        welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre|| "Usuario"}!`;
+      }
 
       await this.updateWelcomeMessage(userData);
 
@@ -256,6 +260,7 @@ export class DashboardManager {
       window.location.href = '/autenticacion/iniciarSesion';
     }
   }
+
 }
 
 export async function initializeRevisorPage(): Promise<void> {
