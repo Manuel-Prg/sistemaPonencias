@@ -72,7 +72,6 @@ export class AdminSalas {
             this.elements.searchInput.addEventListener("input", this.debounce(this.applyFiltersAndRender.bind(this), 300));
         }
 
-        // Event listener para cerrar sidebar en móvil
         document.addEventListener("click", (e) => {
             const target = e.target as HTMLElement;
             if (

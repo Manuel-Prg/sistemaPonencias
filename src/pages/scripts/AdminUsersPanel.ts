@@ -2,10 +2,7 @@ import {
   collection,
   doc,
   getDocs,
-  query,
-  where,
   updateDoc,
-
 } from "firebase/firestore";
 import { firebase } from "../../lib/firebase/config";
 import type { User } from "../../lib/models/user";
@@ -18,8 +15,12 @@ interface AdminUsersElements {
   modal: HTMLDialogElement;
   filterBtns: NodeListOf<HTMLButtonElement>;
   logoutBtn: HTMLButtonElement;
+  sidebarToggle: HTMLElement;
+  sidebar: HTMLElement;
   userSearchInput: HTMLInputElement;
   searchResultsContainer: HTMLElement;
+  sidebarCollapseBtn?: HTMLButtonElement;
+  mainWrapper: HTMLElement;
 }
 
 export class AdminUsers {
@@ -28,6 +29,8 @@ export class AdminUsers {
   private elements!: AdminUsersElements;
   private users: (User & { [key: string]: any })[] = [];
   private currentFilter = "all";
+  private isCollapsed = false;
+
 
   constructor() {
     this.initElements();
@@ -45,13 +48,44 @@ export class AdminUsers {
       logoutBtn: document.getElementById("logout-btn") as HTMLButtonElement,
       userSearchInput: document.getElementById("userSearchInput") as HTMLInputElement,
       searchResultsContainer: document.getElementById("searchResultsContainer") as HTMLElement,
+      sidebarToggle: document.getElementById("sidebarToggle") as HTMLElement,
+      sidebar: document.querySelector(".sidebar") as HTMLElement,
+      mainWrapper: document.querySelector(".main-wrapper") as HTMLElement,
+      sidebarCollapseBtn: document.querySelector(".sidebar-collapse-btn") as HTMLButtonElement,
     };
+  }
+
+  private initSidebarCollapse(): void {
+    if (!this.elements.sidebarCollapseBtn) {
+      this.elements.sidebarCollapseBtn = document.createElement("button");
+      this.elements.sidebarCollapseBtn.className = "sidebar-collapse-btn";
+      this.elements.sidebar.appendChild(this.elements.sidebarCollapseBtn);
+    }
+    this.elements.sidebarCollapseBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    `;
+    this.elements.sidebarCollapseBtn.addEventListener("click", () => {
+      this.isCollapsed = !this.isCollapsed;
+      this.elements.sidebar.classList.toggle("collapsed", this.isCollapsed);
+      this.elements.mainWrapper.classList.toggle("sidebar-collapsed", this.isCollapsed);
+      this.elements.sidebarCollapseBtn!.classList.toggle("collapsed", this.isCollapsed);
+      this.elements.sidebarCollapseBtn!.innerHTML = this.isCollapsed
+          ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+             <path d="M9 18l6-6-6-6"/>
+           </svg>`
+          : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+             <path d="M15 18l-6-6 6-6"/>
+           </svg>`;
+    });
   }
 
   private async init(): Promise<void> {
     this.bindEvents();
     this.setupAuthStateListener();
     await this.fetchUsers();
+    this.initSidebarCollapse();
   }
 
   private bindEvents(): void {
