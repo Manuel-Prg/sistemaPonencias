@@ -136,7 +136,7 @@ export class AdminUsers {
           uid: docSnap.id,
           rol: data.rol ?? "sin rol",
           datos: {
-            nombre: data.nombre ?? "Sin nombre",
+            nombre: data.datos?.nombre ?? "Sin nombre",
             institucion: data.datos?.institucion ?? "Sin institución",
           },
         } as User;

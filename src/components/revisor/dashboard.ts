@@ -187,7 +187,6 @@ export class DashboardManager {
       if (ponenciaCard) {
         const ponenciaId = ponenciaCard.getAttribute('data-id');
         if (ponenciaId) {
-          // Redirigir a la página de detalles
           window.location.href = `/revisor/${ponenciaId}`;
         }
       }
@@ -215,6 +214,10 @@ export class DashboardManager {
       const userData = await this.userService.getUserData(user.uid);
       if (userData.rol !== 'revisor') {
         throw new Error('Usuario no tiene permisos de revisor');
+      }
+      const welcomeElement = document.querySelector('.welcome');
+      if (welcomeElement) {
+        welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre|| "Usuario"}!`;
       }
 
       // Set pending as active by default
@@ -247,6 +250,7 @@ export class DashboardManager {
       window.location.href = '/autenticacion/iniciarSesion';
     }
   }
+
 }
 
 export async function initializeRevisorPage(): Promise<void> {

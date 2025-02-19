@@ -85,7 +85,6 @@ export class AuthService {
     try {
       const result = await signInWithPopup(this.auth, this.googleProvider);
       const user = result.user;
-
       if (!user) throw new Error('No se pudo obtener la información del usuario');
 
       const displayName: string = user.displayName ?? '';
