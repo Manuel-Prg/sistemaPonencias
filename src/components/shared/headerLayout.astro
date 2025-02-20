@@ -1,5 +1,6 @@
 ---
-import '../../styles/logos.css';
+import '../../styles/stylesDatos.css';
+import '../../styles/main.css';
 ---
 <header class="header">
     <div class="logos-container">
@@ -10,20 +11,20 @@ import '../../styles/logos.css';
     </div>
     <div class="header-buttons">
         <slot name="ponencia">
-            <button class="header-btn" id="ponencia-btn" title="Mi Ponencia">
+            <!-- <button class="header-btn" id="ponencia-btn" title="Mi Ponencia">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
                     <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
                 </svg>
                 <span>Mi Ponencia</span>
-            </button>
+            </button> -->
         </slot>
         <button class="header-btn" id="logout-btn" title="Cerrar Sesión">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                fill="#ffffff">
-                <path
-                    d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+            viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
             </svg>
             <span>Cerrar Sesión</span>
         </button>
     </div>
+    <script src="../../components/ponente/registroPonencia.ts"></script>
 </header>

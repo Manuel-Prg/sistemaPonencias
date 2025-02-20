@@ -11,25 +11,22 @@ import HeaderLayout from '../../components/shared/headerLayout.astro';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Ponencia</title>
-    <!-- Favicon básico -->
     <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
 </head>
 <HeaderLayout>
-        <button slot="ponencia" class="header-btn" id="datos-btn" title="Mi Ponencia">
+        <button slot="ponencia" class="header-btn datos-btn" id="datos-btn" title="Mi Ponencia">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
                 <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
             </svg>
-            <span>Mi Ponencia</span>
+            <span>Mis Datos</span>
         </button>
 </HeaderLayout>
 
-<!-- Bottom Navigation for Mobile -->
 <nav class="bottom-nav">
     <div class="bottom-nav-items">
-        <a href="../ponente/datosPonente" class="bottom-nav-item" id="datos-btn">
+        <a href="../ponente/datosPonente" class="bottom-nav-item" id="datos-btn-mobile">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
                 <path
                     d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z" />
@@ -128,7 +125,6 @@ import HeaderLayout from '../../components/shared/headerLayout.astro';
                     </div>
                 </div>
 
-                <!-- Step 4 -->
                 <div class="step-content hidden" data-step="4">
                     <h2>Finalmente, ¿Cómo supiste de nosotros?</h2>
                     <p class="subtitle">Es muy importante conocer tu opinión ya que nos ayudará a mejorar para promover

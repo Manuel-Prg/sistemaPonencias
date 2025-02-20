@@ -20,6 +20,7 @@ export interface User {
     nombre: string;
     email?: string;
     grado?: string;
+    urlFoto?: string;
     institucion?: string;
     departamento?: string;
     modalidad?: string;

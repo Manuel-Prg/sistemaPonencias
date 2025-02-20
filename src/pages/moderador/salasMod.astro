@@ -1,9 +1,6 @@
 ---
 import '../../styles/salasModStyles.css';
-import '../../styles/main.css';
-import '../../styles/logos.css';
-import HeaderLayout from '../../components/shared/headerLayout.astro';
-import BotonMobile from '../../components/shared/botonMobile.astro';
+import HeaderLayout from "../../components/shared/headerLayout.astro";
 ---
 
 <!DOCTYPE html>
@@ -13,10 +10,7 @@ import BotonMobile from '../../components/shared/botonMobile.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Ponencias</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Favicon básico -->
     <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
 </head>
@@ -24,23 +18,17 @@ import BotonMobile from '../../components/shared/botonMobile.astro';
 <HeaderLayout>
 </HeaderLayout>
 
-<BotonMobile>
-</BotonMobile>
 <body>
 <div class="main-container">
-    
+    <HeaderLayout>
 
-    <div class="content-section">
-        <div class="top-section">
-            <div class="search-container">
+    </HeaderLayout>
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Buscar ponencia...">
             </div>
         </div>
             <div class="table-body" id="tableBody">
                 <!-- Las filas se generarán dinámicamente con JavaScript -->
             </div>
         </div>
-    </div>
-</body>
+</div>
 </html>

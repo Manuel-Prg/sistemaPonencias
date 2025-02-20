@@ -100,6 +100,7 @@ export class AuthService {
       const nameParts: string[] = displayName.split(' ');
       const nombre: string = nameParts[0] ?? '';
       const email: string = user.email ?? '';
+      const photoURL: string = user.photoURL ?? '';
 
       const userExists = await this.userService.checkUserExists(user.uid);
       if (userExists) {
@@ -108,10 +109,10 @@ export class AuthService {
 
       await this.userService.createUser({
         uid: user.uid,
-        datos: { nombre, email },
+        datos: { nombre, email, urlFoto: photoURL },
         rol: UserRole.PONENTE,
         creado: new Date().toISOString(),
-        actualizado: new Date().toISOString()
+        actualizado: new Date().toISOString(),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {

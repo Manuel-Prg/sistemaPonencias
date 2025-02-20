@@ -1,6 +1,6 @@
 import {
     collection,
-    getDocs,
+    getDocs, type Timestamp,
 } from "firebase/firestore";
 import { firebase } from "../../lib/firebase/config";
 import type { Sala } from "../../lib/models/sala";
@@ -21,9 +21,11 @@ export class AdminSalas {
     private authService: AuthService;
     private db = firebase.getFirestore();
     private elements!: AdminSalasElements;
-    private salas: (Sala & { [key: string]: any })[] = [];
+    private salas: Sala[] = [];
+    //private salas: (Sala & { [key: string]: any })[] = [];
     private users: (User & { [key: string]: any })[] = [];
     private isCollapsed = false;
+
 
     constructor() {
         this.initElements();
@@ -146,8 +148,9 @@ export class AdminSalas {
                     uid: docSnap.id,
                     rol: data.rol ?? "sin rol",
                     datos: {
-                        nombre: data.nombre ?? "Sin nombre",
-                        institucion: data.datos?.institucion ?? "Sin institución",
+                        nombre: data.datos?.nombre ?? "Sin nombre",
+                        email: data.datos?.email ?? "Sin email",
+                        urlFoto: data.datos?.urlFoto ?? "", // Fallback si no tiene foto
                     },
                 } as User;
             });
@@ -159,17 +162,49 @@ export class AdminSalas {
         }
     }
 
+    /* private async fetchSalas(): Promise<void> {
+        const testSalasData: Sala[] = [
+            {
+                id: "1",
+                titulo: "Sala 1",
+                fecha: "Jueves 17 Marzo, 2025",
+                integrantes: 4,
+                tema: "Lorem ipsum",
+                estado: "En curso",
+                foto: "https://lh3.googleusercontent.com/a/ACg8ocI_oElKWaIU8BrxJgz20QqikritEtrvNXaoUDmIRzktH5Gfdgmt=s96-c",
+                tiempoTranscurrido: "10 min",
+            },
+            {
+                id: "2",
+                titulo: "Sala 2",
+                fecha: "Jueves 18 Marzo, 2025",
+                integrantes: 3,
+                tema: "Dolor sit amet",
+                estado: "En curso",
+                foto: "",
+                tiempoTranscurrido: "5 min",
+            },
+            // Agrega más objetos si lo requieres
+        ];
+
+        // Simulamos que "this.salas" se llena con los datos de ejemplo
+        this.salas = testSalasData;
+        // Luego, llamamos a la función de filtrado y renderizado
+        this.applyFiltersAndRender();
+    } */
+
     private async fetchSalas(): Promise<void> {
         try {
             const salasSnapshot = await getDocs(collection(this.db, "salas"));
             this.salas = salasSnapshot.docs.map((doc) => {
                 const data = doc.data() as Partial<Sala>;
-
                 return {
                     id: doc.id,
-                    moderador: data.moderador ?? "",
-                    ponencias: data.ponencias ?? [],
-                    fecha: data.fecha ?? "",
+                    titulo: data.titulo,
+                    tema: data.tema,
+                    fecha: data.fecha as Timestamp,
+                    estado: data.estado,
+                    integrantes: data.integrantes ?? [],
                 } as Sala;
             });
             this.applyFiltersAndRender();
@@ -184,7 +219,7 @@ export class AdminSalas {
         let filteredSalas = this.salas;
         if (searchTerm) {
             filteredSalas = filteredSalas.filter((sala) => {
-                const foundUser = this.users.find((user) => user.uid === sala.moderador);
+                const foundUser = this.users.find((user) => user.uid === sala.titulo);
                 const moderadorName = foundUser?.datos?.nombre?.toLowerCase() || "";
                 return moderadorName.includes(searchTerm);
             });
@@ -204,27 +239,104 @@ export class AdminSalas {
         });
     }
 
+    private createUserPhotos(integrantes: string[]): HTMLElement {
+        const container = document.createElement("div");
+        container.className = "user-photos-container";
+
+        integrantes.forEach(uid => {
+            const user = this.users.find(u => u.uid === uid);
+
+            const img = document.createElement("img");
+            img.className = "user-photo";
+
+            if (user && user.datos?.urlFoto) {
+                img.src = user.datos.urlFoto;
+                img.alt = user.datos.nombre || "Usuario sin nombre";
+                img.title = user?.datos?.nombre || "Usuario sin nombre";
+            } else {
+                img.src = this.generateInitialAvatar(user?.datos?.nombre || "?");
+                img.alt = "foto de perfil por defecto";
+                img.title = user?.datos?.nombre || "Usuario sin nombre";
+            }
+
+            container.appendChild(img);
+        });
+
+        return container;
+    }
+
+
     private createSalaCard(sala: Sala): HTMLElement {
-        const foundUser = this.users.find((user) => user.uid === sala.moderador);
-        const moderadorName = foundUser?.datos?.nombre ?? "Sin nombre";
-        let fechaStr = "No especificada";
-        if (sala.fecha && (sala.fecha as any).toDate) {
-            fechaStr = (sala.fecha as any).toDate().toLocaleDateString();
-        }
         const card = document.createElement("div");
-        card.className = "user-card";
+        const usrFoto = document.createElement("div");
+        usrFoto.className = "avatar";
+        card.className = "card-sala";
+        let fechaString = "";
+        if (sala.fecha) {
+            const dateObj = sala.fecha.toDate();
+            fechaString = dateObj.toLocaleString("es-ES", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+        }
+        const fotosIntegrantes = this.createUserPhotos(sala.integrantes ?? []);
         card.innerHTML = `
-      <div class="sala-header">
-        <div class="sala-info">
-          <h3>Moderador: ${this.escapeHtml(moderadorName)}</h3>
-        </div>
-      </div>
-      <div class="sala-details">
-        <p>Fecha: ${this.escapeHtml(fechaStr)}</p>
-      </div>
-    `;
+            <div class="sala-header">
+                <h2>${this.escapeHtml(sala.titulo)}</h2>
+                <div class="header-avatars">
+            
+                </div>
+            </div>
+            <div class="sala-body">
+                <p>${this.escapeHtml(fechaString)}</p>
+                <div class="sala-row">
+                    <span>Integrantes: ${sala.integrantes.length}</span>
+                    <span>Tema: ${this.escapeHtml(sala.tema)}</span>
+                </div>
+                <div class="sala-row">
+                    <span>Estado de reunión: ${this.escapeHtml(sala.estado)}</span>
+                    <span>Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
+                </div>
+            </div>
+        `;
+        const headerAvatars = card.querySelector(".header-avatars");
+        if (headerAvatars) {
+            headerAvatars.appendChild(fotosIntegrantes);
+        }
         return card;
     }
+
+    private generateInitialAvatar(
+        nombre: string = "?",
+        backgroundColor: string = "#007bff",
+        size: number = 64
+    ): string {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+            throw new Error("No se pudo obtener el contexto 2D del canvas");
+        }
+
+        // Fondo cuadrado (puedes usar arc para un fondo circular si lo prefieres)
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, size, size);
+
+        // Letra blanca, centrada
+        const initial = nombre.charAt(0).toUpperCase() || "?";
+        ctx.fillStyle = "#fff";
+        ctx.font = `${Math.floor(size * 0.5)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(initial, size / 2, size / 2);
+
+        // Convertimos el canvas a Data URL
+        return canvas.toDataURL();
+    }
+
 
     private escapeHtml(str: string): string {
         const div = document.createElement("div");
