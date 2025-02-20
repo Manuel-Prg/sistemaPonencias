@@ -140,6 +140,35 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
         </nav>
     </div>
 
+    <!-- Dialog -->
+    <dialog id="presentation-dialog" class="presentation-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2 id="dialog-title"></h2>
+                <p id="dialog-summary"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Comentarios:</label>
+                <textarea id="comment" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="rating">Calificación:</label>
+                <input type="number" id="rating" min="1" max="10" step="1">
+            </div>
+
+            <div class="dialog-buttons">
+                <div class="primary-buttons">
+                    <button id="accept-presentation">Aceptar</button>
+                    <button id="reject-presentation">Rechazar</button>
+                </div>
+                <button id="accept-with-corrections">Aceptar con correcciones</button>
+                <button id="close-dialog">Cerrar</button>
+            </div>
+        </div>
+    </dialog>
+
     <script>
         // Importación del script del lado del cliente
         import { initializeRevisorPage } from "../../components/revisor/dashboard";
