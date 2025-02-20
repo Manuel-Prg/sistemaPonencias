@@ -268,3 +268,44 @@ export async function initializeRevisorPage(): Promise<void> {
   console.log('initializeRevisorPage');
   await dashboard.initialize();
 }
+
+//Scripts de animacion para aceptar con observaciones--------------------------
+
+  const dialog = document.getElementById("presentation-dialog") as HTMLDialogElement;
+  const closeDialog = document.getElementById("close-dialog") as HTMLButtonElement;
+  const acceptPresentation = document.getElementById("accept-presentation") as HTMLButtonElement;
+  const rejectPresentation = document.getElementById("reject-presentation") as HTMLButtonElement;
+  const acceptWithCorrections = document.getElementById("accept-with-corrections") as HTMLButtonElement;
+  const dialogTitle = document.getElementById("dialog-title") as HTMLHeadingElement;
+  const dialogSummary = document.getElementById("dialog-summary") as HTMLParagraphElement;
+  const commentArea = document.getElementById("comment") as HTMLTextAreaElement;
+  const ratingInput = document.getElementById("rating") as HTMLInputElement;
+
+  interface Presentation {
+    titulo: string;
+    resumen?: string;
+  }
+
+  function openDialog(presentation: Presentation): void {
+    dialogTitle.textContent = presentation.titulo;
+    dialogSummary.textContent = presentation.resumen || "No hay resumen disponible.";
+    commentArea.value = "";
+    ratingInput.value = "";
+    dialog.showModal();
+  }
+
+  closeDialog.addEventListener("click", () => {
+    dialog.close();
+  });
+
+  function handleReview(action: string): void {
+    const comment: string = commentArea.value;
+    const rating: string = ratingInput.value;
+    console.log("Review submitted:", { action, comment, rating });
+    dialog.close();
+  }
+
+  acceptPresentation.addEventListener("click", () => handleReview("accept"));
+  rejectPresentation.addEventListener("click", () => handleReview("reject"));
+  acceptWithCorrections.addEventListener("click", () => handleReview("accept_with_corrections"));
+//----------------------------------------------------------------------------------------------------
