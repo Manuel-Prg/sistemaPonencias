@@ -125,10 +125,10 @@ export class DashboardManager {
 
   private setupNavigationHandlers() {
     // Manejador para el botón "Mis Datos" en el header
-    const misDatosBtn = document.querySelector('datos-btn');
+    const misDatosBtn = document.querySelector('#datos-btn');
     misDatosBtn?.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = '../revisor/datosRevisor';
+      window.location.href = '/revisor/datosRevisor';
     });
 
     // Manejador para el botón "Cerrar Sesión" en el header
