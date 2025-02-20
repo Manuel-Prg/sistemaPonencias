@@ -323,12 +323,60 @@
   gap: 1.5rem;
 }
 
+.salas-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 1.5rem;
+}
+
 .user-card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
 }
+
+.card-sala {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+.card-sala:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+}
+.sala-header img{
+  border-radius: 50%;
+  width: 40px;
+}
+.sala-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sala-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.sala-row {
+  display: flex;
+  gap: 1%;
+  align-items: center;
+}
+.sala-row span {
+  border: 2px solid #ffffff;
+  border-radius: 30px;
+  padding: 0.3rem 0.8rem;
+  display: inline-block;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  margin-right: 0.5rem;
+}
+
 
 .user-card:hover {
   transform: translateY(-5px);
@@ -580,7 +628,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .users-grid {
     grid-template-columns: 1fr;
     gap: 1rem;

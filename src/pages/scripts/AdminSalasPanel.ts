@@ -21,9 +21,11 @@ export class AdminSalas {
     private authService: AuthService;
     private db = firebase.getFirestore();
     private elements!: AdminSalasElements;
-    private salas: (Sala & { [key: string]: any })[] = [];
+    private salas: Sala[] = [];
+    //private salas: (Sala & { [key: string]: any })[] = [];
     private users: (User & { [key: string]: any })[] = [];
     private isCollapsed = false;
+
 
     constructor() {
         this.initElements();
@@ -160,6 +162,37 @@ export class AdminSalas {
     }
 
     private async fetchSalas(): Promise<void> {
+        const testSalasData: Sala[] = [
+            {
+                id: "1",
+                titulo: "Sala 1",
+                fecha: "Jueves 17 Marzo, 2025",
+                integrantes: 4,
+                tema: "Lorem ipsum",
+                estado: "En curso",
+                foto: "https://lh3.googleusercontent.com/a/ACg8ocI_oElKWaIU8BrxJgz20QqikritEtrvNXaoUDmIRzktH5Gfdgmt=s96-c",
+                tiempoTranscurrido: "10 min",
+            },
+            {
+                id: "2",
+                titulo: "Sala 2",
+                fecha: "Jueves 18 Marzo, 2025",
+                integrantes: 3,
+                tema: "Dolor sit amet",
+                estado: "En curso",
+                foto: "",
+                tiempoTranscurrido: "5 min",
+            },
+            // Agrega más objetos si lo requieres
+        ];
+
+        // Simulamos que "this.salas" se llena con los datos de ejemplo
+        this.salas = testSalasData;
+        // Luego, llamamos a la función de filtrado y renderizado
+        this.applyFiltersAndRender();
+    }
+
+    /* private async fetchSalas(): Promise<void> {
         try {
             const salasSnapshot = await getDocs(collection(this.db, "salas"));
             this.salas = salasSnapshot.docs.map((doc) => {
@@ -176,7 +209,7 @@ export class AdminSalas {
         } catch (error) {
             console.error("Error al obtener salas:", error);
         }
-    }
+    } */
 
     // Función de filtrado: busca salas cuyo moderador incluya el término de búsqueda.
     private applyFiltersAndRender(): void {
@@ -184,7 +217,7 @@ export class AdminSalas {
         let filteredSalas = this.salas;
         if (searchTerm) {
             filteredSalas = filteredSalas.filter((sala) => {
-                const foundUser = this.users.find((user) => user.uid === sala.moderador);
+                const foundUser = this.users.find((user) => user.uid === sala.titulo);
                 const moderadorName = foundUser?.datos?.nombre?.toLowerCase() || "";
                 return moderadorName.includes(searchTerm);
             });
@@ -205,24 +238,30 @@ export class AdminSalas {
     }
 
     private createSalaCard(sala: Sala): HTMLElement {
-        const foundUser = this.users.find((user) => user.uid === sala.moderador);
-        const moderadorName = foundUser?.datos?.nombre ?? "Sin nombre";
-        let fechaStr = "No especificada";
-        if (sala.fecha && (sala.fecha as any).toDate) {
-            fechaStr = (sala.fecha as any).toDate().toLocaleDateString();
-        }
         const card = document.createElement("div");
-        card.className = "user-card";
+        card.className = "card-sala";
+
+        // Convertimos el timestamp en una fecha legible
+
         card.innerHTML = `
-      <div class="sala-header">
-        <div class="sala-info">
-          <h3>Moderador: ${this.escapeHtml(moderadorName)}</h3>
-        </div>
-      </div>
-      <div class="sala-details">
-        <p>Fecha: ${this.escapeHtml(fechaStr)}</p>
-      </div>
-    `;
+            <div class="sala-header">
+                <h2>${this.escapeHtml(sala.titulo)}</h2>
+                <div class="header-avatars">
+                    <img src="${this.escapeHtml(sala.foto)}">
+                </div>
+            </div>
+            <div class="sala-body">
+                <p>${this.escapeHtml(sala.fecha)}</p>
+                <div class="sala-row">
+                    <span>Integrantes: ${sala.integrantes}</span>
+                    <span>Tema: ${this.escapeHtml(sala.tema)}</span>
+                </div>
+                <div class="sala-row">
+                    <span>Estado de reunión: ${this.escapeHtml(sala.estado)}</span>
+                    <span>Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
+                </div>
+            </div>
+        `;
         return card;
     }
 

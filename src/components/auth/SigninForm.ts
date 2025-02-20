@@ -20,10 +20,7 @@ export class SigninForm {
 
   async handleSubmit(credentials: AuthCredentials & { nombre: string }): Promise<void> {
     try {
-      // Registrar con Firebase
       await this.authService.register(credentials);
-  
-      // Redirigir a la página de inicio de sesión
       window.location.href = '/autenticacion/iniciarSesion';
     } catch (error: unknown) {
       console.error('Error en registro:', error);
