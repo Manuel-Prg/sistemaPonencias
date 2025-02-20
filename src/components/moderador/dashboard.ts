@@ -1,41 +1,36 @@
-import { AuthService } from "../../lib/services/auth/auth.service";
-import { UserService } from "../../lib/services/user/user.service";
-import { RevisorService } from "../../lib/services/revisor/revisor.services";
-import type { Ponencia, EstadoPonencia, PonenciaAsignada } from "../../lib/models/ponencia";
+import { SalaService } from '../../lib/services/salas/sala.service';
+import { AuthService } from '../../lib/services/auth/auth.service';
+import { UserService } from '../../lib/services/user/user.service';
+import type { Ponencia } from '../../lib/models/ponencia';
+import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
-  evaluadas: Ponencia[];
+  aceptadas: Ponencia[];
 }
 
-export class DashboardManager {
+export class SalaManager {
+  private salaService: SalaService;
   private authService: AuthService;
   private userService: UserService;
-  private revisorService: RevisorService;
   private ponenciasData: Ponencia[] = [];
-  private currentActiveStatus: 'pendientes' | 'evaluadas' = 'pendientes';
+  private currentActiveStatus: 'pendientes' | 'aceptadas' = 'pendientes';
 
   constructor() {
+    this.salaService = new SalaService();
     this.authService = new AuthService();
     this.userService = new UserService();
-    this.revisorService = new RevisorService();
   }
 
   private groupPonencias(ponencias: Ponencia[]): GroupedPonencias {
     return {
-      pendientes: ponencias.filter(p => p.estado === 'pendiente'),
-      evaluadas: ponencias.filter(p => 
-        p.estado === 'aceptada' || 
-        p.estado === 'aceptada con correcciones' ||
-        p.estado === 'rechazada'
-      )
+      pendientes: ponencias.filter(p => p.estado === EstadoPonencia.PENDIENTE),
+      aceptadas: ponencias.filter(p => p.estado === EstadoPonencia.ACEPTADA)
     };
   }
 
-
   private updateUI(groupedPonencias: GroupedPonencias) {
-    // Mostrar solo la columna activa
     const board = document.querySelector('.board');
     if (board) {
       board.innerHTML = `
@@ -55,29 +50,28 @@ export class DashboardManager {
 
     // Update stats cards counters
     const pendienteCount = document.getElementById('pendiente-count');
-    const evaluadaCount = document.getElementById('evaluada-count');
+    const aceptadaCount = document.getElementById('aceptada-count');
 
     if (pendienteCount) {
       pendienteCount.textContent = groupedPonencias.pendientes.length.toString();
     }
-    if (evaluadaCount) {
-      evaluadaCount.textContent = groupedPonencias.evaluadas.length.toString();
+    if (aceptadaCount) {
+      aceptadaCount.textContent = groupedPonencias.aceptadas.length.toString();
     }
 
-    // Actualizar estado activo de las stat-cards
+    // Update active state of stat cards
     const statCards = document.querySelectorAll('.stat-card');
     statCards.forEach(card => {
       const status = card.getAttribute('data-status');
       if (status === 'pendiente' && this.currentActiveStatus === 'pendientes') {
         card.classList.add('active');
-      } else if (status === 'aprobada' && this.currentActiveStatus === 'evaluadas') {
+      } else if (status === 'aceptada' && this.currentActiveStatus === 'aceptadas') {
         card.classList.add('active');
       } else {
         card.classList.remove('active');
       }
     });
   }
-
 
   private capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -98,20 +92,17 @@ export class DashboardManager {
       day: 'numeric'
     });
 
-    let statusBadge = '';
-    if (ponencia.estado === 'aceptada con correcciones') {
-      statusBadge = '<div class="status-badge">Con correcciones</div>';
-    } else if (ponencia.estado !== 'pendiente') {
-      statusBadge = `<div class="status-badge">${this.capitalizeFirst(ponencia.estado)}</div>`;
-    }
+    const statusBadge = ponencia.estado === EstadoPonencia.ACEPTADA ? 
+      '<div class="status-badge">Aceptada</div>' : '';
 
     return `
       <div class="ponencia-card" data-id="${ponencia.id}">
         <div class="ponencia-info">
           <h3>${ponencia.titulo}</h3>
           <p>${date}</p>
+          <p>${ponencia.autores.map(autor => autor.nombre).join(', ')}</p>
         </div>
-        <span class="ponencia-status status-${ponencia.estado}">
+        <span class="ponencia-status status-${ponencia.estado.toLowerCase()}">
           ${statusBadge}
         </span>
         <div class="ponencia-arrow">
@@ -124,14 +115,12 @@ export class DashboardManager {
   }
 
   private setupNavigationHandlers() {
-    // Manejador para el botón "Mis Datos" en el header
     const misDatosBtn = document.querySelector('#datos-btn');
     misDatosBtn?.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = '/revisor/datosRevisor';
+      window.location.href = '/moderador/datosModerador';
     });
 
-    // Manejador para el botón "Cerrar Sesión" en el header
     const logoutBtn = document.getElementById('logout-btn');
     logoutBtn?.addEventListener('click', async () => {
       try {
@@ -142,11 +131,11 @@ export class DashboardManager {
       }
     });
 
-    // Manejadores para los botones de navegación móvil
+    // Mobile navigation handlers
     const misDatosBtnMobile = document.getElementById('datos-btn-mobile');
     misDatosBtnMobile?.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = '../revisor/datosRevisor';
+      window.location.href = '/moderador/datosModerador';
     });
 
     const logoutBtnMobile = document.getElementById('logout-btn-mobile');
@@ -173,7 +162,11 @@ export class DashboardManager {
       if (ponenciaCard) {
         const ponenciaId = ponenciaCard.getAttribute('data-id');
         if (ponenciaId) {
-          window.location.href = `/revisor/${ponenciaId}`;
+          if (this.currentActiveStatus === 'pendientes') {
+            this.handlePonenciaAction(ponenciaId, EstadoPonencia.ACEPTADA);
+          } else {
+            this.viewPonenciaDetails(ponenciaId);
+          }
         }
       }
     });
@@ -186,8 +179,8 @@ export class DashboardManager {
         const status = card.getAttribute('data-status');
         if (status === 'pendiente') {
           this.currentActiveStatus = 'pendientes';
-        } else if (status === 'evaluada') {
-          this.currentActiveStatus = 'evaluadas';
+        } else if (status === 'aceptada') {
+          this.currentActiveStatus = 'aceptadas';
         }
         
         const groupedPonencias = this.groupPonencias(this.ponenciasData);
@@ -195,14 +188,33 @@ export class DashboardManager {
       });
     });
   }
+
   private async updateWelcomeMessage(userData: any) {
-    console.log('userData', userData);
     const welcomeElement = document.querySelector('.welcome');
     if (welcomeElement) {
-      welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre}!`;
+      welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre || 'Moderador'}!`;
     }
   }
 
+  private async handlePonenciaAction(ponenciaId: string, newState: EstadoPonencia) {
+    try {
+      await this.salaService.updatePonenciaState(ponenciaId, newState);
+      const moderadorId = await this.authService.getUserId();
+      const sala = await this.salaService.getSala(moderadorId);
+      if (sala.integrantes && sala.integrantes.length > 0) {
+        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
+        const groupedPonencias = this.groupPonencias(this.ponenciasData);
+        this.updateUI(groupedPonencias);
+      }
+    } catch (error) {
+      console.error('Error handling ponencia action:', error);
+      alert('Error al procesar la acción');
+    }
+  }
+
+  private viewPonenciaDetails(ponenciaId: string) {
+    window.location.href = `/ponencias/${ponenciaId}`;
+  }
 
   public async initialize(): Promise<void> {
     console.log('initialize');
@@ -223,90 +235,52 @@ export class DashboardManager {
 
     try {
       const userData = await this.userService.getUserData(user.uid);
-      if (userData.rol !== 'revisor') {
-        throw new Error('Usuario no tiene permisos de revisor');
-      }
-      const welcomeElement = document.querySelector('.welcome');
-      if (welcomeElement) {
-        welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre|| "Usuario"}!`;
+      if (userData.rol !== 'moderador') {
+        throw new Error('Usuario no tiene permisos de moderador');
       }
 
       await this.updateWelcomeMessage(userData);
 
-      // Activar por defecto la tarjeta de pendientes
+      // Activate pending card by default
       const pendingCard = document.querySelector('.stat-card[data-status="pendiente"]');
       pendingCard?.classList.add('active');
-      // Setup initial event listeners
+
       this.setupEventListeners();
 
-      // Setup realtime updates
-      this.userService.setupRealtimeUpdates(user.uid, async (updatedUserData) => {
-        if (updatedUserData.ponenciasAsignadas?.length) {
-          this.ponenciasData = await this.revisorService.getPresentations(
-            updatedUserData.ponenciasAsignadas.map(a => a.ponencia)
-          );
+      // Load initial data
+      console.log('user.uid', user.uid);
+      const sala = await this.salaService.getSala(user.uid);
+      console.log('sala', sala);
+      if (sala.integrantes && sala.integrantes.length > 0) {
+        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
+        const groupedPonencias = this.groupPonencias(this.ponenciasData);
+        this.updateUI(groupedPonencias);
+      }
+
+      // Setup realtime updates for the sala
+      this.salaService.setupRealtimeUpdates(user.uid, async (updatedSala) => {
+        if (updatedSala.integrantes?.length) {
+          this.ponenciasData = await this.salaService.getPoenciasBySala(updatedSala.integrantes);
           const groupedPonencias = this.groupPonencias(this.ponenciasData);
           this.updateUI(groupedPonencias);
         } else {
           this.ponenciasData = [];
           this.updateUI({
             pendientes: [],
-            evaluadas: []
+            aceptadas: []
           });
         }
       });
     } catch (error) {
-      console.error('Error initializing revisor page:', error);
-      await this.authService.signOut();
-      window.location.href = '/autenticacion/iniciarSesion';
+      console.error('Error initializing moderador page:', error);
+    //   await this.authService.signOut();
+    //   window.location.href = '/autenticacion/iniciarSesion';
     }
   }
-
 }
 
-export async function initializeRevisorPage(): Promise<void> {
-  const dashboard = new DashboardManager();
-  console.log('initializeRevisorPage');
+export async function initializeSalaPage(): Promise<void> {
+  const dashboard = new SalaManager();
+  console.log('initializeSalaPage');
   await dashboard.initialize();
 }
-
-//Scripts de animacion para aceptar con observaciones--------------------------
-
-  const dialog = document.getElementById("presentation-dialog") as HTMLDialogElement;
-  const closeDialog = document.getElementById("close-dialog") as HTMLButtonElement;
-  const acceptPresentation = document.getElementById("accept-presentation") as HTMLButtonElement;
-  const rejectPresentation = document.getElementById("reject-presentation") as HTMLButtonElement;
-  const acceptWithCorrections = document.getElementById("accept-with-corrections") as HTMLButtonElement;
-  const dialogTitle = document.getElementById("dialog-title") as HTMLHeadingElement;
-  const dialogSummary = document.getElementById("dialog-summary") as HTMLParagraphElement;
-  const commentArea = document.getElementById("comment") as HTMLTextAreaElement;
-  const ratingInput = document.getElementById("rating") as HTMLInputElement;
-
-  interface Presentation {
-    titulo: string;
-    resumen?: string;
-  }
-
-  function openDialog(presentation: Presentation): void {
-    dialogTitle.textContent = presentation.titulo;
-    dialogSummary.textContent = presentation.resumen || "No hay resumen disponible.";
-    commentArea.value = "";
-    ratingInput.value = "";
-    dialog.showModal();
-  }
-
-  closeDialog.addEventListener("click", () => {
-    dialog.close();
-  });
-
-  function handleReview(action: string): void {
-    const comment: string = commentArea.value;
-    const rating: string = ratingInput.value;
-    console.log("Review submitted:", { action, comment, rating });
-    dialog.close();
-  }
-
-  acceptPresentation.addEventListener("click", () => handleReview("accept"));
-  rejectPresentation.addEventListener("click", () => handleReview("reject"));
-  acceptWithCorrections.addEventListener("click", () => handleReview("accept_with_corrections"));
-//----------------------------------------------------------------------------------------------------

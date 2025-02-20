@@ -22,6 +22,13 @@ export class PonenciaService {
         this.db = firebase.getFirestore();
     }
 
+    async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {
+        const ponenciasRef = collection(this.db, this.COLLECTION);
+        const q = query(ponenciasRef, where('id', 'in', ids));
+        const ponenciasSnapshot = await getDocs(q);
+        return ponenciasSnapshot.docs.map((doc) => doc.data() as Ponencia);
+    }
+    
     async getPonencias(): Promise<Ponencia[]> {
         try {
             const ponenciasRef = collection(this.db, this.COLLECTION);
@@ -78,33 +85,6 @@ export class PonenciaService {
         }
     }
 
-    async getPonenciasByUserId(userId: string): Promise<Ponencia[]> {
-        try {
-            const ponenciasRef = collection(this.db, this.COLLECTION);
-            const q = query(ponenciasRef, where(userId, '==', userId));
-            const ponenciasSnapshot = await getDocs(q);
-            const ponencias: Ponencia[] = [];
-            
-            ponenciasSnapshot.forEach(doc => {
-                const data = doc.data();
-                const ponencia: Ponencia = {
-                    ...data,
-                    id: doc.id,
-                    creado: data.creado.toDate(),
-                    evaluaciones: data.evaluaciones ? data.evaluaciones.map((evaluation: any) => ({
-                        ...evaluation,
-                        fecha: evaluation.fecha.toDate()
-                    })) : []
-                } as Ponencia;
-                ponencias.push(ponencia);
-            });
-            
-            return ponencias;
-        } catch (error) {
-            console.error('Error getting ponencias by user ID:', error);
-            throw error;
-        }
-    }
 
 
     async createPonencia(ponencia: Ponencia): Promise<void> {

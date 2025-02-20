@@ -1,267 +1,134 @@
 /* Variables y configuración global */
 :root {
-    --header-height: 60px;
-    --logo-height: 40px;
-    --primary-bg: linear-gradient(135deg, #5170ff 0%, #ff66c4 100%);
-    --text-color: #ffffff;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --hover-bg: rgba(255, 255, 255, 0.05);
-    --transition: all 0.3s ease;
+  --primary-bg: linear-gradient(135deg, #5170ff 0%, #ff66c4 100%);
+  --text-color: #ffffff;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --transition: all 0.3s ease;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text-color);
+  background: var(--primary-bg);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#room-title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px 45px 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+#search-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+#search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+}
+
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  padding: 20px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.table-body .table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  padding: 20px;
+  align-items: center;
+  transition: var(--transition);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table-body .table-row:last-child {
+  border-bottom: none;
+}
+
+.table-body .table-row:hover {
+  background: var(--hover-bg);
+}
+
+.btn-accept {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-accept:hover {
+  background: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .table-header,
+  .table-body .table-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
-  
-  /* Estilos base */
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, sans-serif;
-    color: var(--text-color);
-    background: var(--primary-bg);
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-  
-  /* Container principal */
-  .main-container {
+
+  .btn-accept {
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-    position: relative;
   }
-  
-  /* Sección de logos */
-  .logo-section {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    padding: 15px 25px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    background: rgb(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    width: 100%;
-  }
-  
-  .logo-ujat {
-    height: 45px;
-    width: auto;
-    filter: brightness(0) invert(1);
-  }
-  
-  .logo-dacity,
-  .logo-dev {
-    height: 35px;
-    width: auto;
-    filter: brightness(0) invert(1);
-  }
-  
-  .woman-silhouette {
-    height: 30px;
-    width: auto;
-    filter: brightness(0) invert(1);
-  }
-  
-  /* Contenido principal */
-  .content-section {
-    margin-top: 80px;
-    padding: 20px;
-  }
-  
-  /* Tabla mejorada */
-  .table-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .table-row {
-    display: grid;
-    grid-template-columns: 2fr 3fr 1fr auto;
-    padding: 20px;
-    align-items: center;
-    transition: var(--transition);
-    border-bottom: 1px solid var(--border-color);
-    position: relative;
-  }
-  
-  .table-row:hover {
-    background: var(--hover-bg);
-    transform: translateX(10px);
-  }
-  
-  .table-row:last-child {
-    border-bottom: none;
-  }
-  
-  /* Columnas de la tabla */
-  .column-name {
-    font-weight: 500;
-  }
-  
-  .column-title {
-    color: rgba(255, 255, 255, 0.9);
-  }
-  
-  .column-time {
-    font-family: monospace;
-    font-size: 1.1em;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  /* Botón de revisión mejorado */
-  .btn-review {
-    background: #000;
-    color: #fff;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: var(--transition);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .btn-review:hover {
-    background: #1a1a1a;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Barra de búsqueda mejorada */
-  .search-container {
-    position: relative;
-    width: 300px;
-    margin-left: auto;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 12px 45px 12px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: white;
-    font-size: 0.95rem;
-    transition: var(--transition);
-  }
-  
-  .search-input:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  }
-  
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-  }
-  
-  .search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1.1rem;
-  }
-  
-  /* Animaciones */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .table-row {
-    animation: slideIn 0.3s ease-out forwards;
-  }
-  
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .table-row {
-      grid-template-columns: 1.5fr 2fr 1fr auto;
-      gap: 15px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .logo-section {
-      position: relative;
-      padding: 15px;
-      justify-content: flex-start;
-      overflow-x: auto;
-      background: transparent;
-      backdrop-filter: none;
-    }
-  
-    .content-section {
-      margin-top: 20px;
-    }
-  
-    .search-container {
-      width: 100%;
-      margin: 20px 0;
-    }
-  
-    .table-row {
-      grid-template-columns: 1fr;
-      gap: 10px;
-      padding: 15px;
-    }
-  
-    .btn-review {
-      width: 100%;
-      margin-top: 10px;
-    }
-  }
-  
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
 }
 
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Estilos para Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
-}
-
-/* Asegurarse de que el contenedor tenga el scroll suave */
-.ponencia-review-container {
-    scroll-behavior: smooth;
-}
-
-/* Para contenedores específicos con scroll */
-.content, 
-.evaluations-section,
-.corrections-container {
-    scrollbar-gutter: stable;
-    overflow-y: auto;
-}
