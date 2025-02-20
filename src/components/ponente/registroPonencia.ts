@@ -177,6 +177,7 @@ class PonenciaFormHandler {
                 const wordCount = resumen.trim().split(/\s+/).length;
                 
                 if (wordCount < 300) return 'El resumen debe contener al menos 300 palabras';
+                if (wordCount > 500) return 'El resumen debe contener máximo 500 palabras';
                 return null;
             },
             4: () => {
