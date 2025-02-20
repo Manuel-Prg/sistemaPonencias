@@ -33,6 +33,15 @@ export class AuthService {
     }
   }
 
+
+  async getUserId(): Promise<string> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    return user.uid;
+  }
+  
   async login({ email, password }: AuthCredentials): Promise<AuthResponse> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);

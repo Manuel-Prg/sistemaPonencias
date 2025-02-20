@@ -33,16 +33,16 @@ export class RevisorService {
             const data = doc.data();
             
             // Validar el campo creado
-            const creado = data.creado && 'toDate' in data.creado 
-                ? data.creado.toDate() 
-                : new Date(); // o null, dependiendo de tu lógica de negocio
+            const creado = data.creado instanceof Timestamp
+                ? data.creado.toDate()
+                : data.creado;
 
             // Validar y transformar evaluaciones
             const evaluaciones = data.evaluaciones?.map((evaluation: any) => ({
                 ...evaluation,
-                fecha: evaluation.fecha && 'toDate' in evaluation.fecha 
+                fecha: evaluation.fecha instanceof Timestamp
                     ? evaluation.fecha.toDate()
-                    : new Date() // o null
+                    : evaluation.fecha
             })) || [];
 
             return {

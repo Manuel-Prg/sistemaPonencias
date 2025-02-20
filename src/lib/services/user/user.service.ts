@@ -25,6 +25,8 @@ export class UserService {
     });
   }
 
+  
+
   async checkUserExists(uid: string): Promise<boolean> {
     const docRef = doc(this.db, 'users', uid);
     const docSnap = await getDoc(docRef);

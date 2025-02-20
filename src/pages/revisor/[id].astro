@@ -192,11 +192,61 @@ const { ponencia } = Astro.props;
         </div>
       </div>
     </div>
+    <!-- Agregar esto justo antes del cierre del body en [id].astro -->
+<div id="dialogOverlay" class="dialog-overlay" style="display: none;">
+  <div class="dialog-content">
+    <h3 id="dialogTitle">Título del Diálogo</h3>
+    <textarea 
+      id="dialogComments" 
+      placeholder="Ingrese sus comentarios aquí..."
+      rows="4"
+    ></textarea>
+    <div class="dialog-buttons">
+      <button id="dialogAccept" class="btn btn-primary">Aceptar</button>
+      <button id="dialogCancel" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.dialog-content textarea {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.5rem;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+</style>
 
     <script>
         import { PonenciaHandlers } from "../../components/revisor/ponencia.ts";
         document.addEventListener('DOMContentLoaded', () => {
-          const ponenciaId = '${ponencia.id}';
+          const ponenciaId = document.querySelector('[data-ponencia-id]')?.getAttribute('data-ponencia-id') || '';
           new PonenciaHandlers(ponenciaId);
         });
       </script>
