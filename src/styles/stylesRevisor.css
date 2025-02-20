@@ -27,7 +27,7 @@
 .logos-container {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .buttons-wrapper {
@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 20px;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
@@ -551,7 +551,6 @@
   width: 18px;
   height: 18px;
   stroke: white;
-  fill: none;
   stroke-width: 2;
 }
 
