@@ -168,7 +168,7 @@ export class AdminSalas {
                 titulo: "Sala 1",
                 fecha: "Jueves 17 Marzo, 2025",
                 integrantes: 4,
-                tema: "Lorem ipsum",
+                tema: "El hot dog esta mas cerca del taco o del sándwich?",
                 estado: "En curso",
                 foto: "https://lh3.googleusercontent.com/a/ACg8ocI_oElKWaIU8BrxJgz20QqikritEtrvNXaoUDmIRzktH5Gfdgmt=s96-c",
                 tiempoTranscurrido: "10 min",
@@ -178,9 +178,9 @@ export class AdminSalas {
                 titulo: "Sala 2",
                 fecha: "Jueves 18 Marzo, 2025",
                 integrantes: 3,
-                tema: "Dolor sit amet",
+                tema: "¿Que tan fuerte es Steve de Minecraft?",
                 estado: "En curso",
-                foto: "",
+                foto: "https://anime.fate-go.us/ep7-tv/assets/img/character/face/img_face_quetzal03.png",
                 tiempoTranscurrido: "5 min",
             },
             // Agrega más objetos si lo requieres
@@ -236,7 +236,6 @@ export class AdminSalas {
             this.elements.salasGrid.appendChild(card);
         });
     }
-
     private createSalaCard(sala: Sala): HTMLElement {
         const card = document.createElement("div");
         card.className = "card-sala";
@@ -244,24 +243,24 @@ export class AdminSalas {
         // Convertimos el timestamp en una fecha legible
 
         card.innerHTML = `
-            <div class="sala-header">
-                <h2>${this.escapeHtml(sala.titulo)}</h2>
-                <div class="header-avatars">
-                    <img src="${this.escapeHtml(sala.foto)}">
+                <div class="sala-header">
+                    <h2>${this.escapeHtml(sala.titulo)}</h2>
+                    <div class="header-avatars">
+                        <img src="${this.escapeHtml(sala.foto || '/default-avatar.png')}" alt="Sala avatar">
+                    </div>
                 </div>
-            </div>
-            <div class="sala-body">
-                <p>${this.escapeHtml(sala.fecha)}</p>
-                <div class="sala-row">
-                    <span>Integrantes: ${sala.integrantes}</span>
-                    <span>Tema: ${this.escapeHtml(sala.tema)}</span>
+                <div class="sala-body">
+                    <p class="sala-date">${this.escapeHtml(sala.fecha)}</p>
+                    <div class="sala-row sala-details">
+                        <span>Integrantes: ${sala.integrantes}</span>
+                        <span>Tema: ${this.escapeHtml(sala.tema)}</span>
+                    </div>
+                    <div class="sala-row sala-status">
+                        <span>Estado de reunión: ${this.escapeHtml(sala.estado)}</span>
+                        <span>Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
+                    </div>
                 </div>
-                <div class="sala-row">
-                    <span>Estado de reunión: ${this.escapeHtml(sala.estado)}</span>
-                    <span>Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
-                </div>
-            </div>
-        `;
+            `;
         return card;
     }
 

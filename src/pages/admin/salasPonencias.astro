@@ -9,29 +9,80 @@ import '../scripts/AdminSalasPanel';
             <h2 class="window-title">Panel de Administración</h2>
         </div>
         <div class="window-content">
-            <div class="search-container">
-                <div class="admin-controls">
-                    <div class="search-container">
-                        <input type="text" id="searchUsers" placeholder="Buscar salas...">
-                        <button class="search-btn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </button>
-                    </div>
+            <div class="admin-controls">
+                <div class="search-container">
+                    <input type="text" id="searchUsers" placeholder="Buscar salas...">
+                    <button class="search-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                    </button>
                 </div>
-                <button class="search-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
             </div>
+            
             <div id="salasGrid" class="salas-grid"></div>
         </div>
     </div>
 </AdminLayout>
+
+<style>
+    /* Additional responsive styles */
+    @media (max-width: 768px) {
+        .salas-grid {
+            grid-template-columns: 1fr;
+            padding: 0 0.5rem;
+            gap: 1rem;
+        }
+        
+        .search-container {
+            width: 100%;
+        }
+        
+        .window-content {
+            padding: 1rem;
+        }
+        
+        /* Improved mobile styling for sala cards */
+        :global(.card-sala .sala-row) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        :global(.card-sala .sala-row span) {
+            width: 100%;
+            max-width: 100%;
+            margin-right: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+    }
+    
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .salas-grid {
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        }
+        
+        /* Tablet adjustments for sala rows */
+        :global(.card-sala .sala-row) {
+            flex-wrap: wrap;
+        }
+        
+        :global(.card-sala .sala-row span) {
+            flex: 1 0 auto;
+            min-width: 48%;
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    /* Fix for search container */
+    .admin-controls .search-container {
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
 <script src="../scripts/AdminSalasPanel.ts"></script>

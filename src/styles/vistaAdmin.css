@@ -343,6 +343,7 @@
   padding: 1.5rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  width: 100%;
 }
 .card-sala:hover {
   transform: translateY(-5px);
@@ -351,12 +352,28 @@
 .sala-header img{
   border-radius: 50%;
   width: 40px;
+  height: 40px;
+  object-fit: cover;
 }
 .sala-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
+.sala-date {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.sala-row {
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
 .sala-body {
   display: flex;
   flex-direction: column;
@@ -368,15 +385,18 @@
   align-items: center;
 }
 .sala-row span {
-  border: 2px solid #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
   padding: 0.3rem 0.8rem;
   display: inline-block;
   font-size: 0.95rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-right: 0.5rem;
+  flex: 1;
+  text-align: center;
 }
-
 
 .user-card:hover {
   transform: translateY(-5px);
@@ -675,6 +695,21 @@
     width: 16px;
     height: 16px;
   }
+  .salas-grid {
+        grid-template-columns: 1fr;
+  }
+    
+  .sala-row {
+        flex-direction: column;
+        align-items: stretch;
+  }
+    
+  .sala-row span {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+        box-sizing: border-box;
+  }
 }
 
 @media (max-width: 480px) {
@@ -707,7 +742,7 @@
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .users-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 
   .main-content {
