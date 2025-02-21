@@ -132,3 +132,18 @@ body {
   }
 }
 
+.estado-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.estado-pendiente {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.estado-aceptada {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
