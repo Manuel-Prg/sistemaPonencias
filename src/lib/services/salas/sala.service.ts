@@ -27,7 +27,7 @@ export class SalaService {
         return sala;
     }
 
-    async getPoenciasBySala(ponencias: string[]): Promise<Ponencia[]> {
+    async getPonenciasBySala(ponencias: string[]): Promise<Ponencia[]> {
         return this.ponenciaService.getPonenciasByIds(ponencias);
     }
 
@@ -52,7 +52,7 @@ export class SalaService {
                 // First get the sala ID from the user document
                 const userDocRef = doc(this.db, 'users', moderadorId);
                 const userDocSnap = await getDoc(userDocRef);
-                const salaId = userDocSnap.data()?.salaAsiganada;
+                const salaId = userDocSnap.data()?.salaAsignada;
 
                 if (!salaId) {
                     throw new Error('Sala no encontrada');
@@ -133,7 +133,7 @@ export class SalaService {
     }> {
         try {
             const sala = await this.getSalaById(salaId);
-            const ponencias = await this.getPoenciasBySala(sala.integrantes || []);
+            const ponencias = await this.getPonenciasBySala(sala.integrantes || []);
             
             return {
                 total: ponencias.length,

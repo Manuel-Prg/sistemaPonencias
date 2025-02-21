@@ -18,23 +18,27 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
 </HeaderLayout>
 <body>
     <div class="main-container">
-        <h1 id="room-title">[Titulo]</h1>
+        <h2 id="room-title">[Titulo]</h2>
         
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Buscar ponencias...">
             <i class="fas fa-search search-icon"></i>
         </div>
         
-        <div class="table-container">
-            <div class="table-header">
-                <div class="header-cell">Título</div>
-                <div class="header-cell">Autor</div>
-                <div class="header-cell">Acción</div>
-            </div>
-            <div class="table-body">
-              
-            </div>
-        </div>
+        <table class="table-container">
+            <thead class="table-header">
+                <tr >
+                    <th>Título</th>
+                    <th>Autores</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+            </thead>
+            <tbody class="table-body">
+
+            </tbody>
+        </table>
     </div>
     <script>
         import { initializeSalaPage } from '../../components/moderador/dashboard';

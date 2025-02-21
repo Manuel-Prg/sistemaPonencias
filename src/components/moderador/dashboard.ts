@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    handlePonenciaClick: (ponenciaId: string, estado: string) => void;
+  }
+}
+
 import { SalaService } from '../../lib/services/salas/sala.service';
 import { AuthService } from '../../lib/services/auth/auth.service';
 import { UserService } from '../../lib/services/user/user.service';
@@ -5,17 +11,11 @@ import type { Ponencia } from '../../lib/models/ponencia';
 import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
 
-interface GroupedPonencias {
-  pendientes: Ponencia[];
-  aceptadas: Ponencia[];
-}
-
 export class SalaManager {
   private salaService: SalaService;
   private authService: AuthService;
   private userService: UserService;
   private ponenciasData: Ponencia[] = [];
-  private currentActiveStatus: 'pendientes' | 'aceptadas' = 'pendientes';
 
   constructor() {
     this.salaService = new SalaService();
@@ -23,94 +23,47 @@ export class SalaManager {
     this.userService = new UserService();
   }
 
-  private groupPonencias(ponencias: Ponencia[]): GroupedPonencias {
-    return {
-      pendientes: ponencias.filter(p => p.estado === EstadoPonencia.PENDIENTE),
-      aceptadas: ponencias.filter(p => p.estado === EstadoPonencia.ACEPTADA)
-    };
-  }
-
-  private updateUI(groupedPonencias: GroupedPonencias) {
-    const board = document.querySelector('.board');
-    if (board) {
-      board.innerHTML = `
-        <div class="board-column">
-          <div class="column-header">
-            <h3>${this.capitalizeFirst(this.currentActiveStatus)}</h3>
-            <span class="counter" id="${this.currentActiveStatus}-counter">
-              ${groupedPonencias[this.currentActiveStatus].length}
-            </span>
-          </div>
-          <div class="column-content" id="${this.currentActiveStatus}-column">
-            ${this.renderPonencias(groupedPonencias[this.currentActiveStatus])}
-          </div>
-        </div>
-      `;
+  private updateUI(ponencias: Ponencia[]) {
+    const tableBody = document.querySelector('.table-body');
+    if (tableBody) {
+      tableBody.innerHTML = this.renderPonencias(ponencias);
     }
-
-    // Update stats cards counters
-    const pendienteCount = document.getElementById('pendiente-count');
-    const aceptadaCount = document.getElementById('aceptada-count');
-
-    if (pendienteCount) {
-      pendienteCount.textContent = groupedPonencias.pendientes.length.toString();
-    }
-    if (aceptadaCount) {
-      aceptadaCount.textContent = groupedPonencias.aceptadas.length.toString();
-    }
-
-    // Update active state of stat cards
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-      const status = card.getAttribute('data-status');
-      if (status === 'pendiente' && this.currentActiveStatus === 'pendientes') {
-        card.classList.add('active');
-      } else if (status === 'aceptada' && this.currentActiveStatus === 'aceptadas') {
-        card.classList.add('active');
-      } else {
-        card.classList.remove('active');
-      }
-    });
-  }
-
-  private capitalizeFirst(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   private renderPonencias(ponencias: Ponencia[]): string {
     if (ponencias.length === 0) {
-      return '<p class="empty-message">No hay ponencias en esta categoría</p>';
+      return '<tr><td colspan="4" class="empty-message">No hay ponencias disponibles</td></tr>';
     }
     
-    return ponencias.map(ponencia => this.createPonenciaCard(ponencia)).join('');
+    return ponencias.map(ponencia => this.createPonenciaRow(ponencia)).join('');
   }
 
-  private createPonenciaCard(ponencia: Ponencia): string {
+  private createPonenciaRow(ponencia: Ponencia): string {
     const date = new Date(ponencia.creado).toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
 
-    const statusBadge = ponencia.estado === EstadoPonencia.ACEPTADA ? 
-      '<div class="status-badge">Aceptada</div>' : '';
+    const estadoClass = ponencia.estado.toLowerCase();
+    const estadoTexto = ponencia.estado === EstadoPonencia.ACEPTADA ? 'Aceptada' : 'Pendiente';
 
     return `
-      <div class="ponencia-card" data-id="${ponencia.id}">
-        <div class="ponencia-info">
-          <h3>${ponencia.titulo}</h3>
-          <p>${date}</p>
-          <p>${ponencia.autores.map(autor => autor.nombre).join(', ')}</p>
-        </div>
-        <span class="ponencia-status status-${ponencia.estado.toLowerCase()}">
-          ${statusBadge}
-        </span>
-        <div class="ponencia-arrow">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </div>
-      </div>
+      <tr class="ponencia-row" data-id="${ponencia.id}">
+        <td>${ponencia.titulo}</td>
+        <td>${ponencia.autores.map(autor => autor.nombre).join(', ')}</td>
+        <td>${date}</td>
+        <td>
+          <span class="estado-badge estado-${estadoClass}">
+            ${estadoTexto}
+          </span>
+        </td>
+        <td>
+          <button class="action-btn" onclick="handlePonenciaClick('${ponencia.id}', '${ponencia.estado}')">
+            ${ponencia.estado === EstadoPonencia.PENDIENTE ? 'Aceptar' : 'Ver detalles'}
+          </button>
+        </td>
+      </tr>
     `;
   }
 
@@ -150,61 +103,18 @@ export class SalaManager {
     });
   }
 
-  private setupEventListeners() {
-    this.setupNavigationHandlers();
-    this.setupStatCardHandlers();
-
-    // Ponencia card click handler
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const ponenciaCard = target.closest('.ponencia-card') as HTMLElement;
-      
-      if (ponenciaCard) {
-        const ponenciaId = ponenciaCard.getAttribute('data-id');
-        if (ponenciaId) {
-          if (this.currentActiveStatus === 'pendientes') {
-            this.handlePonenciaAction(ponenciaId, EstadoPonencia.ACEPTADA);
-          } else {
-            this.viewPonenciaDetails(ponenciaId);
-          }
-        }
-      }
-    });
-  }
-
-  private setupStatCardHandlers() {
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const status = card.getAttribute('data-status');
-        if (status === 'pendiente') {
-          this.currentActiveStatus = 'pendientes';
-        } else if (status === 'aceptada') {
-          this.currentActiveStatus = 'aceptadas';
-        }
-        
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
-      });
-    });
-  }
-
-  private async updateWelcomeMessage(userData: any) {
-    const welcomeElement = document.querySelector('.welcome');
-    if (welcomeElement) {
-      welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre || 'Moderador'}!`;
-    }
-  }
-
-  private async handlePonenciaAction(ponenciaId: string, newState: EstadoPonencia) {
+  private async handlePonenciaAction(ponenciaId: string, currentState: EstadoPonencia) {
     try {
-      await this.salaService.updatePonenciaState(ponenciaId, newState);
-      const moderadorId = await this.authService.getUserId();
-      const sala = await this.salaService.getSala(moderadorId);
-      if (sala.integrantes && sala.integrantes.length > 0) {
-        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
+      if (currentState === EstadoPonencia.PENDIENTE) {
+        await this.salaService.updatePonenciaState(ponenciaId, EstadoPonencia.ACEPTADA);
+        const moderadorId = await this.authService.getUserId();
+        const sala = await this.salaService.getSala(moderadorId);
+        if (sala.integrantes && sala.integrantes.length > 0) {
+          this.ponenciasData = await this.salaService.getPonenciasBySala(sala.integrantes);
+          this.updateUI(this.ponenciasData);
+        }
+      } else {
+        this.viewPonenciaDetails(ponenciaId);
       }
     } catch (error) {
       console.error('Error handling ponencia action:', error);
@@ -216,9 +126,14 @@ export class SalaManager {
     window.location.href = `/ponencias/${ponenciaId}`;
   }
 
+  private async updateWelcomeMessage(userData: any) {
+    const welcomeElement = document.querySelector('#room-title');
+    if (welcomeElement) {
+      welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre}, Esta es la Sala 1!`;
+    }
+  }
+
   public async initialize(): Promise<void> {
-    console.log('initialize');
-    
     const user = await new Promise<FirebaseUser | null>((resolve) => {
       const unsubscribe = this.authService.onAuthStateChanged((user) => {
         unsubscribe();
@@ -240,47 +155,38 @@ export class SalaManager {
       }
 
       await this.updateWelcomeMessage(userData);
-
-      // Activate pending card by default
-      const pendingCard = document.querySelector('.stat-card[data-status="pendiente"]');
-      pendingCard?.classList.add('active');
-
-      this.setupEventListeners();
+      this.setupNavigationHandlers();
 
       // Load initial data
-      console.log('user.uid', user.uid);
       const sala = await this.salaService.getSala(user.uid);
-      console.log('sala', sala);
       if (sala.integrantes && sala.integrantes.length > 0) {
-        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
+        console.log(sala.integrantes);
+        this.ponenciasData = await this.salaService.getPonenciasBySala(sala.integrantes);
+        this.updateUI(this.ponenciasData);
       }
 
       // Setup realtime updates for the sala
       this.salaService.setupRealtimeUpdates(user.uid, async (updatedSala) => {
         if (updatedSala.integrantes?.length) {
-          this.ponenciasData = await this.salaService.getPoenciasBySala(updatedSala.integrantes);
-          const groupedPonencias = this.groupPonencias(this.ponenciasData);
-          this.updateUI(groupedPonencias);
+          this.ponenciasData = await this.salaService.getPonenciasBySala(updatedSala.integrantes);
+          this.updateUI(this.ponenciasData);
         } else {
           this.ponenciasData = [];
-          this.updateUI({
-            pendientes: [],
-            aceptadas: []
-          });
+          this.updateUI([]);
         }
       });
+
+      // Setup global handler for ponencia actions
+      window.handlePonenciaClick = (ponenciaId: string, estado: string) => {
+        this.handlePonenciaAction(ponenciaId, estado as EstadoPonencia);
+      };
     } catch (error) {
       console.error('Error initializing moderador page:', error);
-    //   await this.authService.signOut();
-    //   window.location.href = '/autenticacion/iniciarSesion';
     }
   }
 }
 
 export async function initializeSalaPage(): Promise<void> {
   const dashboard = new SalaManager();
-  console.log('initializeSalaPage');
   await dashboard.initialize();
 }

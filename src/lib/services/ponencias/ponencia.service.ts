@@ -24,8 +24,10 @@ export class PonenciaService {
 
     async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {
         const ponenciasRef = collection(this.db, this.COLLECTION);
+        console.log(ids)
         const q = query(ponenciasRef, where('id', 'in', ids));
         const ponenciasSnapshot = await getDocs(q);
+        console.log(ponenciasSnapshot.docs.map((doc) => doc.data()))
         return ponenciasSnapshot.docs.map((doc) => doc.data() as Ponencia);
     }
     
