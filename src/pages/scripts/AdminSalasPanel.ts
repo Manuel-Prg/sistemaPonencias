@@ -162,37 +162,6 @@ export class AdminSalas {
         }
     }
 
-    /* private async fetchSalas(): Promise<void> {
-        const testSalasData: Sala[] = [
-            {
-                id: "1",
-                titulo: "Sala 1",
-                fecha: "Jueves 17 Marzo, 2025",
-                integrantes: 4,
-                tema: "Lorem ipsum",
-                estado: "En curso",
-                foto: "https://lh3.googleusercontent.com/a/ACg8ocI_oElKWaIU8BrxJgz20QqikritEtrvNXaoUDmIRzktH5Gfdgmt=s96-c",
-                tiempoTranscurrido: "10 min",
-            },
-            {
-                id: "2",
-                titulo: "Sala 2",
-                fecha: "Jueves 18 Marzo, 2025",
-                integrantes: 3,
-                tema: "Dolor sit amet",
-                estado: "En curso",
-                foto: "",
-                tiempoTranscurrido: "5 min",
-            },
-            // Agrega más objetos si lo requieres
-        ];
-
-        // Simulamos que "this.salas" se llena con los datos de ejemplo
-        this.salas = testSalasData;
-        // Luego, llamamos a la función de filtrado y renderizado
-        this.applyFiltersAndRender();
-    } */
-
     private async fetchSalas(): Promise<void> {
         try {
             const salasSnapshot = await getDocs(collection(this.db, "salas"));
@@ -226,7 +195,6 @@ export class AdminSalas {
         }
         this.renderSalas(filteredSalas);
     }
-
     private renderSalas(salas: (Sala & { [key: string]: any })[]): void {
         if (!this.elements.salasGrid) {
             console.warn("No se encontró el elemento salasGrid para renderizar las salas.");
@@ -238,7 +206,6 @@ export class AdminSalas {
             this.elements.salasGrid.appendChild(card);
         });
     }
-
     private createUserPhotos(integrantes: string[]): HTMLElement {
         const container = document.createElement("div");
         container.className = "user-photos-container";
@@ -264,8 +231,6 @@ export class AdminSalas {
 
         return container;
     }
-
-
     private createSalaCard(sala: Sala): HTMLElement {
         const card = document.createElement("div");
         const usrFoto = document.createElement("div");
@@ -295,23 +260,56 @@ export class AdminSalas {
                     <span>Tema: ${this.escapeHtml(sala.tema)}</span>
                 </div>
                 <div class="sala-row">
-                    <span>Estado de reunión: ${this.escapeHtml(sala.estado)}</span>
-                    <span>Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
+                    <span>Estado de la sala: ${this.escapeHtml(sala.estado)}</span>
+                    <span class="tiempo-transcurrido">Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
                 </div>
             </div>
         `;
         const headerAvatars = card.querySelector(".header-avatars");
+        const tiempoTranscurridoEl = card.querySelector(".tiempo-transcurrido") as HTMLElement;
+        this.startElapsedTimeCounter(sala, tiempoTranscurridoEl);
         if (headerAvatars) {
             headerAvatars.appendChild(fotosIntegrantes);
         }
+
         return card;
     }
+
+    private isSameDay(date1: Date, date2: Date): boolean {
+        return date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate();
+    }
+
+    private startElapsedTimeCounter(sala: Sala, displayElement: HTMLElement): void {
+        const updateElapsedTime = () => {
+            const now = new Date();
+            const salaStart = sala.fecha.toDate();
+
+            if (this.isSameDay(now, salaStart) && now > salaStart) {
+                const diffMs = now.getTime() - salaStart.getTime();
+                const totalMinutes = Math.floor(diffMs / 60000);
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = totalMinutes % 60;
+                displayElement.textContent = `${hours}h ${minutes}m`;
+            } else {
+                displayElement.textContent = `0h 0m`;
+            }
+        };
+
+        updateElapsedTime();
+        const timerId = setInterval(updateElapsedTime, 60000);
+    }
+
 
     private generateInitialAvatar(
         nombre: string = "?",
         backgroundColor: string = "#007bff",
         size: number = 64
     ): string {
+        const randomColor = '#' + Math.floor(Math.random() * 0xffffff)
+            .toString(16)
+            .padStart(6, '0');
         const canvas = document.createElement("canvas");
         canvas.width = size;
         canvas.height = size;
@@ -320,20 +318,22 @@ export class AdminSalas {
         if (!ctx) {
             throw new Error("No se pudo obtener el contexto 2D del canvas");
         }
-
-        // Fondo cuadrado (puedes usar arc para un fondo circular si lo prefieres)
-        ctx.fillStyle = backgroundColor;
+        ctx.fillStyle = randomColor;
         ctx.fillRect(0, 0, size, size);
+        const r = parseInt(randomColor.slice(1, 3), 16);
+        const g = parseInt(randomColor.slice(3, 5), 16);
+        const b = parseInt(randomColor.slice(5, 7), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        ctx.fillRect(0, 0, size, size);
+        const textColor = luminance > 0.5 ? "#000" : "#fff";
 
-        // Letra blanca, centrada
         const initial = nombre.charAt(0).toUpperCase() || "?";
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = textColor;
         ctx.font = `${Math.floor(size * 0.5)}px sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(initial, size / 2, size / 2);
 
-        // Convertimos el canvas a Data URL
         return canvas.toDataURL();
     }
 

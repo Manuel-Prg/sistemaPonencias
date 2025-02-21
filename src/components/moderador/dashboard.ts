@@ -241,13 +241,11 @@ export class SalaManager {
 
       await this.updateWelcomeMessage(userData);
 
-      // Activate pending card by default
       const pendingCard = document.querySelector('.stat-card[data-status="pendiente"]');
       pendingCard?.classList.add('active');
 
       this.setupEventListeners();
 
-      // Load initial data
       console.log('user.uid', user.uid);
       const sala = await this.salaService.getSala(user.uid);
       console.log('sala', sala);
@@ -257,7 +255,6 @@ export class SalaManager {
         this.updateUI(groupedPonencias);
       }
 
-      // Setup realtime updates for the sala
       this.salaService.setupRealtimeUpdates(user.uid, async (updatedSala) => {
         if (updatedSala.integrantes?.length) {
           this.ponenciasData = await this.salaService.getPoenciasBySala(updatedSala.integrantes);
@@ -273,8 +270,6 @@ export class SalaManager {
       });
     } catch (error) {
       console.error('Error initializing moderador page:', error);
-    //   await this.authService.signOut();
-    //   window.location.href = '/autenticacion/iniciarSesion';
     }
   }
 }

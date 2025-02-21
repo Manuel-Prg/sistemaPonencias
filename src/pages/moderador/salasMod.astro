@@ -3,7 +3,6 @@ import '../../styles/salasModStyles.css';
 import HeaderLayout from "../../components/shared/headerLayout.astro";
 ---
 
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -14,17 +13,14 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
 </head>
-<HeaderLayout>
-</HeaderLayout>
+<HeaderLayout/>
 <body>
     <div class="main-container">
         <h1 id="room-title">[Titulo]</h1>
-        
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Buscar ponencias...">
             <i class="fas fa-search search-icon"></i>
         </div>
-        
         <div class="table-container">
             <div class="table-header">
                 <div class="header-cell">Título</div>
@@ -32,7 +28,6 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
                 <div class="header-cell">Acción</div>
             </div>
             <div class="table-body">
-              
             </div>
         </div>
     </div>
