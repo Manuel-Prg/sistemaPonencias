@@ -8,30 +8,40 @@
 
 .container {
   display: flex;
-  justify-content: center;
   gap: 2rem;
   padding: 2rem;
-  height: calc(100vh - 100px);
-  width: 100%;
-  max-width: 1800px;
+  min-height: calc(100vh - 80px);
+  max-width: 1600px;
   margin: 0 auto;
-  transition: all 0.3s ease-in-out;
 }
 
 /* Tarjeta de ponencia (izquierda) */
 /* Tarjeta de ponencia (centrada por defecto) */
-.ponencia-card {
-  flex: 1;
-  background: rgba(81, 112, 255, 0.2);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.ponencia-card,
+.comentarios-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  max-width: 60%;
-  transition: all 0.3s ease-in-out;
-  margin: 0 auto;
+}
+/* Tarjeta principal */
+.ponencia-card {
+  flex: 1;
+  min-width: 0; /* Evita desbordamiento */
+}
+/* Tarjeta de observaciones */
+.comentarios-card {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.container.with-comments {
+  justify-content: space-between;
+  padding: 0 2rem;
 }
 
 /* Ajuste fino para el espaciado entre elementos */
@@ -39,14 +49,14 @@
   margin-top: 0.75rem;
 }
 .evaluaciones-section {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1.5rem;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .evaluaciones-section h3 {
-  font-size: 1.1rem;
+  color: #fff;
+  font-size: 1.2rem;
   margin-bottom: 1rem;
-  color: #e8eaed;
 }
 .evaluaciones-list {
   display: flex;
@@ -66,11 +76,11 @@
 .evaluacion-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.8rem;
 }
 
 .evaluacion-estado {
+  color: #8A9CFF;
   font-weight: 500;
 }
 
@@ -94,6 +104,12 @@
 
 .correcciones-texto {
   line-height: 1.5;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .btn:hover {
@@ -106,40 +122,86 @@
   border-radius: 12px;
   padding: 1.5rem;
   margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 .estado-actual {
-  margin-bottom: 1.0rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .estado-actual h3 {
-  font-size: 1.1rem;
+  color: #fff;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: #e8eaed;
 }
 
 .estado-badge {
   display: inline-block;
+  background: rgba(82, 109, 254, 0.2);
+  color: #8A9CFF;
   padding: 0.5rem 1rem;
-  background: rgba(81, 112, 255, 0.2);
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: 20px;
+  font-size: 0.9rem;
 }
 
 /* Área de observaciones (derecha, más estrecha) */
 .comentarios-card {
-  flex: 0.8; /* Reducido de 1 */
-  background: rgba(81, 112, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 2rem;
-  display: none;
+  width: 400px;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+  display: flex;
   flex-direction: column;
-  height: 100%;
-  max-width: 35%; /* Reducido del 45% original */
+  gap: 1.5rem;
   opacity: 0;
-  transform: translateX(50px);
-  transition: all 0.3s ease-in-out;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
 }
+
+.comentarios-card textarea {
+  width: 100%;
+  min-height: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.comentarios-card textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.comentarios-card .dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.comentarios-card .dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.ponencia-card.with-comments {
+  max-width: 60%;
+  transform: translateX(-5%);
+  transition: all 0.3s ease-in-out;
+  padding: 0 2rem;
+}
+
 .ponencia-card .title {
   font-size: 1.5rem;
   font-weight: 500;
@@ -161,34 +223,27 @@
   margin-bottom: 0.5rem;
 }
 .comentarios-card.visible {
-  display: flex;
   opacity: 1;
-  transform: translateX(0);
-  margin-bottom: 40%;
+  transform: translateX(-100%);
 }
 
 .title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
   color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 1.0rem;
 }
 
 .content {
   flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
   overflow-y: auto;
-  color: white;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  padding-right: 1rem;
 }
 
 .resumen {
   margin-bottom: 1rem;
-  line-height: 1.0;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .estado {
@@ -249,33 +304,24 @@
   margin-bottom: 1rem;
 }
 
-.dialog-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-}
-
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .container {
-    flex-direction: column;
     padding: 1rem;
   }
 
   .ponencia-card, .comentarios-card {
-    max-width: 100% !important;
-    height: auto;
-    min-height: 50vh;
     padding: 1.5rem;
   }
 
@@ -286,6 +332,13 @@
   .content, .evaluaciones h3 {
       font-size: 0.9rem;
       padding: 1rem;
+  }
+  .comentarios-card {
+    transform: translateY(50px);
+  }
+
+  .comentarios-card.visible {
+    transform: translateY(0);
   }
 
   .dialog-overlay {
@@ -327,6 +380,14 @@
   .evaluacion-header {
     flex-direction: column;
     gap: 0.5rem;
+  }
+  .action-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn {
+    width: 100%;
   }
 }
 
@@ -413,24 +474,6 @@ select:active,
 select:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
-
-.action-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.btn {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-}
-
 .btn-primary {
   background-color: #4CAF50;
   color: white;
@@ -450,26 +493,46 @@ select:hover {
   transform: translateY(0);
 }
 
+.btn-accept {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-reject {
+  background-color: #F44336;
+  color: white;
+}
+.btn-accept-with-obs {
+  background-color: #2196F3;
+  color: white;
+}
+
 textarea {
   width: 100%;
-  height: 150px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  min-height: 200px;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  border-radius: 16px;
+  padding: 1rem;
   color: white;
-  font-size: 14px;
+  font-size: 1rem;
   resize: vertical;
-  margin-top: 1rem;
-  transition: all 0.3s;
+  margin: 1rem 0;
 }
 
 textarea:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
 }
-
+/* Botones */
+.action-buttons,
+.dialog-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 1rem;
+}
 @media (max-width: 768px) {
   .card {
     padding: 20px;
@@ -515,6 +578,88 @@ textarea:focus {
   object-fit: contain;
 }
 
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  
+  .comentarios-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    z-index: 100;
+  }
+
+  .comentarios-card.visible {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo-ujat {
+  height: 40px;
+}
+
+.logo-dacity {
+  height: 36px;
+}
+
+.woman-silhouette {
+  height: 32px;
+}
+
+.logo-dev {
+  height: 30px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.header-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #e8eaed;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 @media (max-width: 768px) {
   .logos-container {
     gap: 1rem;
@@ -673,5 +818,11 @@ textarea:focus {
 
   .action-btn {
       width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .backdrop.visible {
+    display: block;
   }
 }

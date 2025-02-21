@@ -6,23 +6,23 @@ export interface Ponencia {
     resumen: string;
     autores: DataPonente[];
     creado: Date;
-    estado: EstadoPonencia;
+    estado: string;
     evaluaciones: Evaluacion[];
     userId: string;
-  }
+}
 
-  export interface Evaluacion {
+export interface Evaluacion {
     revisor: string;
-    evaluacion: EstadoPonencia;
+    evaluacion: string;
     correcciones?: string;
     fecha: Date;
-  }
+}
   
-  export interface PonenciaAsignada {
+export interface PonenciaAsignada {
     ponencia: string;
-    estado: EstadoPonencia;
+    estado: string;
     comentarios?: string;
-  }
+}
 
 export enum EstadoPonencia {
     PENDIENTE = 'pendiente',

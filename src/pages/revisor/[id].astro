@@ -1,5 +1,4 @@
 ---
-// src/pages/ponencias/[id].astro
 import '../../styles/stylesRevisarPonencia.css';
 import '../../styles/logos.css';
 import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
@@ -23,30 +22,16 @@ interface Props {
 const { ponencia } = Astro.props;
 ---
 
-<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Revisar Ponencia - {ponencia.titulo}</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/favicon/favicon_io/favicon.ico"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicon/favicon_io/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/favicon/favicon_io/favicon-16x16.png"
-    />
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png" />
     <style>
+      /* Estilos para scrollbars */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -73,22 +58,21 @@ const { ponencia } = Astro.props;
         scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
       }
 
-      /* Asegurarse de que el contenedor tenga el scroll suave */
       .ponencia-review-container {
         scroll-behavior: smooth;
       }
 
-      /* Para contenedores específicos con scroll */
       .content,
       .evaluations-section,
       .corrections-container {
         scrollbar-gutter: stable;
         overflow-y: auto;
       }
-    </style></head
-  >
+    </style>
+  </head>
 
   <body>
+    <!-- Header -->
     <header class="header">
       <div class="logo">
         <img
@@ -126,129 +110,109 @@ const { ponencia } = Astro.props;
       </div>
     </header>
 
+    <!-- Contenedor principal -->
     <div class="container">
+      <!-- Tarjeta de ponencia -->
       <div class="ponencia-card">
         <div class="content">
-          <!-- Título de la ponencia -->
           <h2 class="title">{ponencia.titulo}</h2>
 
-          <!-- Resumen -->
           <div class="resumen">{ponencia.resumen}</div>
 
-          <!-- Información del estado -->
           <div class="estado-wrapper">
-            <!-- Estado actual -->
             <div class="estado-actual">
               <h3>Estado actual</h3>
               <p class="estado-badge">{ponencia.estado}</p>
             </div>
 
-            <!-- Evaluaciones previas -->
-            {
-              ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
-                <div class="evaluaciones-section">
-                  <h3>Evaluaciones previas</h3>
-                  <div class="evaluaciones-list">
-                    {ponencia.evaluaciones.map((evaluation) => (
-                      <div class="evaluacion-item">
-                        <div class="evaluacion-header">
-                          <span class="evaluacion-estado">
-                            Estado: {evaluation.evaluacion}
-                          </span>
-                          <span class="evaluacion-fecha">
-                            {new Date(evaluation.fecha).toLocaleDateString()}
-                          </span>
-                        </div>
-                        {evaluation.correcciones && (
-                          <div class="evaluacion-correcciones">
-                            <p>Correcciones solicitadas:</p>
-                            <p class="correcciones-texto">
-                              {evaluation.correcciones}
-                            </p>
-                          </div>
-                        )}
+            {ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
+              <div class="evaluaciones-section">
+                <h3>Evaluaciones previas</h3>
+                <div class="evaluaciones-list">
+                  {ponencia.evaluaciones.map((evaluation) => (
+                    <div class="evaluacion-item">
+                      <div class="evaluacion-header">
+                        <span class="evaluacion-estado">
+                          Estado: {evaluation.evaluacion}
+                        </span>
+                        <span class="evaluacion-fecha">
+                          {new Date(evaluation.fecha).toLocaleDateString()}
+                        </span>
                       </div>
-                    ))}
-                  </div>
+                      {evaluation.correcciones && (
+                        <div class="evaluacion-correcciones">
+                          <p>Correcciones solicitadas:</p>
+                          <p class="correcciones-texto">
+                            {evaluation.correcciones}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              )
-            }
+              </div>
+            )}
           </div>
         </div>
 
+        <!-- Botones de acción -->
         <div class="action-buttons">
-          <button class="btn btn-accept" data-ponencia-id={ponencia.id}
-            >Aceptar</button
-          >
-          <button class="btn btn-reject" data-ponencia-id={ponencia.id}
-            >Rechazar</button
-          >
-          <button
-            class="btn btn-accept-with-obs"
-            data-ponencia-id={ponencia.id}
-          >
+          <button class="btn btn-accept" data-ponencia-id={ponencia.id}>
+            Aceptar
+          </button>
+          <button class="btn btn-reject" data-ponencia-id={ponencia.id}>
+            Rechazar
+          </button>
+          <button class="btn btn-accept-with-obs" data-ponencia-id={ponencia.id}>
             Aceptar con observaciones
           </button>
         </div>
       </div>
+
+      <!-- Tarjeta de comentarios -->
+      <div class="comentarios-card" id="comentariosCard">
+        <h2 class="title">Observaciones</h2>
+        <textarea 
+          id="observacionesText" 
+          placeholder="Escriba sus observaciones aquí..."
+        ></textarea>
+        <div class="dialog-buttons">
+          <button class="btn btn-primary" id="guardarObservaciones">
+            Guardar
+          </button>
+          <button class="btn btn-secondary" id="cancelarObservaciones">
+            Cancelar
+          </button>
+        </div>
+      </div>
     </div>
-    <!-- Agregar esto justo antes del cierre del body en [id].astro -->
-<div id="dialogOverlay" class="dialog-overlay" style="display: none;">
-  <div class="dialog-content">
-    <h3 id="dialogTitle">Título del Diálogo</h3>
-    <textarea 
-      id="dialogComments" 
-      placeholder="Ingrese sus comentarios aquí..."
-      rows="4"
-    ></textarea>
-    <div class="dialog-buttons">
-      <button id="dialogAccept" class="btn btn-primary">Aceptar</button>
-      <button id="dialogCancel" class="btn btn-secondary">Cancelar</button>
+
+    <!-- Diálogo para aceptar/rechazar -->
+    <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
+      <div class="dialog-content">
+        <h3 id="dialogTitle">Título del Diálogo</h3>
+        <textarea 
+          id="dialogComments" 
+          placeholder="Ingrese sus comentarios aquí..."
+          rows="4"
+        ></textarea>
+        <div class="dialog-buttons">
+          <button id="dialogAccept" class="btn btn-primary">Aceptar</button>
+          <button id="dialogCancel" class="btn btn-secondary">Cancelar</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<style>
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.dialog-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-}
-
-.dialog-content textarea {
-  width: 100%;
-  margin: 1rem 0;
-  padding: 0.5rem;
-}
-
-.dialog-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-</style>
+    <!-- Backdrop para el modal en móviles -->
+    <div class="backdrop" id="backdrop"></div>
 
     <script>
-        import { PonenciaHandlers } from "../../components/revisor/ponencia.ts";
-        document.addEventListener('DOMContentLoaded', () => {
-          const ponenciaId = document.querySelector('[data-ponencia-id]')?.getAttribute('data-ponencia-id') || '';
-          new PonenciaHandlers(ponenciaId);
-        });
-      </script>
-</body>
+      import { PonenciaHandlers } from "../scripts/PonenciaHandlers";
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const ponenciaId = document.querySelector('[data-ponencia-id]')?.getAttribute('data-ponencia-id') || '';
+        new PonenciaHandlers(ponenciaId);
+      });
+    </script>
+  </body>
 </html>
