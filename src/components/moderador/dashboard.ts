@@ -4,6 +4,7 @@ import { UserService } from '../../lib/services/user/user.service';
 import type { Ponencia } from '../../lib/models/ponencia';
 import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
@@ -16,6 +17,7 @@ export class SalaManager {
   private userService: UserService;
   private ponenciasData: Ponencia[] = [];
   private currentActiveStatus: 'pendientes' | 'aceptadas' = 'pendientes';
+  private searchTerm: string = '';
 
   constructor() {
     this.salaService = new SalaService();
@@ -31,44 +33,64 @@ export class SalaManager {
   }
 
   private updateUI(groupedPonencias: GroupedPonencias) {
-    const board = document.querySelector('.board');
-    if (board) {
-      board.innerHTML = `
-        <div class="board-column">
-          <div class="column-header">
-            <h3>${this.capitalizeFirst(this.currentActiveStatus)}</h3>
-            <span class="counter" id="${this.currentActiveStatus}-counter">
-              ${groupedPonencias[this.currentActiveStatus].length}
-            </span>
+    // Actualizar título de la página
+    const roomTitle = document.getElementById('room-title');
+    if (roomTitle) {
+      roomTitle.textContent = `Ponencias ${this.capitalizeFirst(this.currentActiveStatus)}`;
+    }
+
+    // Actualizar tabla de ponencias
+    const tableBody = document.querySelector('.table-body');
+    if (tableBody) {
+      tableBody.innerHTML = ''; // Limpiar tabla
+      
+      const ponenciasToDisplay = groupedPonencias[this.currentActiveStatus];
+      
+      if (ponenciasToDisplay.length === 0) {
+        tableBody.innerHTML = `
+          <div class="table-row empty-row">
+            <div class="cell" colspan="3">No hay ponencias ${this.currentActiveStatus}</div>
           </div>
-          <div class="column-content" id="${this.currentActiveStatus}-column">
-            ${this.renderPonencias(groupedPonencias[this.currentActiveStatus])}
-          </div>
-        </div>
-      `;
-    }
-
-    // Update stats cards counters
-    const pendienteCount = document.getElementById('pendiente-count');
-    const aceptadaCount = document.getElementById('aceptada-count');
-
-    if (pendienteCount) {
-      pendienteCount.textContent = groupedPonencias.pendientes.length.toString();
-    }
-    if (aceptadaCount) {
-      aceptadaCount.textContent = groupedPonencias.aceptadas.length.toString();
-    }
-
-    // Update active state of stat cards
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-      const status = card.getAttribute('data-status');
-      if (status === 'pendiente' && this.currentActiveStatus === 'pendientes') {
-        card.classList.add('active');
-      } else if (status === 'aceptada' && this.currentActiveStatus === 'aceptadas') {
-        card.classList.add('active');
+        `;
       } else {
-        card.classList.remove('active');
+        ponenciasToDisplay.forEach(ponencia => {
+          const row = document.createElement('div');
+          row.className = 'table-row';
+          row.setAttribute('data-id', ponencia.id);
+          
+          // Formatear fecha
+          const date = ponencia.creado.toDate();
+        
+          // Crear lista de autores
+          const autoresText = ponencia.autores.map(autor => autor.nombre).join(', ');
+          
+          // Determinar tipo de botón según estado
+          const actionButton = this.currentActiveStatus === 'pendientes' 
+            ? `<button class="action-btn accept-btn">Aceptar</button>` 
+            : `<button class="action-btn view-btn">Ver detalles</button>`;
+          
+          row.innerHTML = `
+            <div class="cell">
+              <div class="ponencia-title">${ponencia.titulo}</div>
+              <div class="ponencia-date">${date}</div>
+            </div>
+            <div class="cell">${autoresText}</div>
+            <div class="cell action-cell">${actionButton}</div>
+          `;
+          
+          tableBody.appendChild(row);
+        });
+      }
+    }
+    
+    // Actualizar botones de filtro si existen
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+      const status = btn.getAttribute('data-status');
+      if (status === this.currentActiveStatus) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
       }
     });
   }
@@ -77,94 +99,57 @@ export class SalaManager {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  private renderPonencias(ponencias: Ponencia[]): string {
-    if (ponencias.length === 0) {
-      return '<p class="empty-message">No hay ponencias en esta categoría</p>';
-    }
-    
-    return ponencias.map(ponencia => this.createPonenciaCard(ponencia)).join('');
-  }
-
-  private createPonenciaCard(ponencia: Ponencia): string {
-    const date = new Date(ponencia.creado).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-
-    const statusBadge = ponencia.estado === EstadoPonencia.ACEPTADA ? 
-      '<div class="status-badge">Aceptada</div>' : '';
-
-    return `
-      <div class="ponencia-card" data-id="${ponencia.id}">
-        <div class="ponencia-info">
-          <h3>${ponencia.titulo}</h3>
-          <p>${date}</p>
-          <p>${ponencia.autores.map(autor => autor.nombre).join(', ')}</p>
-        </div>
-        <span class="ponencia-status status-${ponencia.estado.toLowerCase()}">
-          ${statusBadge}
-        </span>
-        <div class="ponencia-arrow">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </div>
-      </div>
-    `;
-  }
-
   private setupNavigationHandlers() {
-    const misDatosBtn = document.querySelector('#datos-btn');
-    misDatosBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/moderador/datosModerador';
-    });
-
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn?.addEventListener('click', async () => {
-      try {
-        await this.authService.signOut();
-        window.location.href = '/autenticacion/iniciarSesion';
-      } catch (error) {
-        console.error('Error al cerrar sesión:', error);
-      }
-    });
-
-    // Mobile navigation handlers
-    const misDatosBtnMobile = document.getElementById('datos-btn-mobile');
-    misDatosBtnMobile?.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/moderador/datosModerador';
-    });
-
-    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
-    logoutBtnMobile?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      try {
-        await this.authService.signOut();
-        window.location.href = '/autenticacion/iniciarSesion';
-      } catch (error) {
-        console.error('Error al cerrar sesión:', error);
-      }
-    });
+    // Añadir código de navegación si es necesario
   }
 
   private setupEventListeners() {
-    this.setupNavigationHandlers();
-    this.setupStatCardHandlers();
-
-    // Ponencia card click handler
+    // Configurar manejador de búsqueda
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        this.searchTerm = searchInput.value.toLowerCase().trim();
+        this.filterAndDisplayPonencias();
+      });
+    }
+    
+    // Configurar manejadores para botones de filtro (si se agregan a la vista)
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const status = btn.getAttribute('data-status');
+        if (status === 'pendientes' || status === 'aceptadas') {
+          this.currentActiveStatus = status;
+          this.filterAndDisplayPonencias();
+          
+          // Actualizar estado activo de los botones
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        }
+      });
+    });
+    
+    // Delegación de eventos para manejar acciones en filas
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      const ponenciaCard = target.closest('.ponencia-card') as HTMLElement;
       
-      if (ponenciaCard) {
-        const ponenciaId = ponenciaCard.getAttribute('data-id');
-        if (ponenciaId) {
-          if (this.currentActiveStatus === 'pendientes') {
+      // Manejar botón "Aceptar"
+      if (target.classList.contains('accept-btn')) {
+        const row = target.closest('.table-row');
+        if (row) {
+          const ponenciaId = row.getAttribute('data-id');
+          if (ponenciaId) {
             this.handlePonenciaAction(ponenciaId, EstadoPonencia.ACEPTADA);
-          } else {
+          }
+        }
+      }
+      
+      // Manejar botón "Ver detalles"
+      else if (target.classList.contains('view-btn')) {
+        const row = target.closest('.table-row');
+        if (row) {
+          const ponenciaId = row.getAttribute('data-id');
+          if (ponenciaId) {
             this.viewPonenciaDetails(ponenciaId);
           }
         }
@@ -172,28 +157,19 @@ export class SalaManager {
     });
   }
 
-  private setupStatCardHandlers() {
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const status = card.getAttribute('data-status');
-        if (status === 'pendiente') {
-          this.currentActiveStatus = 'pendientes';
-        } else if (status === 'aceptada') {
-          this.currentActiveStatus = 'aceptadas';
-        }
-        
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
-      });
-    });
-  }
-
-  private async updateWelcomeMessage(userData: any) {
-    const welcomeElement = document.querySelector('.welcome');
-    if (welcomeElement) {
-      welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre || 'Moderador'}!`;
+  private filterAndDisplayPonencias() {
+    let filteredPonencias = [...this.ponenciasData];
+    
+    // Aplicar filtro de búsqueda si existe
+    if (this.searchTerm) {
+      filteredPonencias = filteredPonencias.filter(ponencia => 
+        ponencia.titulo.toLowerCase().includes(this.searchTerm) ||
+        ponencia.autores.some(autor => autor.nombre.toLowerCase().includes(this.searchTerm))
+      );
     }
+    
+    const groupedPonencias = this.groupPonencias(filteredPonencias);
+    this.updateUI(groupedPonencias);
   }
 
   private async handlePonenciaAction(ponenciaId: string, newState: EstadoPonencia) {
@@ -202,9 +178,8 @@ export class SalaManager {
       const moderadorId = await this.authService.getUserId();
       const sala = await this.salaService.getSala(moderadorId);
       if (sala.integrantes && sala.integrantes.length > 0) {
-        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
+        this.ponenciasData = await this.salaService.getPonenciasBySala(sala.integrantes);
+        this.filterAndDisplayPonencias();
       }
     } catch (error) {
       console.error('Error handling ponencia action:', error);
@@ -215,6 +190,8 @@ export class SalaManager {
   private viewPonenciaDetails(ponenciaId: string) {
     window.location.href = `/ponencias/${ponenciaId}`;
   }
+
+
 
   public async initialize(): Promise<void> {
     console.log('initialize');
@@ -239,33 +216,26 @@ export class SalaManager {
         throw new Error('Usuario no tiene permisos de moderador');
       }
 
-      await this.updateWelcomeMessage(userData);
-
-      const pendingCard = document.querySelector('.stat-card[data-status="pendiente"]');
-      pendingCard?.classList.add('active');
-
+      // Añadir botones de filtro a la interfaz
+      
+      // Configurar listeners de eventos
       this.setupEventListeners();
 
-      console.log('user.uid', user.uid);
+      // Cargar datos iniciales
       const sala = await this.salaService.getSala(user.uid);
-      console.log('sala', sala);
       if (sala.integrantes && sala.integrantes.length > 0) {
-        this.ponenciasData = await this.salaService.getPoenciasBySala(sala.integrantes);
-        const groupedPonencias = this.groupPonencias(this.ponenciasData);
-        this.updateUI(groupedPonencias);
+        this.ponenciasData = await this.salaService.getPonenciasBySala(sala.integrantes);
+        this.filterAndDisplayPonencias();
       }
 
+      // Configurar actualizaciones en tiempo real
       this.salaService.setupRealtimeUpdates(user.uid, async (updatedSala) => {
         if (updatedSala.integrantes?.length) {
-          this.ponenciasData = await this.salaService.getPoenciasBySala(updatedSala.integrantes);
-          const groupedPonencias = this.groupPonencias(this.ponenciasData);
-          this.updateUI(groupedPonencias);
+          this.ponenciasData = await this.salaService.getPonenciasBySala(updatedSala.integrantes);
+          this.filterAndDisplayPonencias();
         } else {
           this.ponenciasData = [];
-          this.updateUI({
-            pendientes: [],
-            aceptadas: []
-          });
+          this.filterAndDisplayPonencias();
         }
       });
     } catch (error) {
