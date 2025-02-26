@@ -104,7 +104,7 @@ export class PonenciaService {
                 })) || []
             };
             
-            const newDocRef = doc(collection(this.db, this.COLLECTION));
+            const newDocRef = doc(this.db, this.COLLECTION, id);
             await setDoc(newDocRef, ponenciaToSave);
         } catch (error) {
             console.error('Error creating ponencia:', error);
