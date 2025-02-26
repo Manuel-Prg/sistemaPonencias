@@ -339,9 +339,10 @@ class PonenciaFormHandler {
                 this.showStep(1);
                 return;
             }
-
+            const user = await this.authService.getUserId();
+           
             const ponencia: Ponencia = {
-                id: '', // Será generado por Firestore
+                id: user, // Será generado por Firestore
                 titulo: this.formData.titulo,
                 resumen: this.formData.resumen,
                 autores: Object.values(this.formData.autores),
@@ -354,6 +355,7 @@ class PonenciaFormHandler {
             await this.ponenciaService.createPonencia(ponencia);
             alert('¡Ponencia registrada exitosamente!');
             window.location.href = ROUTES.REGISTRO_VALIDO;
+        
         } catch (error) {
             console.error('Error al guardar la ponencia:', error);
             this.showError('Error al guardar la ponencia. Por favor intente nuevamente.');
