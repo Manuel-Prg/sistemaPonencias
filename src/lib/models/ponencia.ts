@@ -1,11 +1,13 @@
+import type { Timestamp } from "firebase/firestore";
 import type { DataPonente } from "./ponente";
+
 
 export interface Ponencia {
     id: string;
     titulo: string;
     resumen: string;
     autores: DataPonente[];
-    creado: Date;
+    creado: Timestamp;
     estado: string;
     evaluaciones: Evaluacion[];
     userId: string;
