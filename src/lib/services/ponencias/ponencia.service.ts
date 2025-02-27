@@ -22,14 +22,26 @@ export class PonenciaService {
         this.db = firebase.getFirestore();
     }
 
-    async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {
-        const ponenciasRef = collection(this.db, this.COLLECTION);
-        console.log(ids)
-        const q = query(ponenciasRef, where('id', 'in', ids));
-        const ponenciasSnapshot = await getDocs(q);
-        console.log(ponenciasSnapshot.docs.map((doc) => doc.data()))
-        return ponenciasSnapshot.docs.map((doc) => doc.data() as Ponencia);
-    }
+    async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {  
+        try {  
+          console.log('IDs consultados:', ids);  
+          const ponenciasRef = collection(this.db, this.COLLECTION);  
+          const q = query(ponenciasRef, where('userId', 'in', ids));  
+          const ponenciasSnapshot = await getDocs(q);  
+          
+          console.log('Documentos encontrados:', ponenciasSnapshot.docs.length);  
+          
+          const ponencias = ponenciasSnapshot.docs.map((doc) => {  
+            console.log('Documento individual:', doc.data());  
+            return doc.data() as Ponencia;  
+          });  
+          
+          return ponencias;  
+        } catch (error) {  
+          console.error('Error en la consulta:', error);  
+          throw error;  
+        }  
+      }
     
     async getPonencias(): Promise<Ponencia[]> {
         try {
@@ -97,7 +109,7 @@ export class PonenciaService {
             // Ensure creado is a Firestore Timestamp
             const ponenciaToSave = {
                 ...ponenciaData,
-                creado: Timestamp.fromDate(ponencia.creado),
+                creado: ponencia.creado,
                 evaluaciones: ponencia.evaluaciones?.map(evaluation => ({
                     ...evaluation,
                     fecha: Timestamp.fromDate(evaluation.fecha)
@@ -120,7 +132,7 @@ export class PonenciaService {
             // Convert dates to Firestore Timestamps
             const ponenciaToUpdate = {
                 ...updateData,
-                creado: Timestamp.fromDate(ponencia.creado),
+                creado: ponencia.creado,
                 evaluaciones: ponencia.evaluaciones?.map(evaluation => ({
                     ...evaluation,
                     fecha: Timestamp.fromDate(evaluation.fecha)

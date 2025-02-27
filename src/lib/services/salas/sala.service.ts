@@ -28,6 +28,8 @@ export class SalaService {
     }
 
     async getPonenciasBySala(ponencias: string[]): Promise<Ponencia[]> {
+        const dataponencia = await this.ponenciaService.getPonenciasByIds(ponencias);
+        console.log('dataponencia', dataponencia);
         return this.ponenciaService.getPonenciasByIds(ponencias);
     }
 
@@ -60,7 +62,6 @@ export class SalaService {
 
                 // Then set up the listener on the sala document
                 const salaRef = doc(this.db, 'salas', salaId);
-                console.log(getDoc(salaRef))
                 return onSnapshot(salaRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const salaData = snapshot.data() as Sala;

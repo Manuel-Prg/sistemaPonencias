@@ -4,6 +4,7 @@ import { UserService } from "../../lib/services/user/user.service";
 import type { Ponencia } from "../../lib/models/ponencia";
 import type { DataPonente } from "../../lib/models/ponente";
 import { EstadoPonencia } from "../../lib/models/ponencia";
+import { Timestamp } from "firebase/firestore";
 
 const ROUTES = {
     LOGIN: "../autenticacion/iniciarSesion",
@@ -346,7 +347,7 @@ class PonenciaFormHandler {
                 titulo: this.formData.titulo,
                 resumen: this.formData.resumen,
                 autores: Object.values(this.formData.autores),
-                creado: new Date(),
+                creado: Timestamp.now(),
                 estado: EstadoPonencia.PENDIENTE,
                 evaluaciones: [],
                 userId: this.formData.userId || ''
