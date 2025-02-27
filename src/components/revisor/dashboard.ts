@@ -3,6 +3,7 @@ import { UserService } from "../../lib/services/user/user.service";
 import { RevisorService } from "../../lib/services/revisor/revisor.services";
 import type { Ponencia, EstadoPonencia, PonenciaAsignada } from "../../lib/models/ponencia";
 import type { User as FirebaseUser } from 'firebase/auth';
+import {formatTimeFromTimestamp} from '../utils';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
@@ -92,11 +93,7 @@ export class DashboardManager {
   }
 
   private createPonenciaCard(ponencia: Ponencia): string {
-    const date = new Date(ponencia.creado).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const date = formatTimeFromTimestamp(ponencia.creado);
 
     let statusBadge = '';
     if (ponencia.estado === 'aceptada con correcciones') {

@@ -109,7 +109,7 @@ export class PonenciaService {
             // Ensure creado is a Firestore Timestamp
             const ponenciaToSave = {
                 ...ponenciaData,
-                creado: Timestamp.fromDate(ponencia.creado),
+                creado: ponencia.creado,
                 evaluaciones: ponencia.evaluaciones?.map(evaluation => ({
                     ...evaluation,
                     fecha: Timestamp.fromDate(evaluation.fecha)
@@ -132,7 +132,7 @@ export class PonenciaService {
             // Convert dates to Firestore Timestamps
             const ponenciaToUpdate = {
                 ...updateData,
-                creado: Timestamp.fromDate(ponencia.creado),
+                creado: ponencia.creado,
                 evaluaciones: ponencia.evaluaciones?.map(evaluation => ({
                     ...evaluation,
                     fecha: Timestamp.fromDate(evaluation.fecha)

@@ -4,7 +4,7 @@ import { UserService } from '../../lib/services/user/user.service';
 import type { Ponencia } from '../../lib/models/ponencia';
 import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
+import {formatTimeFromTimestamp} from '../utils';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
@@ -59,7 +59,7 @@ export class SalaManager {
           row.setAttribute('data-id', ponencia.id);
           
           // Formatear fecha
-          const date = ponencia.creado.toDate();
+          const date = formatTimeFromTimestamp(ponencia.creado);
         
           // Crear lista de autores
           const autoresText = ponencia.autores.map(autor => autor.nombre).join(', ');
