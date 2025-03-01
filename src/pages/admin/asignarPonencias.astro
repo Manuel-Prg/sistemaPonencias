@@ -8,286 +8,108 @@ import AdminLayout from '../../components/shared/AdminLayout.astro';
       <h1 class="section-title">Asignar Ponencias</h1>
       <button class="admin-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-        Nueva Asignación
+        Reasignar Revisor 
       </button>
     </div>
 
-    <div class="presentations-list">
-      <div class="presentation-card">
-        <div class="presentation-header">
-          <h3 class="presentation-name">Inteligencia Artificial en la Educación</h3>
-          <div class="presentation-actions">
-            <button class="convert-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-              Agregar
-            </button>
-            <button class="toggle-btn" data-id="presentation-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="presentation-details" id="presentation-1" style="display: none;">
-          <table class="presentation-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Dr. Juan Pérez</td>
-                <td><span class="status-badge approved">Aprobado</span></td>
-              </tr>
-              <tr>
-                <td>Dra. María González</td>
-                <td><span class="status-badge pending">Pendiente</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="presentation-card">
-        <div class="presentation-header">
-          <h3 class="presentation-name">Desarrollo Web con Astro</h3>
-          <div class="presentation-actions">
-            <button class="convert-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-              Agregar
-            </button>
-            <button class="toggle-btn" data-id="presentation-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="presentation-details" id="presentation-2" style="display: none;">
-          <table class="presentation-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Ing. Roberto Sánchez</td>
-                <td><span class="status-badge approved">Aprobado</span></td>
-              </tr>
-              <tr>
-                <td>Lic. Ana Martínez</td>
-                <td><span class="status-badge rejected">Rechazado</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="presentation-card">
-        <div class="presentation-header">
-          <h3 class="presentation-name">Ciberseguridad en Aplicaciones Web</h3>
-          <div class="presentation-actions">
-            <button class="convert-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-              Agregar
-            </button>
-            <button class="toggle-btn" data-id="presentation-3">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="presentation-details" id="presentation-3" style="display: none;">
-          <table class="presentation-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Dr. Carlos Ramírez</td>
-                <td><span class="status-badge pending">Pendiente</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="presentations-list" id="presentations-container">
+      <!-- Las presentation-cards se cargarán aquí dinámicamente -->
+      <div class="loading">Cargando revisores...</div>
     </div>
   </div>
-
-  <script>
-    // Toggle presentation details
-    document.addEventListener('DOMContentLoaded', () => {
-      const toggleButtons = document.querySelectorAll('.toggle-btn');
-      
-      toggleButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const detailsId = button.getAttribute('data-id');
-          if (detailsId) {
-            const detailsElement = document.getElementById(detailsId);
-          
-          if (detailsElement && detailsElement.style.display !== null) {
-            const isHidden = detailsElement.style.display === 'none';
-            detailsElement.style.display = isHidden ? 'block' : 'none';
-            
-            // Rotate the chevron icon
-            const icon = button.querySelector('svg');
-            if (icon) {
-              icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0)';
-            }
-          }
-        };
-      });
-    });
-    });
-  </script>
-
-  <style>
-    .admin-section {
-      padding: 2rem;
-    }
-    
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    
-    .section-title {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--text-color);
-      margin: 0;
-    }
-    
-    .presentations-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .presentation-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .presentation-card:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .presentation-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .presentation-name {
-      font-size: 1.25rem;
-      font-weight: 500;
-      margin: 0;
-    }
-    
-    .presentation-actions {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-    
-    .toggle-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--text-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }
-    
-    .toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .toggle-btn svg {
-      transition: transform 0.3s ease;
-    }
-    
-    .presentation-details {
-      margin-top: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 1.5rem;
-    }
-    
-    .presentation-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .presentation-table th,
-    .presentation-table td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .presentation-table th {
-      font-weight: 600;
-      color: var(--text-color);
-      opacity: 0.8;
-    }
-    
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    
-    .status-badge.approved {
-      background: rgba(0, 255, 0, 0.15);
-      color: #00ff00;
-    }
-    
-    .status-badge.pending {
-      background: rgba(255, 165, 0, 0.15);
-      color: #ffa500;
-    }
-    
-    .status-badge.rejected {
-      background: rgba(255, 0, 0, 0.15);
-      color: #ff0000;
-    }
-    
-    @media (max-width: 768px) {
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .presentation-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .presentation-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-      
-      .admin-section {
-        padding: 1.5rem 1rem;
-      }
-    }
-  </style>
 </AdminLayout>
 
+<script src="../scripts/AdminRevisorPanel.ts"></script>
+
+<style>
+  .loading, .error, .no-data {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .error {
+    color: #e74c3c;
+  }
+  
+  .presentation-card {
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .presentation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f5f5f5;
+  }
+  
+  .presentation-name {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .presentation-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .convert-btn, .toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .convert-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .toggle-btn {
+    background-color: transparent;
+    color: #333;
+  }
+  
+  .presentation-details {
+    padding: 16px;
+  }
+  
+  .presentation-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .presentation-table th, .presentation-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .status-badge.approved {
+    background-color: #e6f7e6;
+    color: #2e7d32;
+  }
+  
+  .status-badge.pending {
+    background-color: #fff8e1;
+    color: #f57f17;
+  }
+  
+  .status-badge.rejected {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+</style>

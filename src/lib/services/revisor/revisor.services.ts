@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { firebase } from '../../firebase/config';
 import type { Ponencia, Evaluacion } from '../../models/ponencia';
+import type { Revisor, RevisorData } from '../../models/revisor';
 
 export class RevisorService {
   private db: Firestore;
@@ -20,6 +21,28 @@ export class RevisorService {
   constructor() {
       this.db = firebase.getFirestore();
   }
+
+async getRevisores(): Promise<Revisor[]> {
+    try {
+        const q = query(  
+            collection(this.db, 'users'),   
+            where('rol', '==', 'revisor')  
+          );
+          const revisoresSnapshot = await getDocs(q);
+
+        return revisoresSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                datos: data.datos,
+                ponenciasAsignadas: data.ponenciasAsignadas,
+                id: doc.id
+            } as Revisor;
+        });
+    } catch (error) {
+        console.error('Error obteniendo revisores:', error);
+        throw error;
+    }
+}
 
   async getPresentations(presentationIds: string[]): Promise<Ponencia[]> {
     try {
