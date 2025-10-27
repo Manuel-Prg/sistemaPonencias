@@ -1,0 +1,22 @@
+name: Repo Visualizer
+
+on:
+  push:
+    branches:
+      - main  # o master, según tu rama principal
+  workflow_dispatch:  # permite ejecutarlo manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Update diagram
+        uses: githubocto/repo-visualizer@main
+        with:
+          excluded_paths: "node_modules,.git,.vscode,.astro"
+          output_file: "diagram.svg"
+          should_push: true
+          root_path: "."
