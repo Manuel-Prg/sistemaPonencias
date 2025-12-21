@@ -1,9 +1,16 @@
 ---
-import '../../styles/stylesRevisarPonencia.css';
-import '../../styles/logos.css';
-import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
-import type { Ponencia, EstadoPonencia } from '../../lib/models/ponencia';
-import BotonMobile from '../../components/shared/botonMobile.astro';
+import "../../styles/base/variables.css";
+import "../../styles/base/reset.css";
+import "../../styles/layouts/layout.css";
+import "../../styles/components/buttons.css";
+import "../../styles/components/form.css";
+import "../../styles/base/animations.css";
+import "../../styles/components/mobile-menu.css";
+import "../../styles/pages/revisor/revisarPonencia.css";
+import "../../styles/components/logos.css";
+import { PonenciaService } from "../../lib/services/ponencias/ponencia.service";
+import type { Ponencia, EstadoPonencia } from "../../lib/models/ponencia";
+import BotonMobile from "../../components/shared/botonMobile.astro";
 
 // Genera las rutas estáticas para cada ponencia
 export async function getStaticPaths() {
@@ -28,11 +35,25 @@ const { ponencia } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Revisar Ponencia - {ponencia.titulo}</title>
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/favicon/favicon_io/favicon.ico"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon_io/favicon-16x16.png"
+    />
     <style>
-    .container {
+      .container {
         display: flex;
         justify-content: center;
         gap: 1rem;
@@ -90,20 +111,20 @@ const { ponencia } = Astro.props;
         color: rgba(255, 255, 255, 0.6);
       }
 
-    /* Para Firefox */
-    textarea::-moz-placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
+      /* Para Firefox */
+      textarea::-moz-placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
 
-    /* Para Chrome/Safari/Edge */
-    textarea::-webkit-input-placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
+      /* Para Chrome/Safari/Edge */
+      textarea::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
 
-    /* Para Internet Explorer */
-    textarea:-ms-input-placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
+      /* Para Internet Explorer */
+      textarea:-ms-input-placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
 
       @media (max-width: 1024px) {
         .container {
@@ -178,7 +199,8 @@ const { ponencia } = Astro.props;
           align-items: center; /* Centra las tarjetas horizontalmente */
         }
 
-        .ponencia-card, .comentarios-card {
+        .ponencia-card,
+        .comentarios-card {
           width: 100%; /* Ancho completo */
           max-width: 100%;
           margin: 0 auto; /* Centra las tarjetas */
@@ -186,8 +208,8 @@ const { ponencia } = Astro.props;
           min-height: 50vh;
         }
         .container.with-comments {
-            padding: 1rem;
-          }
+          padding: 1rem;
+        }
 
         .container.with-comments .ponencia-card {
           max-width: 100% !important;
@@ -286,16 +308,15 @@ const { ponencia } = Astro.props;
       }
       /* Animaciones */
       @keyframes slideIn {
-          from {
-              opacity: 0;
-              transform: translateX(30px);
-          }
-          to {
-              opacity: 1;
-              transform: translateX(0);
-          }
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
       }
-
     </style>
   </head>
 
@@ -338,8 +359,7 @@ const { ponencia } = Astro.props;
       </div>
     </header>
     <!-- Bottom Navigation for Mobile -->
-  <BotonMobile>
-  </BotonMobile>
+    <BotonMobile />
 
     <!-- Contenedor principal -->
     <div class="container">
@@ -356,33 +376,35 @@ const { ponencia } = Astro.props;
               <p class="estado-badge">{ponencia.estado}</p>
             </div>
 
-            {ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
-              <div class="evaluaciones-section">
-                <h3>Evaluaciones previas</h3>
-                <div class="evaluaciones-list">
-                  {ponencia.evaluaciones.map((evaluation) => (
-                    <div class="evaluacion-item">
-                      <div class="evaluacion-header">
-                        <span class="evaluacion-estado">
-                          Estado: {evaluation.evaluacion}
-                        </span>
-                        <span class="evaluacion-fecha">
-                          {new Date(evaluation.fecha).toLocaleDateString()}
-                        </span>
-                      </div>
-                      {evaluation.correcciones && (
-                        <div class="evaluacion-correcciones">
-                          <p>Correcciones solicitadas:</p>
-                          <p class="correcciones-texto">
-                            {evaluation.correcciones}
-                          </p>
+            {
+              ponencia.evaluaciones && ponencia.evaluaciones.length > 0 && (
+                <div class="evaluaciones-section">
+                  <h3>Evaluaciones previas</h3>
+                  <div class="evaluaciones-list">
+                    {ponencia.evaluaciones.map((evaluation) => (
+                      <div class="evaluacion-item">
+                        <div class="evaluacion-header">
+                          <span class="evaluacion-estado">
+                            Estado: {evaluation.evaluacion}
+                          </span>
+                          <span class="evaluacion-fecha">
+                            {new Date(evaluation.fecha).toLocaleDateString()}
+                          </span>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        {evaluation.correcciones && (
+                          <div class="evaluacion-correcciones">
+                            <p>Correcciones solicitadas:</p>
+                            <p class="correcciones-texto">
+                              {evaluation.correcciones}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            }
           </div>
         </div>
 
@@ -394,7 +416,10 @@ const { ponencia } = Astro.props;
           <button class="btn btn-reject" data-ponencia-id={ponencia.id}>
             Rechazar
           </button>
-          <button class="btn btn-accept-with-obs" data-ponencia-id={ponencia.id}>
+          <button
+            class="btn btn-accept-with-obs"
+            data-ponencia-id={ponencia.id}
+          >
             Aceptar con observaciones
           </button>
         </div>
@@ -403,10 +428,9 @@ const { ponencia } = Astro.props;
       <!-- Tarjeta de comentarios -->
       <div class="comentarios-card" id="comentariosCard">
         <h2 class="title">Observaciones</h2>
-        <textarea 
-          id="observacionesText" 
-          placeholder="Escriba sus observaciones aquí..."
-        ></textarea>
+        <textarea
+          id="observacionesText"
+          placeholder="Escriba sus observaciones aquí..."></textarea>
         <div class="dialog-buttons">
           <button class="btn btn-primary" id="guardarObservaciones">
             Guardar
@@ -422,11 +446,10 @@ const { ponencia } = Astro.props;
     <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
       <div class="dialog-content">
         <h3 id="dialogTitle">Título del Diálogo</h3>
-        <textarea 
-          id="dialogComments" 
+        <textarea
+          id="dialogComments"
           placeholder="Ingrese sus comentarios aquí..."
-          rows="4"
-        ></textarea>
+          rows="4"></textarea>
         <div class="dialog-buttons">
           <button id="dialogAccept" class="btn btn-primary">Aceptar</button>
           <button id="dialogCancel" class="btn btn-secondary">Cancelar</button>
@@ -438,55 +461,63 @@ const { ponencia } = Astro.props;
     <div class="backdrop" id="backdrop"></div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const container = document.querySelector('.container');
-        const ponenciaCard = document.querySelector('.ponencia-card');
-        const comentariosCard = document.getElementById('comentariosCard');
-        const btnAceptarConObs = document.querySelector('.btn-accept-with-obs');
-        const btnGuardarObs = document.getElementById('guardarObservaciones');
-        const btnCancelarObs = document.getElementById('cancelarObservaciones');
-        const observacionesText = document.getElementById('observacionesText') as HTMLTextAreaElement;
-        const backdrop = document.getElementById('backdrop');
+      document.addEventListener("DOMContentLoaded", () => {
+        const container = document.querySelector(".container");
+        const ponenciaCard = document.querySelector(".ponencia-card");
+        const comentariosCard = document.getElementById("comentariosCard");
+        const btnAceptarConObs = document.querySelector(".btn-accept-with-obs");
+        const btnGuardarObs = document.getElementById("guardarObservaciones");
+        const btnCancelarObs = document.getElementById("cancelarObservaciones");
+        const observacionesText = document.getElementById(
+          "observacionesText",
+        ) as HTMLTextAreaElement;
+        const backdrop = document.getElementById("backdrop");
 
         // Mostrar panel de observaciones
-        btnAceptarConObs?.addEventListener('click', () => {
-          container?.classList.add('with-comments');
-          ponenciaCard?.classList.add('with-comments');
-          comentariosCard?.classList.add('visible');
-          backdrop?.classList.add('visible');
+        btnAceptarConObs?.addEventListener("click", () => {
+          container?.classList.add("with-comments");
+          ponenciaCard?.classList.add("with-comments");
+          comentariosCard?.classList.add("visible");
+          backdrop?.classList.add("visible");
           observacionesText?.focus();
         });
 
         // Ocultar panel de observaciones
         const ocultarPanelObservaciones = () => {
-          container?.classList.remove('with-comments');
-          ponenciaCard?.classList.remove('with-comments');
-          comentariosCard?.classList.remove('visible');
-          backdrop?.classList.remove('visible');
+          container?.classList.remove("with-comments");
+          ponenciaCard?.classList.remove("with-comments");
+          comentariosCard?.classList.remove("visible");
+          backdrop?.classList.remove("visible");
           if (observacionesText) {
-            observacionesText.value = '';
+            observacionesText.value = "";
           }
         };
 
         // Manejar cancelar
-        btnCancelarObs?.addEventListener('click', ocultarPanelObservaciones);
+        btnCancelarObs?.addEventListener("click", ocultarPanelObservaciones);
 
         // Manejar guardar
-        btnGuardarObs?.addEventListener('click', () => {
+        btnGuardarObs?.addEventListener("click", () => {
           const observaciones = observacionesText?.value.trim();
-          
+
           if (!observaciones) {
-            alert('Por favor, ingrese sus observaciones antes de guardar.');
+            alert("Por favor, ingrese sus observaciones antes de guardar.");
             return;
           }
 
           // Aquí puedes agregar la lógica para guardar las observaciones
-          console.log('Guardando observaciones:', observaciones);
+          console.log("Guardando observaciones:", observaciones);
           ocultarPanelObservaciones();
         });
 
         // Cerrar panel al hacer clic en el backdrop
-        backdrop?.addEventListener('click', ocultarPanelObservaciones);
+        backdrop?.addEventListener("click", ocultarPanelObservaciones);
+
+        // Manejar botón Regresar
+        const btnRegresar = document.getElementById("logout-btn");
+        btnRegresar?.addEventListener("click", () => {
+          window.location.href = "/revisor/revisor";
+        });
       });
     </script>
   </body>

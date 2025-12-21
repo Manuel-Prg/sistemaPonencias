@@ -46,3 +46,160 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+```
+sistemaPonencias
+├─ .nojekyll
+├─ astro.config.mjs
+├─ env.d.ts
+├─ package-lock.json
+├─ package.json
+├─ public
+│  ├─ favicon
+│  │  └─ favicon_io
+│  │     ├─ android-chrome-192x192.png
+│  │     ├─ android-chrome-512x512.png
+│  │     ├─ apple-touch-icon.png
+│  │     ├─ favicon-16x16.png
+│  │     ├─ favicon-32x32.png
+│  │     ├─ favicon.ico
+│  │     └─ site.webmanifest
+│  ├─ favicon.svg
+│  ├─ icon-logo.png
+│  ├─ icono.png
+│  ├─ logo-dacity
+│  │  ├─ logo-dacity.png
+│  │  ├─ logo-negro-verde.jpg
+│  │  ├─ logo-negro.jpg
+│  │  ├─ logo-negro_bordes_blancos-sinFondo.png
+│  │  ├─ logo-negro_bordes_blancos.jpg
+│  │  └─ logo-negro_bordes_verde.jpg
+│  ├─ Logos UJAT
+│  │  └─ Logos UJAT
+│  │     ├─ Logo 1 blanco.png
+│  │     ├─ Logo 1 negro.png
+│  │     ├─ logo 1 verde.png
+│  │     ├─ logo 2 blanco.png
+│  │     ├─ logo 2 negro.png
+│  │     ├─ logo 2 verde.png
+│  │     ├─ logo 3 blanco.png
+│  │     ├─ logo 3 negro.png
+│  │     ├─ logo 3 verde.png
+│  │     ├─ logo 4 blanco.png
+│  │     ├─ logo 4 negro.png
+│  │     ├─ logo 4 verde.png
+│  │     ├─ logo 5 blanco.png
+│  │     ├─ logo 5 negro.png
+│  │     └─ logo 5 verde.png
+│  ├─ logo_mujeres
+│  │  ├─ logo_mueres_blanco.png
+│  │  ├─ logo_mujeres_base.png
+│  │  ├─ logo_mujeres_base.svg
+│  │  ├─ logo_mujeres_contorno.png
+│  │  ├─ logo_mujeres_contorno.svg
+│  │  ├─ logo_mujeres_letras.png
+│  │  └─ logo_mujeres_letras.svg
+│  └─ SOLO - LOGO -NEGRO.png
+├─ README.md
+└─ src
+   ├─ assets
+   │  ├─ astro.svg
+   │  └─ background.svg
+   ├─ components
+   │  ├─ auth
+   │  │  ├─ LoginForm.ts
+   │  │  ├─ resetPassword.ts
+   │  │  └─ SigninForm.ts
+   │  ├─ moderador
+   │  │  └─ dashboard.ts
+   │  ├─ ponente
+   │  │  ├─ dashboard.ts
+   │  │  ├─ datosPonente.ts
+   │  │  ├─ modalEscritor.ts
+   │  │  └─ registroPonencia.ts
+   │  ├─ revisor
+   │  │  ├─ dashboard.ts
+   │  │  ├─ datosRevisor.ts
+   │  │  └─ ponencia.ts
+   │  ├─ shared
+   │  │  ├─ AdminLayout.astro
+   │  │  ├─ botonMobile.astro
+   │  │  ├─ headerLayout.astro
+   │  │  └─ logosLayout.astro
+   │  ├─ utils.ts
+   │  └─ Welcome.astro
+   ├─ layouts
+   │  └─ Layout.astro
+   ├─ lib
+   │  ├─ firebase
+   │  │  └─ config.ts
+   │  ├─ models
+   │  │  ├─ auth.ts
+   │  │  ├─ ponencia.ts
+   │  │  ├─ ponente.ts
+   │  │  ├─ revisor.ts
+   │  │  ├─ sala.ts
+   │  │  └─ user.ts
+   │  └─ services
+   │     ├─ auth
+   │     │  └─ auth.service.ts
+   │     ├─ ponencias
+   │     │  └─ ponencia.service.ts
+   │     ├─ revisor
+   │     │  └─ revisor.services.ts
+   │     ├─ salas
+   │     │  └─ sala.service.ts
+   │     └─ user
+   │        └─ user.service.ts
+   ├─ middleware
+   │  └─ auth.middleware.ts
+   ├─ pages
+   │  ├─ admin
+   │  │  ├─ asignarModeradores.astro
+   │  │  ├─ asignarPonencias.astro
+   │  │  ├─ asignarSalas.astro
+   │  │  ├─ salasPonencias.astro
+   │  │  └─ vistaAdmin.astro
+   │  ├─ index.astro
+   │  ├─ moderador
+   │  │  └─ salasMod.astro
+   │  ├─ ponente
+   │  │  ├─ dashboardEscritor.astro
+   │  │  ├─ datosPonencia.astro
+   │  │  ├─ datosPonente.astro
+   │  │  ├─ editarPonencia.astro
+   │  │  └─ registroValido.astro
+   │  ├─ recuperarPassword.astro
+   │  ├─ registro.astro
+   │  ├─ revisor
+   │  │  ├─ datosRevisor.astro
+   │  │  ├─ revisor.astro
+   │  │  └─ [id].astro
+   │  └─ scripts
+   │     ├─ AdminRevisorPanel.ts
+   │     ├─ AdminSalasPanel.ts
+   │     ├─ AdminUsersPanel.ts
+   │     └─ PonenciaHandlers.ts
+   └─ styles
+      ├─ animations.css
+      ├─ buttons.css
+      ├─ form.css
+      ├─ layout.css
+      ├─ logos.css
+      ├─ main.css
+      ├─ mobile-menu.css
+      ├─ reset.css
+      ├─ salasModStyles.css
+      ├─ styles.css
+      ├─ stylesDatos.css
+      ├─ stylesPassword.css
+      ├─ stylesPendientes.css
+      ├─ stylesRegistro.css
+      ├─ stylesRegistroValido.css
+      ├─ stylesRevisarPonencia.css
+      ├─ stylesRevisor.css
+      ├─ targetAdmin.css
+      ├─ variables.css
+      └─ vistaAdmin.css
+
+```

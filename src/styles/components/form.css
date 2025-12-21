@@ -1,0 +1,35 @@
+.form-group {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+  }
+  
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-speed) ease;
+  }
+  
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }

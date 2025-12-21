@@ -1,159 +1,255 @@
 ---
-import '../../styles/stylesDatos.css';
-import '../../styles/logos.css';
-import '../../styles/main.css';
-import HeaderLayout from '../../components/shared/headerLayout.astro';
+import "../../styles/pages/ponente/datos.css";
+import "../../styles/components/logos.css";
+import "../../styles/pages/main.css";
+import HeaderLayout from "../../components/shared/headerLayout.astro";
 ---
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Ponencia</title>
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<HeaderLayout>
-        <button slot="ponencia" class="header-btn datos-btn" id="datos-btn" title="Mi Ponencia">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z" />
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro de Ponencia</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <HeaderLayout>
+        <button
+            slot="ponencia"
+            class="header-btn datos-btn"
+            id="datos-btn"
+            title="Mi Ponencia"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffffff"
+            >
+                <path
+                    d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"
+                ></path>
             </svg>
             <span>Mis Datos</span>
         </button>
-</HeaderLayout>
+    </HeaderLayout>
 
-<nav class="bottom-nav">
-    <div class="bottom-nav-items">
-        <a href="../ponente/datosPonente" class="bottom-nav-item" id="datos-btn-mobile">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                <path
-                    d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z" />
-            </svg>
-            <span>Mis Datos</span>
-        </a>
-        <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                <path
-                    d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-            </svg>
-            <span>Cerrar Sesión</span>
-        </a>
-    </div>
-</nav>
-
-<body>
-    <div class="container">
-        <div class="form-card">
-            <div class="progress-steps">
-                <div class="step active">
-                    <div class="step-number">1</div>
-                    <div class="step-line"></div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-line"></div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-line"></div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                </div>
-            </div>
-
-            <form id="multiStepForm">
-                <!-- Step 1 -->
-                <div class="step-content" data-step="1">
-                    <h2>¡Empecemos! Solo se tardará un momento en registrarse</h2>
-                    <p class="subtitle">Necesitamos datos adicionales para poder revisar tu ponencia.</p>
-
-                    <div class="form-group">
-                        <label>Título de la ponencia</label>
-                        <div class="input-icon">
-                            <input type="text" name="title" required placeholder="">
-                            <i class="icon-edit"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Autor</label>
-                        <div class="input-icon">
-                            <input type="text" name="author" required placeholder="">
-                            <i class="icon-user"></i>
-                        </div>
-                    </div>
-
-                    <button type="button" class="add-author">+ Agregar otro autor</button>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="step-content hidden" data-step="2">
-                    <h2>Estás haciendo un gran progreso, ¡sigue así!</h2>
-                    <p class="subtitle">Ahora llegó el momento que selecciones uno o más temas que corresponden a tu
-                        ponencia.</p>
-
-                    <div class="form-group">
-                        <label>Selecciona el tema</label>
-                        <div class="topics-grid">
-                            <button type="button" class="topic-btn">a1</button>
-                            <button type="button" class="topic-btn">a2</button>
-                            <button type="button" class="topic-btn">a3</button>
-                            <button type="button" class="topic-btn">a4</button>
-                            <button type="button" class="topic-btn">a5</button>
-                            <button type="button" class="topic-btn">a6</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Escribe un tema nuevo si no lo encuentras en la lista</label>
-                        <input type="text" name="newTopic" placeholder="Escribe un tema nuevo...">
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="step-content hidden" data-step="3">
-                    <h2>Bien, ahora cuéntanos más sobre tu ponencia</h2>
-                    <p class="subtitle">Escribe un resumen de tu ponencia en al menos 300 palabras.</p>
-
-                    <div class="form-group">
-                        <label>Escribe tu resumen:</label>
-                        <textarea name="summary" rows="8"></textarea>
-                        <div class="word-count">0/300 palabras</div>
-                    </div>
-                </div>
-
-                <div class="step-content hidden" data-step="4">
-                    <h2>Finalmente, ¿Cómo supiste de nosotros?</h2>
-                    <p class="subtitle">Es muy importante conocer tu opinión ya que nos ayudará a mejorar para promover
-                        próximos eventos y puedas participar a futuro en ellos.</p>
-
-                    <div class="form-group">
-                        <label>¿Cómo se enteró del evento?</label>
-                        <select name="source" required>
-                            <option value="">Seleccione una opción...</option>
-                            <option value="social">Redes sociales</option>
-                            <option value="friends">Amigos</option>
-                            <option value="web">Sitio web</option>
-                            <option value="email">Email</option>
-                            <option value="other">Otros</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-buttons">
-                    <button type="button" class="btn-back hidden">Atrás</button>
-                    <button type="button" class="btn-cancel">Cancelar</button>
-                    <button type="button" class="btn-next">Siguiente</button>
-                </div>
-            </form>
-
-            <p class="copyright">© 2025 XDevLab</p>
+    <nav class="bottom-nav">
+        <div class="bottom-nav-items">
+            <a
+                href="../ponente/datosPonente"
+                class="bottom-nav-item"
+                id="datos-btn-mobile"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#ffffff"
+                >
+                    <path
+                        d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"
+                    ></path>
+                </svg>
+                <span>Mis Datos</span>
+            </a>
+            <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#ffffff"
+                >
+                    <path
+                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                    ></path>
+                </svg>
+                <span>Cerrar Sesión</span>
+            </a>
         </div>
-    </div>
-    <script src="../../components/ponente/registroPonencia.ts"></script>
-</body>
+    </nav>
 
+    <body>
+        <div class="container">
+            <div class="form-card">
+                <div class="progress-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                    </div>
+                </div>
+
+                <form id="multiStepForm">
+                    <!-- Step 1 -->
+                    <div class="step-content" data-step="1">
+                        <h2>
+                            ¡Empecemos! Solo se tardará un momento en
+                            registrarse
+                        </h2>
+                        <p class="subtitle">
+                            Necesitamos datos adicionales para poder revisar tu
+                            ponencia.
+                        </p>
+
+                        <div class="form-group">
+                            <label>Título de la ponencia</label>
+                            <div class="input-icon">
+                                <input
+                                    type="text"
+                                    name="title"
+                                    required
+                                    placeholder=""
+                                />
+                                <i class="icon-edit"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Autor</label>
+                            <div class="input-icon">
+                                <input
+                                    type="text"
+                                    name="author"
+                                    required
+                                    placeholder=""
+                                />
+                                <i class="icon-user"></i>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-author"
+                            >+ Agregar otro autor</button
+                        >
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-content hidden" data-step="2">
+                        <h2>Estás haciendo un gran progreso, ¡sigue así!</h2>
+                        <p class="subtitle">
+                            Ahora llegó el momento que selecciones uno o más
+                            temas que corresponden a tu ponencia.
+                        </p>
+
+                        <div class="form-group">
+                            <label>Selecciona el tema</label>
+                            <div class="topics-grid">
+                                <button type="button" class="topic-btn"
+                                    >a1</button
+                                >
+                                <button type="button" class="topic-btn"
+                                    >a2</button
+                                >
+                                <button type="button" class="topic-btn"
+                                    >a3</button
+                                >
+                                <button type="button" class="topic-btn"
+                                    >a4</button
+                                >
+                                <button type="button" class="topic-btn"
+                                    >a5</button
+                                >
+                                <button type="button" class="topic-btn"
+                                    >a6</button
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                >Escribe un tema nuevo si no lo encuentras en la
+                                lista</label
+                            >
+                            <input
+                                type="text"
+                                name="newTopic"
+                                placeholder="Escribe un tema nuevo..."
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-content hidden" data-step="3">
+                        <h2>Bien, ahora cuéntanos más sobre tu ponencia</h2>
+                        <p class="subtitle">
+                            Escribe un resumen de tu ponencia en al menos 300
+                            palabras.
+                        </p>
+
+                        <div class="form-group">
+                            <label>Escribe tu resumen:</label>
+                            <textarea name="summary" rows="8"></textarea>
+                            <div class="word-count">0/300 palabras</div>
+                        </div>
+                    </div>
+
+                    <div class="step-content hidden" data-step="4">
+                        <h2>Finalmente, ¿Cómo supiste de nosotros?</h2>
+                        <p class="subtitle">
+                            Es muy importante conocer tu opinión ya que nos
+                            ayudará a mejorar para promover próximos eventos y
+                            puedas participar a futuro en ellos.
+                        </p>
+
+                        <div class="form-group">
+                            <label>¿Cómo se enteró del evento?</label>
+                            <select name="source" required>
+                                <option value=""
+                                    >Seleccione una opción...</option
+                                >
+                                <option value="social">Redes sociales</option>
+                                <option value="friends">Amigos</option>
+                                <option value="web">Sitio web</option>
+                                <option value="email">Email</option>
+                                <option value="other">Otros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn-back hidden"
+                            >Atrás</button
+                        >
+                        <button type="button" class="btn-cancel"
+                            >Cancelar</button
+                        >
+                        <button type="button" class="btn-next">Siguiente</button
+                        >
+                    </div>
+                </form>
+
+                <p class="copyright">© 2025 XDevLab</p>
+            </div>
+        </div>
+        <script src="../../components/ponente/registroPonencia.ts"></script>
+    </body>
 </html>

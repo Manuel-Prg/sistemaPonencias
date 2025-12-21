@@ -1,59 +1,84 @@
 ---
-import'../styles/stylesRegistro.css';
-import '../styles/logos.css';
-import LogosLayout from '../components/shared/logosLayout.astro';
+import "../styles/base/variables.css";
+import "../styles/base/reset.css";
+import "../styles/components/buttons.css";
+import "../styles/components/form.css";
+import "../styles/pages/auth/registro.css";
+import "../styles/components/logos.css";
+import LogosLayout from "../components/shared/logosLayout.astro";
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrarse</title>
-    <!-- Favicon básico -->
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-    <LogosLayout>
-    </LogosLayout>
-<body>
-    <div class="container">
-        <div class="register-card">
-            <h2>Registrarse</h2>
-            <p class="subtitle">Ingrese los Siguientes datos.</p>
-            
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="name">Nombre*</label>
-                    <input type="text" id="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Correo electrónico*</label>
-                    <input type="email" id="email" required>
-                </div>
-             
-                <div class="form-group">
-                    <label for="password">Contraseña*</label>
-                    <input type="password" id="password" required>
-                </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registrarse</title>
+        <!-- Favicon básico -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <!-- Para diferentes tamaños de favicon -->
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <LogosLayout />
+    <body>
+        <div class="container">
+            <div class="register-card">
+                <h2>Registrarse</h2>
+                <p class="subtitle">Ingrese los Siguientes datos.</p>
 
-                <button type="submit" class="register-btn">Registrarse</button>
-                
-                <button type="button" class="google-btn">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cGF0aCBmaWxsPSIjRkZDMTA3IiBkPSJNNDMuNjExLDIwLjA4M0g0MlYyMEgyNHY4aDExLjMwM2MtMS42NDksNC42NTctNi4wOCw4LTExLjMwMyw4Yy02LjYyNywwLTEyLTUuMzczLTEyLTEyYzAtNi42MjcsNS4zNzMtMTIsMTItMTJjMy4wNTksMCw1Ljg0MiwxLjE1NCw3Ljk2MSwzLjAzOWw1LjY1Ny01LjY1N0MzNC4wNDYsNi4wNTMsMjkuMjY4LDQsMjQsNEMxMi45NTUsNCw0LDEyLjk1NSw0LDI0YzAsMTEuMDQ1LDguOTU1LDIwLDIwLDIwYzExLjA0NSwwLDIwLTguOTU1LDIwLTIwQzQ0LDIyLjY1OSw0My44NjIsMjEuMzUsNDMuNjExLDIwLjA4M3oiPjwvcGF0aD48cGF0aCBmaWxsPSIjRkYzRDAwIiBkPSJNNi4zMDYsMTQuNjkxbDYuNTcxLDQuODE5QzE0LjY1NSwxNS4xMDgsMTguOTYxLDEyLDI0LDEyYzMuMDU5LDAsNS44NDIsMS4xNTQsNy45NjEsMy4wMzlsNS42NTctNS42NTdDMzQuMDQ2LDYuMDUzLDI5LjI2OCw0LDI0LDRDMTYuMzE4LDQsOS42NTYsOC4zMzcsNi4zMDYsMTQuNjkxeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiM0Q0FGNTAiIGQ9Ik0yNCw0NGM1LjE2NiwwLDkuODYtMS45NzcsMTMuNDA5LTUuMTkybC02LjE5LTUuMjM4QzI5LjIxMSwzNS4wOTEsMjYuNzE1LDM2LDI0LDM2Yy01LjIwMiwwLTkuNjE5LTMuMzE3LTExLjI4My03Ljk0NmwtNi41MjIsNS4wMjVDOS41MDUsMzkuNTU2LDE2LjIyNyw0NCwyNCw0NHoiPjwvcGF0aD48cGF0aCBmaWxsPSIjMTk3NkQyIiBkPSJNNDMuNjExLDIwLjA4M0g0MlYyMEgyNHY4aDExLjMwM2MtMC43OTIsMi4yMzctMi4yMzEsNC4xNjYtNC4wODcsNS41NzFjMC4wMDEtMC4wMDEsMC4wMDItMC4wMDEsMC4wMDMtMC4wMDJsNi4xOSw1LjIzOEMzNi45NzEsMzkuMjA1LDQ0LDM0LDQ0LDI0QzQ0LDIyLjY1OSw0My44NjIsMjEuMzUsNDMuNjExLDIwLjA4M3oiPjwvcGF0aD48L3N2Zz4=" alt="Google logo">
-                    Registrarse con Google
-                </button>
-            </form>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="name">Nombre*</label>
+                        <input type="text" id="name" required />
+                    </div>
 
-            <p class="login-text">
-                ¿Ya tienes una cuenta? <a href="/">Iniciar sesión</a>
-            </p>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico*</label>
+                        <input type="email" id="email" required />
+                    </div>
 
-            <p class="copyright">© 2025 XDevLab</p>
+                    <div class="form-group">
+                        <label for="password">Contraseña*</label>
+                        <input type="password" id="password" required />
+                    </div>
+
+                    <button type="submit" class="register-btn"
+                        >Registrarse</button
+                    >
+
+                    <button type="button" class="google-btn">
+                        <img
+                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cGF0aCBmaWxsPSIjRkZDMTA3IiBkPSJNNDMuNjExLDIwLjA4M0g0MlYyMEgyNHY4aDExLjMwM2MtMS42NDksNC42NTctNi4wOCw4LTExLjMwMyw4Yy02LjYyNywwLTEyLTUuMzczLTEyLTEyYzAtNi42MjcsNS4zNzMtMTIsMTItMTJjMy4wNTksMCw1Ljg0MiwxLjE1NCw3Ljk2MSwzLjAzOWw1LjY1Ny01LjY1N0MzNC4wNDYsNi4wNTMsMjkuMjY4LDQsMjQsNEMxMi45NTUsNCw0LDEyLjk1NSw0LDI0YzAsMTEuMDQ1LDguOTU1LDIwLDIwLDIwYzExLjA0NSwwLDIwLTguOTU1LDIwLTIwQzQ0LDIyLjY1OSw0My44NjIsMjEuMzUsNDMuNjExLDIwLjA4M3oiPjwvcGF0aD48cGF0aCBmaWxsPSIjRkYzRDAwIiBkPSJNNi4zMDYsMTQuNjkxbDYuNTcxLDQuODE5QzE0LjY1NSwxNS4xMDgsMTguOTYxLDEyLDI0LDEyYzMuMDU5LDAsNS44NDIsMS4xNTQsNy45NjEsMy4wMzlsNS42NTctNS42NTdDMzQuMDQ2LDYuMDUzLDI5LjI2OCw0LDI0LDRDMTYuMzE4LDQsOS42NTYsOC4zMzcsNi4zMDYsMTQuNjkxeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiM0Q0FGNTAiIGQ9Ik0yNCw0NGM1LjE2NiwwLDkuODYtMS45NzcsMTMuNDA5LTUuMTkybC02LjE5LTUuMjM4QzI5LjIxMSwzNS4wOTEsMjYuNzE1LDM2LDI0LDM2Yy01LjIwMiwwLTkuNjE5LTMuMzE3LTExLjI4My03Ljk0NmwtNi41MjIsNS4wMjVDOS41MDUsMzkuNTU2LDE2LjIyNyw0NCwyNCw0NHoiPjwvcGF0aD48cGF0aCBmaWxsPSIjMTk3NkQyIiBkPSJNNDMuNjExLDIwLjA4M0g0MlYyMEgyNHY4aDExLjMwM2MtMC43OTIsMi4yMzctMi4yMzEsNC4xNjYtNC4wODcsNS41NzFjMC4wMDEtMC4wMDEsMC4wMDItMC4wMDEsMC4wMDMtMC4wMDJsNi4xOSw1LjIzOEMzNi45NzEsMzkuMjA1LDQ0LDM0LDQ0LDI0QzQ0LDIyLjY1OSw0My44NjIsMjEuMzUsNDMuNjExLDIwLjA4M3oiPjwvcGF0aD48L3N2Zz4="
+                            alt="Google logo"
+                        />
+                        Registrarse con Google
+                    </button>
+                </form>
+
+                <p class="login-text">
+                    ¿Ya tienes una cuenta? <a href="/">Iniciar sesión</a>
+                </p>
+
+                <p class="copyright">© 2025 XDevLab</p>
+            </div>
         </div>
-    </div>
-    <script src="../components/auth/SigninForm.ts"></script>
-</body>
+        <script src="../components/auth/SigninForm.ts"></script>
+    </body>
+
+
 </html>

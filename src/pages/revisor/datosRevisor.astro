@@ -1,139 +1,239 @@
 ---
-import '../../styles/stylesRevisor.css';
-import '../../styles/logos.css';
+import "../../styles/base/variables.css";
+import "../../styles/base/reset.css";
+import "../../styles/layouts/layout.css";
+import "../../styles/components/buttons.css";
+import "../../styles/components/form.css";
+import "../../styles/base/animations.css";
+import "../../styles/components/mobile-menu.css";
+import "../../styles/pages/revisor/dashboard.css";
+import "../../styles/components/logos.css";
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datos para Constancia</title>
-    <!-- Favicon básico -->
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<body>
-    <header class="header">
-        <div class="logos-container">
-            <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
-            <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
-            <img src="/logo_mujeres/logo_mueres_blanco.png" alt="Logo-mujeres" class="woman-silhouette" />
-            <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Datos para Constancia</title>
+        <!-- Favicon básico -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <!-- Para diferentes tamaños de favicon -->
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <body>
+        <header class="header">
+            <div class="logos-container">
+                <img
+                    src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png"
+                    alt="Logo-ujat"
+                    class="logo-ujat"
+                />
+                <img
+                    src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png"
+                    alt="Logo-dacity"
+                    class="logo-dacity"
+                />
+                <img
+                    src="/logo_mujeres/logo_mueres_blanco.png"
+                    alt="Logo-mujeres"
+                    class="woman-silhouette"
+                />
+                <img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+            </div>
+            <div class="buttons-wrapper">
+                <a href="../revisor/revisor" class="action-button">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#ffffff"
+                    >
+                        <path
+                            d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"
+                        ></path>
+                    </svg>
+                    Ponencias
+                </a>
+                <button class="action-button" id="logout-btn">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#ffffff"
+                    >
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                        ></path>
+                    </svg>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="form-container">
+                <h1>Datos para Constancia de Participación</h1>
+                <p class="subtitle">
+                    Por favor, ingrese sus datos para generar su constancia como
+                    revisor
+                </p>
+
+                <form id="constanciaForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            required
+                            placeholder="Como desea que aparezca en su constancia"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grado">Grado Académico</label>
+                        <select id="grado" name="grado" required>
+                            <option value="">Seleccione su grado</option>
+                            <option value="Dr.">Doctor</option>
+                            <option value="Dra.">Doctora</option>
+                            <option value="Mtro.">Maestro</option>
+                            <option value="Mtra.">Maestra</option>
+                            <option value="Lic.">Licenciado/a</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="institucion">Institución</label>
+                        <input
+                            type="text"
+                            id="institucion"
+                            name="institucion"
+                            required
+                            placeholder="Nombre de su institución"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="areaInteres">Area de Interes</label>
+                        <select id="areaInteres" name="areaInteres" required>
+                            <option value=""
+                                >Seleccione su área de interés</option
+                            >
+                            <option value="Ingeniería">Ingeniería</option>
+                            <option value="Ciencias de la Salud"
+                                >Ciencias de la Salud</option
+                            >
+                            <option value="Ciencias Sociales y Humanidades"
+                                >Ciencias Sociales y Humanidades</option
+                            >
+                            <option value="Ciencias de la Educación"
+                                >Ciencias de la Educación</option
+                            >
+                            <option
+                                value="Ciencias de la Tierra y el Medio Ambiente"
+                                >Ciencias de la Tierra y el Medio Ambiente</option
+                            >
+                        </select>
+                    </div>
+                    <div></div>
+
+                    <div class="form-group">
+                        <label for="departamento">Departamento o Área</label>
+                        <input
+                            type="text"
+                            id="departamento"
+                            name="departamento"
+                            required
+                            placeholder="Departamento o área a la que pertenece"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"
+                            >Correo Electrónico Institucional</label
+                        >
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            placeholder="correo@institucion.edu"
+                        />
+                    </div>
+
+                    <button type="submit" class="submit-btn"
+                        >Guardar Datos</button
+                    >
+                </form>
+            </div>
         </div>
-        <div class="buttons-wrapper">
-            <a href="../revisor/revisor" class="action-button">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                 viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                 <path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/>
-                </svg>
-                Ponencias
-            </a>
-            <button class="action-button" id="logout-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                height="24px" viewBox="0 -960 960 960" 
-                width="24px" fill="#ffffff">
-                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
-                </svg>
-                Cerrar Sesión
-            </button>
-        </div>
-    </header>
 
-    <div class="container">
-        <div class="form-container">
-            <h1>Datos para Constancia de Participación</h1>
-            <p class="subtitle">Por favor, ingrese sus datos para generar su constancia como revisor</p>
-            
-            <form id="constanciaForm">
-                <div class="form-group">
-                    <label for="nombre">Nombre Completo</label>
-                    <input type="text" id="nombre" name="nombre" required 
-                           placeholder="Como desea que aparezca en su constancia">
-                </div>
+        <!-- Bottom Navigation for Mobile -->
+        <nav class="bottom-nav">
+            <div class="bottom-nav-items">
+                <a
+                    href="../revisor/RevisarPonencia.astro"
+                    class="bottom-nav-item"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#ffffff"
+                    >
+                        <path
+                            d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"
+                        ></path>
+                    </svg>
+                    <span>Ponencias</span>
+                </a>
+                <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#ffffff"
+                    >
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                        ></path>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </nav>
+    </body>
+    <script>
+        import { initializeDatosRevisorPage } from "../../components/revisor/datosRevisor";
 
-                <div class="form-group">
-                    <label for="grado">Grado Académico</label>
-                    <select id="grado" name="grado" required>
-                        <option value="">Seleccione su grado</option>
-                        <option value="Dr.">Doctor</option>
-                        <option value="Dra.">Doctora</option>
-                        <option value="Mtro.">Maestro</option>
-                        <option value="Mtra.">Maestra</option>
-                        <option value="Lic.">Licenciado/a</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="institucion">Institución</label>
-                    <input type="text" id="institucion" name="institucion" required 
-                           placeholder="Nombre de su institución">
-                </div>
-                
-                <div class = "form-group">
-                    <label for="areaInteres">Area de Interes</label>
-                    <select id="areaInteres" name="areaInteres" required>
-                        <option value="">Seleccione su área de interés</option>
-                        <option value="Ingeniería">Ingeniería</option>
-                        <option value="Ciencias de la Salud">Ciencias de la Salud</option>
-                        <option value="Ciencias Sociales y Humanidades">Ciencias Sociales y Humanidades</option>
-                        <option value="Ciencias de la Educación">Ciencias de la Educación</option>
-                        <option value="Ciencias de la Tierra y el Medio Ambiente">Ciencias de la Tierra y el Medio Ambiente</option>
-                        
-                    </select>
-                </div>
-                <div>
-
-                </div>
-
-                <div class="form-group">
-                    <label for="departamento">Departamento o Área</label>
-                    <input type="text" id="departamento" name="departamento" required 
-                           placeholder="Departamento o área a la que pertenece">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Correo Electrónico Institucional</label>
-                    <input type="email" id="email" name="email" required 
-                           placeholder="correo@institucion.edu">
-                </div>
-
-                <button type="submit" class="submit-btn">Guardar Datos</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation for Mobile -->
-    <nav class="bottom-nav">
-        <div class="bottom-nav-items">
-            <a href="../revisor/RevisarPonencia.astro" class="bottom-nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                    <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/>
-                </svg>
-                <span>Ponencias</span>
-            </a>
-            <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-                    <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
-                </svg>
-                <span>Cerrar Sesión</span>
-            </a>
-        </div>
-    </nav>
-</body>
-<script>
-
-import { initializeDatosRevisorPage } from "../../components/revisor/datosRevisor";
-        
         // Ejecutar la inicialización cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener("DOMContentLoaded", async () => {
             try {
                 await initializeDatosRevisorPage();
-                console.log('DatosRevisor page initialized successfully');
+                console.log("DatosRevisor page initialized successfully");
             } catch (error) {
-                console.error('Error initializing datosRevisor page:', error);
+                console.error("Error initializing datosRevisor page:", error);
             }
         });
-  </script>
+    </script>
 </html>

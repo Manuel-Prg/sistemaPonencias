@@ -1,64 +1,88 @@
 ---
-import '../../styles/stylesDatos.css';
-import '../../styles/logos.css';
-import '../../styles/main.css';
-import HeaderLayout from '../../components/shared/headerLayout.astro';
-import BotonMobile from '../../components/shared/botonMobile.astro';
+import "../../styles/pages/ponente/datos.css";
+import "../../styles/components/logos.css";
+import "../../styles/pages/main.css";
+import HeaderLayout from "../../components/shared/headerLayout.astro";
+import BotonMobile from "../../components/shared/botonMobile.astro";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Ponencia</title>
-    <!-- Favicon básico -->
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <!-- Para diferentes tamaños de favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<HeaderLayout>
-</HeaderLayout>
-<!-- Bottom Navigation for Mobile -->
-<BotonMobile>
-</BotonMobile>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Editar Ponencia</title>
+        <!-- Favicon básico -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <!-- Para diferentes tamaños de favicon -->
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <HeaderLayout />
+    <!-- Bottom Navigation for Mobile -->
+    <BotonMobile />
 
-<body>
-    <div class="container">
-        <div class="form-card">
-            <h2>Correciones</h2>
-            <p class="subtitle">No pasa nada, los errores son comunes por eso te ayudaremos a que edites y modifiques los detalles importantes de tu ponencia.</p>
-            
-            <form id="editForm">
-                <div class="form-group">
-                    <label>Titulo</label>
-                    <div class="input-icon">
-                        <input type="text" name="title" required placeholder="Titulo de la ponencia">
+    <body>
+        <div class="container">
+            <div class="form-card">
+                <h2>Correciones</h2>
+                <p class="subtitle">
+                    No pasa nada, los errores son comunes por eso te ayudaremos
+                    a que edites y modifiques los detalles importantes de tu
+                    ponencia.
+                </p>
+
+                <form id="editForm">
+                    <div class="form-group">
+                        <label>Titulo</label>
+                        <div class="input-icon">
+                            <input
+                                type="text"
+                                name="title"
+                                required
+                                placeholder="Titulo de la ponencia"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Resumen de la ponencia</label>
-                    <div class="input-icon">
-                        <textarea 
-                            name="summary" 
-                            rows="8" 
-                            placeholder="Escribe el resumen de tu ponencia..."
-                            required
-                        ></textarea>
-                        <div class="word-count">0/500 palabras</div>
+                    <div class="form-group">
+                        <label>Resumen de la ponencia</label>
+                        <div class="input-icon">
+                            <textarea
+                                name="summary"
+                                rows="8"
+                                placeholder="Escribe el resumen de tu ponencia..."
+                                required></textarea>
+                            <div class="word-count">0/500 palabras</div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-buttons">
-                    <button type="button" class="btn-cancel">Cancelar</button>
-                    <button type="submit" class="btn-next">Guardar cambios</button>
-                </div>
-            </form>
+                    <div class="form-buttons">
+                        <button type="button" class="btn-cancel"
+                            >Cancelar</button
+                        >
+                        <button type="submit" class="btn-next"
+                            >Guardar cambios</button
+                        >
+                    </div>
+                </form>
 
-            <p class="copyright">© 2025 XDevLab</p>
+                <p class="copyright">© 2025 XDevLab</p>
+            </div>
         </div>
-    </div>
-</body>
-</html>
+    </body>
 
+</html>

@@ -1,29 +1,51 @@
 ---
-import '../../styles/stylesRevisor.css';
-import '../../styles/main.css';
-import '../../styles/logos.css';
+import "../../styles/pages/revisor/dashboard.css";
+import "../../styles/pages/main.css";
+import "../../styles/components/logos.css";
 import HeaderLayout from "../../components/shared/headerLayout.astro";
 ---
+
 <html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Revisor</title>
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<HeaderLayout>
-    <button slot="ponencia" class="action-button" id="datos-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px"
-             viewBox="0 -960 960 960" width="24px" fill="#ffffff">
-            <path d="M160-80q-33 0-56.5-23.5T80-160v-440q0-33 23.5-56.5T160-680h200v-120q0-33 23.5-56.5T440-880h80q33 0 56.5 23.5T600-800v120h200q33 0 56.5 23.5T880-600v440q0 33-23.5 56.5T800-80H160Zm0-80h640v-440H600q0 33-23.5 56.5T520-520h-80q-33 0-56.5-23.5T360-600H160v440Zm80-80h240v-18q0-17-9.5-31.5T444-312q-20-9-40.5-13.5T360-330q-23 0-43.5 4.5T276-312q-17 8-26.5 22.5T240-258v18Zm320-60h160v-60H560v60Zm-200-60q25 0 42.5-17.5T420-420q0-25-17.5-42.5T360-480q-25 0-42.5 17.5T300-420q0 25 17.5 42.5T360-360Zm200-60h160v-60H560v60ZM440-600h80v-200h-80v200Zm40 220Z"/>
-        </svg>
-        Mis Datos
-    </button>
-</HeaderLayout>
-<body>
-    <!--<header class="header">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard Revisor</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <HeaderLayout>
+        <button slot="ponencia" class="action-button" id="datos-btn">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffffff"
+            >
+                <path
+                    d="M160-80q-33 0-56.5-23.5T80-160v-440q0-33 23.5-56.5T160-680h200v-120q0-33 23.5-56.5T440-880h80q33 0 56.5 23.5T600-800v120h200q33 0 56.5 23.5T880-600v440q0 33-23.5 56.5T800-80H160Zm0-80h640v-440H600q0 33-23.5 56.5T520-520h-80q-33 0-56.5-23.5T360-600H160v440Zm80-80h240v-18q0-17-9.5-31.5T444-312q-20-9-40.5-13.5T360-330q-23 0-43.5 4.5T276-312q-17 8-26.5 22.5T240-258v18Zm320-60h160v-60H560v60Zm-200-60q25 0 42.5-17.5T420-420q0-25-17.5-42.5T360-480q-25 0-42.5 17.5T300-420q0 25 17.5 42.5T360-360Zm200-60h160v-60H560v60ZM440-600h80v-200h-80v200Zm40 220Z"
+                ></path>
+            </svg>
+            Mis Datos
+        </button>
+    </HeaderLayout>
+    <body>
+        <!--<header class="header">
         <div class="logos-container">
             <img src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png" alt="Logo-ujat" class="logo-ujat">
             <img src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png" alt="Logo-dacity" class="logo-dacity" />
@@ -51,137 +73,183 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
         </div>
     </header> -->
 
-    <div class="dashboard">
-        <main class="main-content">
-            <div class="content-wrapper">
-                <h1 class="welcome">¡Bienvenido [nombre]!</h1>
+        <div class="dashboard">
+            <main class="main-content">
+                <div class="content-wrapper">
+                    <h1 class="welcome">¡Bienvenido [nombre]!</h1>
 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card" data-status="pendiente">
-                        <div class="stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px"
-                             viewBox="0 -960 960 960" 
-                            width="24px" fill="#ffffff">
-                            <path d="M680-80q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q83 0 141.5 58.5T880-280q0 83-58.5 141.5T680-80Zm67-105 28-28-75-75v-112h-40v128l87 87Zm-547 65q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v250q-18-13-38-22t-42-16v-212h-80v120H280v-120h-80v560h212q7 22 16 42t22 38H200Zm280-640q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/>
-                            </svg>
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card" data-status="pendiente">
+                            <div class="stat-icon">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#ffffff"
+                                >
+                                    <path
+                                        d="M680-80q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q83 0 141.5 58.5T880-280q0 83-58.5 141.5T680-80Zm67-105 28-28-75-75v-112h-40v128l87 87Zm-547 65q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v250q-18-13-38-22t-42-16v-212h-80v120H280v-120h-80v560h212q7 22 16 42t22 38H200Zm280-640q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Ponencias pendientes</h3>
+                                <p class="stat-number" id="pendiente-count">
+                                    0
+                                </p>
+                            </div>
                         </div>
-                        <div class="stat-info">
-                            <h3>Ponencias pendientes</h3>
-                            <p class="stat-number" id="pendiente-count">0</p>
+                        <div class="stat-card" data-status="evaluada">
+                            <div class="stat-icon">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#ffffff"
+                                >
+                                    <path
+                                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q8 0 15 1.5t14 4.5l-74 74H200v560h560v-266l80-80v346q0 33-23.5 56.5T760-120H200Zm261-160L235-506l56-56 170 170 367-367 57 55-424 424Z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Ponencias evaluadas</h3>
+                                <p class="stat-number" id="evaluada-count">0</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="stat-card" data-status="evaluada">
-                        <div class="stat-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                             height="24px"
-                             viewBox="0 -960 960 960" width="24px"
-                              fill="#ffffff">
-                                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q8 0 15 1.5t14 4.5l-74 74H200v560h560v-266l80-80v346q0 33-23.5 56.5T760-120H200Zm261-160L235-506l56-56 170 170 367-367 57 55-424 424Z"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Ponencias evaluadas</h3>
-                            <p class="stat-number" id="evaluada-count">0</p>
+
+                    <div class="board-container">
+                        <h2>Panel de Ponencias</h2>
+                        <div class="board">
+                            <!-- Pendientes Column -->
+                            <div class="board-column">
+                                <div class="column-header">
+                                    <h3>Pendientes</h3>
+                                    <span
+                                        class="counter"
+                                        id="pendientes-counter">0</span
+                                    >
+                                </div>
+                                <div
+                                    class="column-content"
+                                    id="pendientes-column"
+                                >
+                                    <p class="empty-message">Cargando...</p>
+                                </div>
+                            </div>
+
+                            <div class="board-column">
+                                <div class="column-header">
+                                    <h3>Evaluadas</h3>
+                                    <span class="counter" id="evaluadas-counter"
+                                        >0</span
+                                    >
+                                </div>
+                                <div
+                                    class="column-content"
+                                    id="evaluadas-column"
+                                >
+                                    <p class="empty-message">Cargando...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </main>
 
-                <div class="board-container">
-                    <h2>Panel de Ponencias</h2>
-                    <div class="board">
-                        <!-- Pendientes Column -->
-                        <div class="board-column">
-                            <div class="column-header">
-                                <h3>Pendientes</h3>
-                                <span class="counter" id="pendientes-counter">0</span>
-                            </div>
-                            <div class="column-content" id="pendientes-column">
-                                <p class="empty-message">Cargando...</p>
-                            </div>
-                        </div>
-                
-                        <div class="board-column">
-                            <div class="column-header">
-                                <h3>Evaluadas</h3>
-                                <span class="counter" id="evaluadas-counter">0</span>
-                            </div>
-                            <div class="column-content" id="evaluadas-column">
-                                <p class="empty-message">Cargando...</p>
-                            </div>
-                        </div>
-                
-                        
-                    </div>
+            <!-- Bottom Navigation for Mobile -->
+            <nav class="bottom-nav">
+                <div class="bottom-nav-items">
+                    <a
+                        href="../revisor/datosRevisor"
+                        class="bottom-nav-item"
+                        id="datos-btn-mobile"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#ffffff"
+                        >
+                            <path
+                                d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"
+                            ></path>
+                        </svg>
+                        <span>Mis Datos</span>
+                    </a>
+                    <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#ffffff"
+                        >
+                            <path
+                                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                            ></path>
+                        </svg>
+                        <span>Cerrar Sesión</span>
+                    </a>
                 </div>
-            </div>
-        </main>
-
-        <!-- Bottom Navigation for Mobile -->
-        <nav class="bottom-nav">
-            <div class="bottom-nav-items">
-                <a href="../revisor/datosRevisor" class="bottom-nav-item" id="datos-btn-mobile">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#ffffff">
-                        <path
-                            d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z" />
-                    </svg>
-                    <span>Mis Datos</span>
-                </a>
-                <a href="#" class="bottom-nav-item" id="logout-btn-mobile">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#ffffff">
-                        <path
-                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-                    </svg>
-                    <span>Cerrar Sesión</span>
-                </a>
-            </div>
-        </nav>
-    </div>
-
-    <!-- Dialog -->
-    <dialog id="presentation-dialog" class="presentation-dialog">
-        <div class="dialog-content">
-            <div class="dialog-header">
-                <h2 id="dialog-title"></h2>
-                <p id="dialog-summary"></p>
-            </div>
-
-            <div class="form-group">
-                <label for="comment">Comentarios:</label>
-                <textarea id="comment" rows="4"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="rating">Calificación:</label>
-                <input type="number" id="rating" min="1" max="10" step="1">
-            </div>
-
-            <div class="dialog-buttons">
-                <div class="primary-buttons">
-                    <button id="accept-presentation">Aceptar</button>
-                    <button id="reject-presentation">Rechazar</button>
-                </div>
-                <button id="accept-with-corrections">Aceptar con correcciones</button>
-                <button id="close-dialog">Cerrar</button>
-            </div>
+            </nav>
         </div>
-    </dialog>
 
-    <script>
-        // Importación del script del lado del cliente
-        import { initializeRevisorPage } from "../../components/revisor/dashboard";
-        
-        // Ejecutar la inicialización cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initializeRevisorPage();
-                console.log('Revisor page initialized successfully');
-            } catch (error) {
-                console.error('Error initializing revisor page:', error);
-            }
-        });
-    </script>
-</body>
+        <!-- Dialog -->
+        <dialog id="presentation-dialog" class="presentation-dialog">
+            <div class="dialog-content">
+                <div class="dialog-header">
+                    <h2 id="dialog-title"></h2>
+                    <p id="dialog-summary"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">Comentarios:</label>
+                    <textarea id="comment" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">Calificación:</label>
+                    <input
+                        type="number"
+                        id="rating"
+                        min="1"
+                        max="10"
+                        step="1"
+                    />
+                </div>
+
+                <div class="dialog-buttons">
+                    <div class="primary-buttons">
+                        <button id="accept-presentation">Aceptar</button>
+                        <button id="reject-presentation">Rechazar</button>
+                    </div>
+                    <button id="accept-with-corrections"
+                        >Aceptar con correcciones</button
+                    >
+                    <button id="close-dialog">Cerrar</button>
+                </div>
+            </div>
+        </dialog>
+
+        <script>
+            // Importación del script del lado del cliente
+            import { initializeRevisorPage } from "../../components/revisor/dashboard";
+
+            // Ejecutar la inicialización cuando el DOM esté listo
+            document.addEventListener("DOMContentLoaded", async () => {
+                try {
+                    await initializeRevisorPage();
+                    console.log("Revisor page initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing revisor page:", error);
+                }
+            });
+        </script>
+    </body>
 </html>

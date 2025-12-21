@@ -4,7 +4,7 @@ import { UserService } from '../../lib/services/user/user.service';
 import type { Ponencia } from '../../lib/models/ponencia';
 import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
-import {formatTimeFromTimestamp} from '../utils';
+import { formatTimeFromTimestamp } from '../../lib/utils/formatters';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
@@ -43,9 +43,9 @@ export class SalaManager {
     const tableBody = document.querySelector('.table-body');
     if (tableBody) {
       tableBody.innerHTML = ''; // Limpiar tabla
-      
+
       const ponenciasToDisplay = groupedPonencias[this.currentActiveStatus];
-      
+
       if (ponenciasToDisplay.length === 0) {
         tableBody.innerHTML = `
           <div class="table-row empty-row">
@@ -57,18 +57,18 @@ export class SalaManager {
           const row = document.createElement('div');
           row.className = 'table-row';
           row.setAttribute('data-id', ponencia.id);
-          
+
           // Formatear fecha
           const date = formatTimeFromTimestamp(ponencia.creado);
-        
+
           // Crear lista de autores
           const autoresText = ponencia.autores.map(autor => autor.nombre).join(', ');
-          
+
           // Determinar tipo de botón según estado
-          const actionButton = this.currentActiveStatus === 'pendientes' 
-            ? `<button class="action-btn accept-btn">Aceptar</button>` 
+          const actionButton = this.currentActiveStatus === 'pendientes'
+            ? `<button class="action-btn accept-btn">Aceptar</button>`
             : `<button class="action-btn view-btn">Ver detalles</button>`;
-          
+
           row.innerHTML = `
             <div class="cell">
               <div class="ponencia-title">${ponencia.titulo}</div>
@@ -77,12 +77,12 @@ export class SalaManager {
             <div class="cell">${autoresText}</div>
             <div class="cell action-cell">${actionButton}</div>
           `;
-          
+
           tableBody.appendChild(row);
         });
       }
     }
-    
+
     // Actualizar botones de filtro si existen
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
@@ -112,7 +112,7 @@ export class SalaManager {
         this.filterAndDisplayPonencias();
       });
     }
-    
+
     // Configurar manejadores para botones de filtro (si se agregan a la vista)
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
@@ -121,18 +121,18 @@ export class SalaManager {
         if (status === 'pendientes' || status === 'aceptadas') {
           this.currentActiveStatus = status;
           this.filterAndDisplayPonencias();
-          
+
           // Actualizar estado activo de los botones
           filterButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
         }
       });
     });
-    
+
     // Delegación de eventos para manejar acciones en filas
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      
+
       // Manejar botón "Aceptar"
       if (target.classList.contains('accept-btn')) {
         const row = target.closest('.table-row');
@@ -143,7 +143,7 @@ export class SalaManager {
           }
         }
       }
-      
+
       // Manejar botón "Ver detalles"
       else if (target.classList.contains('view-btn')) {
         const row = target.closest('.table-row');
@@ -159,15 +159,15 @@ export class SalaManager {
 
   private filterAndDisplayPonencias() {
     let filteredPonencias = [...this.ponenciasData];
-    
+
     // Aplicar filtro de búsqueda si existe
     if (this.searchTerm) {
-      filteredPonencias = filteredPonencias.filter(ponencia => 
+      filteredPonencias = filteredPonencias.filter(ponencia =>
         ponencia.titulo.toLowerCase().includes(this.searchTerm) ||
         ponencia.autores.some(autor => autor.nombre.toLowerCase().includes(this.searchTerm))
       );
     }
-    
+
     const groupedPonencias = this.groupPonencias(filteredPonencias);
     this.updateUI(groupedPonencias);
   }
@@ -195,7 +195,7 @@ export class SalaManager {
 
   public async initialize(): Promise<void> {
     console.log('initialize');
-    
+
     const user = await new Promise<FirebaseUser | null>((resolve) => {
       const unsubscribe = this.authService.onAuthStateChanged((user) => {
         unsubscribe();
@@ -217,7 +217,7 @@ export class SalaManager {
       }
 
       // Añadir botones de filtro a la interfaz
-      
+
       // Configurar listeners de eventos
       this.setupEventListeners();
 

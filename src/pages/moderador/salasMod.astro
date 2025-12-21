@@ -1,39 +1,59 @@
 ---
-import '../../styles/salasModStyles.css';
+import "../../styles/pages/moderador/salas.css";
 import HeaderLayout from "../../components/shared/headerLayout.astro";
 ---
 
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Ponencias</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon_io/favicon-16x16.png">
-</head>
-<HeaderLayout/>
-<body>
-    <div class="main-container">
-        <h1 id="room-title">[Titulo]</h1>
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Buscar ponencias...">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-        <div class="table-container">
-            <div class="table-header">
-                <div class="header-cell">Título</div>
-                <div class="header-cell">Autor</div>
-                <div class="header-cell">Acción</div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lista de Ponencias</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon/favicon_io/favicon.ico"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon_io/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon_io/favicon-16x16.png"
+        />
+    </head>
+    <HeaderLayout />
+    <body>
+        <div class="main-container">
+            <h1 id="room-title">[Titulo]</h1>
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Buscar ponencias..."
+                />
+                <i class="fas fa-search search-icon"></i>
             </div>
-            <div class="table-body">
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="header-cell">Título</div>
+                    <div class="header-cell">Autor</div>
+                    <div class="header-cell">Acción</div>
+                </div>
+                <div class="table-body"></div>
             </div>
         </div>
-    </div>
-    <script>
-        import { initializeSalaPage } from '../../components/moderador/dashboard';
-        initializeSalaPage();
-    </script>
-</body>
+        <script>
+            import { initializeSalaPage } from "../../components/moderador/dashboard";
+            initializeSalaPage();
+        </script>
+    </body>
 </html>

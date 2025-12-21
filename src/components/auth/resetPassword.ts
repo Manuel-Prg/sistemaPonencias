@@ -11,7 +11,7 @@ export class ResetPasswordForm {
         try {
             await this.authService.sendPasswordResetEmail(email);
             alert('Se ha enviado un enlace de recuperación a tu correo electrónico');
-            window.location.href = '/autenticacion/iniciarSesion';
+            window.location.href = '/';
         } catch (error) {
             console.error('Error al enviar el correo de recuperación:', error);
             throw this.authService.handleAuthError(error);
@@ -20,12 +20,12 @@ export class ResetPasswordForm {
 
     attachListeners(): void {
         const form = document.getElementById('resetPasswordForm') as HTMLFormElement;
-        
+
         form?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = (document.getElementById('email') as HTMLInputElement).value;
-            
+
             try {
                 await this.handleSubmit(email);
             } catch (error: unknown) {

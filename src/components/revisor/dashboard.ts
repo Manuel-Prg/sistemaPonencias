@@ -3,7 +3,7 @@ import { UserService } from "../../lib/services/user/user.service";
 import { RevisorService } from "../../lib/services/revisor/revisor.services";
 import type { Ponencia, EstadoPonencia, PonenciaAsignada } from "../../lib/models/ponencia";
 import type { User as FirebaseUser } from 'firebase/auth';
-import {formatTimeFromTimestamp} from '../utils';
+import { formatTimeFromTimestamp } from '../../lib/utils/formatters';
 
 interface GroupedPonencias {
   pendientes: Ponencia[];
@@ -26,8 +26,8 @@ export class DashboardManager {
   private groupPonencias(ponencias: Ponencia[]): GroupedPonencias {
     return {
       pendientes: ponencias.filter(p => p.estado === 'pendiente'),
-      evaluadas: ponencias.filter(p => 
-        p.estado === 'aceptada' || 
+      evaluadas: ponencias.filter(p =>
+        p.estado === 'aceptada' ||
         p.estado === 'aceptada con correcciones' ||
         p.estado === 'rechazada'
       )
@@ -88,7 +88,7 @@ export class DashboardManager {
     if (ponencias.length === 0) {
       return '<p class="empty-message">No hay ponencias en esta categoría</p>';
     }
-    
+
     return ponencias.map(ponencia => this.createPonenciaCard(ponencia)).join('');
   }
 
@@ -133,7 +133,7 @@ export class DashboardManager {
     logoutBtn?.addEventListener('click', async () => {
       try {
         await this.authService.signOut();
-        window.location.href = '/autenticacion/iniciarSesion';
+        window.location.href = '/';
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
       }
@@ -151,7 +151,7 @@ export class DashboardManager {
       e.preventDefault();
       try {
         await this.authService.signOut();
-        window.location.href = '/autenticacion/iniciarSesion';
+        window.location.href = '/';
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
       }
@@ -166,7 +166,7 @@ export class DashboardManager {
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const ponenciaCard = target.closest('.ponencia-card') as HTMLElement;
-      
+
       if (ponenciaCard) {
         const ponenciaId = ponenciaCard.getAttribute('data-id');
         if (ponenciaId) {
@@ -186,7 +186,7 @@ export class DashboardManager {
         } else if (status === 'evaluada') {
           this.currentActiveStatus = 'evaluadas';
         }
-        
+
         const groupedPonencias = this.groupPonencias(this.ponenciasData);
         this.updateUI(groupedPonencias);
       });
@@ -203,7 +203,7 @@ export class DashboardManager {
 
   public async initialize(): Promise<void> {
     console.log('initialize');
-    
+
     const user = await new Promise<FirebaseUser | null>((resolve) => {
       const unsubscribe = this.authService.onAuthStateChanged((user) => {
         unsubscribe();
@@ -225,7 +225,7 @@ export class DashboardManager {
       }
       const welcomeElement = document.querySelector('.welcome');
       if (welcomeElement) {
-        welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre|| "Usuario"}!`;
+        welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre || "Usuario"}!`;
       }
 
       await this.updateWelcomeMessage(userData);
@@ -269,41 +269,41 @@ export async function initializeRevisorPage(): Promise<void> {
 
 //Scripts de animacion para aceptar con observaciones--------------------------
 
-  const dialog = document.getElementById("presentation-dialog") as HTMLDialogElement;
-  const closeDialog = document.getElementById("close-dialog") as HTMLButtonElement;
-  const acceptPresentation = document.getElementById("accept-presentation") as HTMLButtonElement;
-  const rejectPresentation = document.getElementById("reject-presentation") as HTMLButtonElement;
-  const acceptWithCorrections = document.getElementById("accept-with-corrections") as HTMLButtonElement;
-  const dialogTitle = document.getElementById("dialog-title") as HTMLHeadingElement;
-  const dialogSummary = document.getElementById("dialog-summary") as HTMLParagraphElement;
-  const commentArea = document.getElementById("comment") as HTMLTextAreaElement;
-  const ratingInput = document.getElementById("rating") as HTMLInputElement;
+const dialog = document.getElementById("presentation-dialog") as HTMLDialogElement;
+const closeDialog = document.getElementById("close-dialog") as HTMLButtonElement;
+const acceptPresentation = document.getElementById("accept-presentation") as HTMLButtonElement;
+const rejectPresentation = document.getElementById("reject-presentation") as HTMLButtonElement;
+const acceptWithCorrections = document.getElementById("accept-with-corrections") as HTMLButtonElement;
+const dialogTitle = document.getElementById("dialog-title") as HTMLHeadingElement;
+const dialogSummary = document.getElementById("dialog-summary") as HTMLParagraphElement;
+const commentArea = document.getElementById("comment") as HTMLTextAreaElement;
+const ratingInput = document.getElementById("rating") as HTMLInputElement;
 
-  interface Presentation {
-    titulo: string;
-    resumen?: string;
-  }
+interface Presentation {
+  titulo: string;
+  resumen?: string;
+}
 
-  function openDialog(presentation: Presentation): void {
-    dialogTitle.textContent = presentation.titulo;
-    dialogSummary.textContent = presentation.resumen || "No hay resumen disponible.";
-    commentArea.value = "";
-    ratingInput.value = "";
-    dialog.showModal();
-  }
+function openDialog(presentation: Presentation): void {
+  dialogTitle.textContent = presentation.titulo;
+  dialogSummary.textContent = presentation.resumen || "No hay resumen disponible.";
+  commentArea.value = "";
+  ratingInput.value = "";
+  dialog.showModal();
+}
 
-  closeDialog.addEventListener("click", () => {
-    dialog.close();
-  });
+closeDialog.addEventListener("click", () => {
+  dialog.close();
+});
 
-  function handleReview(action: string): void {
-    const comment: string = commentArea.value;
-    const rating: string = ratingInput.value;
-    console.log("Review submitted:", { action, comment, rating });
-    dialog.close();
-  }
+function handleReview(action: string): void {
+  const comment: string = commentArea.value;
+  const rating: string = ratingInput.value;
+  console.log("Review submitted:", { action, comment, rating });
+  dialog.close();
+}
 
-  acceptPresentation.addEventListener("click", () => handleReview("accept"));
-  rejectPresentation.addEventListener("click", () => handleReview("reject"));
-  acceptWithCorrections.addEventListener("click", () => handleReview("accept_with_corrections"));
+acceptPresentation.addEventListener("click", () => handleReview("accept"));
+rejectPresentation.addEventListener("click", () => handleReview("reject"));
+acceptWithCorrections.addEventListener("click", () => handleReview("accept_with_corrections"));
 //----------------------------------------------------------------------------------------------------
