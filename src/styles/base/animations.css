@@ -1,29 +1,139 @@
+/* Fade In Animation */
 @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Slide In Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
   }
-  
-  .slide-in {
-    animation: slideIn 0.5s ease-out forwards;
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+/* Fade In Up Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Message Appear Animation */
+@keyframes messageAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Title Pulse Animation */
+@keyframes titlePulse {
+
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Gradient Move Animation */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Dialog Open Animation */
+@keyframes dialogOpen {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Backdrop Fade Animation */
+@keyframes backdropFade {
+  from {
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+}
+
+/* Form Elements Fade Animation */
+@keyframes formElementsFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glow Animation */
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  }
+
+  to {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
+  }
+}

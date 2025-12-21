@@ -1,6 +1,6 @@
-/* Revisor Dashboard CSS */
+/* Revisor Dashboard Page Specific Styles */
 
-/* Estilos específicos de esta página */
+/* Container Override */
 .container {
   width: 100%;
   min-height: 100vh;
@@ -11,7 +11,7 @@
   justify-content: center;
 }
 
-/* Header Styles */
+/* Header Specific Styles */
 .header {
   display: flex;
   justify-content: space-between;
@@ -71,18 +71,12 @@
   margin-left: 1rem;
 }
 
-@media (max-width: 768px) {
-  .buttons-wrapper {
-    display: none;
-  }
-}
-
-/* Estilos para el botón de cerrar sesión en desktop */
+/* Sidebar Hidden */
 .sidebar {
   display: none;
-  /* Ocultamos la sidebar */
 }
 
+/* Logout Button Styles */
 .logout-btn {
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--button-secondary);
@@ -152,6 +146,8 @@
   flex: 1;
   padding: var(--spacing-lg);
   padding-top: calc(var(--header-height) + var(--spacing-sm));
+  margin-left: 0;
+  margin-bottom: 70px;
 }
 
 .content-wrapper {
@@ -199,7 +195,6 @@
 
 .stat-card svg {
   stroke: var(--text-color);
-
   stroke-width: 2;
   width: 32px;
   height: 32px;
@@ -277,39 +272,6 @@
 .status-rechazada {
   background: rgba(255, 0, 0, 0.2);
   color: #ffffff;
-}
-
-@media (max-width: 768px) {
-  .ponencia-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  .ponencia-status {
-    align-self: flex-start;
-  }
-
-  .header {
-    padding: 0 var(--spacing-md);
-  }
-
-  .logo {
-    gap: var(--spacing-md);
-  }
-
-  .logo img {
-    height: 32px;
-  }
-
-  #logout-btn {
-    display: none;
-    /* Ocultamos el botón desktop en móvil */
-  }
-
-  .nav-buttons {
-    display: none;
-  }
 }
 
 /* Dialog Styles */
@@ -448,82 +410,10 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Responsive Styles */
-@media (max-width: 480px) {
-  .logo img {
-    height: 28px;
-  }
-
-  .presentation-dialog {
-    padding: var(--spacing-md);
-    margin: var(--spacing-sm);
-  }
-
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .stat-icon {
-    margin: 0 auto var(--spacing-sm);
-  }
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes dialogOpen {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.7);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes backdropFade {
-  from {
-    background: rgba(0, 0, 0, 0);
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-  }
-
-  to {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-  }
-}
-
-@keyframes formElementsFade {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Header Buttons */
 .header-buttons {
   display: flex;
   gap: 2rem;
-  /* Increase gap between buttons */
   align-items: center;
   position: absolute;
   right: 2rem;
@@ -551,7 +441,6 @@
 
 .header-btn:first-child {
   margin-right: 0;
-  /* Remove margin since we're using gap */
 }
 
 .header-btn svg {
@@ -578,7 +467,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilos del formulario */
+/* Form Container Styles */
 .form-container {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -591,12 +480,11 @@
   box-sizing: border-box;
 }
 
-/* Actualizar los estilos del formulario */
 #constanciaForm {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.45rem;
 }
 
 h1 {
@@ -612,22 +500,6 @@ h1 {
   color: var(--text-color);
   opacity: 0.8;
   font-size: 0.9rem;
-}
-
-
-#constanciaForm {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  /* Reducir el espacio entre grupos */
-}
-
-.form-group {
-  width: 100%;
-  margin-bottom: 0.5rem;
-  /* Reducir el margen inferior */
-  box-sizing: border-box;
 }
 
 label {
@@ -684,24 +556,7 @@ input:focus {
   transform: translateY(-2px);
 }
 
-/* Ajustes responsive */
-@media (max-width: 768px) {
-  .form-container {
-    margin: 1rem auto;
-    padding: 1.5rem;
-    max-width: calc(100% - 2rem);
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  .subtitle {
-    font-size: 0.9rem;
-  }
-}
-
-/* Panel de Ponencias */
+/* Board Container */
 .board-container {
   margin-top: var(--spacing-lg);
   width: 100%;
@@ -833,8 +688,56 @@ input:focus {
   font-size: var(--font-size-sm);
 }
 
-/* Responsive adjustments */
+/* Responsive Styles */
 @media (max-width: 768px) {
+  .buttons-wrapper {
+    display: none;
+  }
+
+  .ponencia-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .ponencia-status {
+    align-self: flex-start;
+  }
+
+  .header {
+    padding: 0 var(--spacing-md);
+  }
+
+  .logo {
+    gap: var(--spacing-md);
+  }
+
+  .logo img {
+    height: 32px;
+  }
+
+  #logout-btn {
+    display: none;
+  }
+
+  .nav-buttons {
+    display: none;
+  }
+
+  .form-container {
+    margin: 1rem auto;
+    padding: 1.5rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
   .board {
     grid-template-columns: 1fr;
   }
@@ -851,5 +754,25 @@ input:focus {
 
   .ponencia-arrow {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo img {
+    height: 28px;
+  }
+
+  .presentation-dialog {
+    padding: var(--spacing-md);
+    margin: var(--spacing-sm);
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stat-icon {
+    margin: 0 auto var(--spacing-sm);
   }
 }
