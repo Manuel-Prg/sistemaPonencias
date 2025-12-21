@@ -1,24 +1,41 @@
 ---
 import "../../styles/components/logos.css";
+import Image from "astro/components/Image.astro";
 ---
 
 <header>
-	<div class="logo">
-		<img
+	<div class="logos-container">
+		<Image
 			src="/Logos UJAT/Logos UJAT/Logo 1 blanco.png"
 			alt="Logo-ujat"
 			class="logo-ujat"
+			width={100}
+			height={100}
+			loading="eager"
 		/>
-		<img
+		<Image
 			src="/logo-dacity/logo-negro_bordes_blancos-sinFondo.png"
 			alt="Logo-dacity"
 			class="logo-dacity"
+			width={100}
+			height={100}
+			loading="eager"
 		/>
-		<img
+		<Image
 			src="/logo_mujeres/logo_mueres_blanco.png"
 			alt="Logo-mujeres"
 			class="woman-silhouette"
+			width={100}
+			height={100}
+			loading="eager"
 		/>
-		<img src="/icon-logo.png" alt="Logo-dev" class="logo-dev" />
+		<Image
+			src="/icon-logo.png"
+			alt="Logo-dev"
+			class="logo-dev"
+			width={100}
+			height={100}
+			loading="eager"
+		/>
 	</div>
 </header>
