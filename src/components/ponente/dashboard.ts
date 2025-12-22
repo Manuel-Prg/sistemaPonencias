@@ -3,12 +3,12 @@ import type { User } from 'firebase/auth';
 
 // Navigation URLs
 const ROUTES = {
-  PONENCIA: '/ponencia',
+  PONENCIA: '/ponente/datosPonencia',
   DATOS: '/ponente/datosPonente',
-  LOGIN: '/autenticacion/iniciarSesion',
-  ESTADO: '/estado-ponencia',
-  EDITAR: '/editar-ponencia',
-  COMPROBANTE: '/generar-comprobante'
+  LOGIN: '/',
+  ESTADO: '/ponente/registroValido',
+  EDITAR: '/ponente/datosPonencia',
+  COMPROBANTE: '/ponente/registroValido'
 };
 
 class NavigationManager {
@@ -115,7 +115,7 @@ class NavigationManager {
   setupNavigation(): void {
     // Desktop navigation
     document.getElementById('datos-btn')?.addEventListener('click', () => this.handleDatos());
-    
+
     document.getElementById('logout-btn')?.addEventListener('click', () => this.handleLogout());
 
     // Mobile navigation
@@ -145,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
     navigationManager.cleanup();
   });
 
-  
+
 });
 
 export async function initializeDashboard(): Promise<void> {
   const dashboard = new NavigationManager();
   console.log('initializeDashboard');
-   dashboard.initialize();
+  dashboard.initialize();
 }

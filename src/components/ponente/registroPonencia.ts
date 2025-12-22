@@ -5,6 +5,7 @@ import type { Ponencia } from "../../lib/models/ponencia";
 import type { DataPonente } from "../../lib/models/ponente";
 import { EstadoPonencia } from "../../lib/models/ponencia";
 import { Timestamp } from "firebase/firestore";
+import { showError, showSuccess, showConfirm } from "../../utils/notifications";
 
 const ROUTES = {
     LOGIN: "../autenticacion/iniciarSesion",
@@ -159,14 +160,14 @@ class PonenciaFormHandler {
             1: () => {
                 const titulo = (this.elements.form?.querySelector('input[name="title"]') as HTMLInputElement)?.value;
                 const primerAutor = (this.elements.form?.querySelector('input[name="author"]') as HTMLInputElement)?.value;
-                
+
                 if (!titulo?.trim()) return 'Por favor ingrese el título de la ponencia';
                 if (!primerAutor?.trim()) return 'Por favor ingrese al menos el autor principal';
                 return null;
             },
             2: () => {
                 const selectedButton = document.querySelector('.topic-btn.selected');
-                
+
                 if (!selectedButton) return 'Por favor seleccione un tema';
                 if (selectedButton === this.elements.topicButtons[this.elements.topicButtons.length - 1] && !this.formData.tema) {
                     return 'Por favor ingrese el nuevo tema';
@@ -176,7 +177,7 @@ class PonenciaFormHandler {
             3: () => {
                 const resumen = (this.elements.form?.querySelector('textarea[name="summary"]') as HTMLTextAreaElement)?.value;
                 const wordCount = resumen.trim().split(/\s+/).length;
-                
+
                 if (wordCount < 300) return 'El resumen debe contener al menos 300 palabras';
                 if (wordCount > 500) return 'El resumen debe contener máximo 500 palabras';
                 return null;
@@ -198,8 +199,8 @@ class PonenciaFormHandler {
 
     private updateFormData(): void {
         const stepData = document.querySelector(`[data-step="${this.currentStep}"]`);
-        
-        switch(this.currentStep) {
+
+        switch (this.currentStep) {
             case 1:
                 this.formData.titulo = (stepData?.querySelector('input[name="title"]') as HTMLInputElement)?.value;
                 this.formData.autores = {};
@@ -244,8 +245,16 @@ class PonenciaFormHandler {
         }
     }
 
-    private handleCancel(): void {
-        if (confirm('¿Está seguro que desea cancelar? Se perderán todos los datos ingresados.')) {
+    private async handleCancel(): Promise<void> {
+        const confirmed = await showConfirm({
+            title: 'Cancelar registro',
+            message: '¿Está seguro que desea cancelar? Se perderán todos los datos ingresados.',
+            confirmText: 'Sí, cancelar',
+            cancelText: 'No, continuar',
+            type: 'warning'
+        });
+
+        if (confirmed) {
             window.location.href = ROUTES.HERE;
         }
     }
@@ -276,7 +285,7 @@ class PonenciaFormHandler {
             content.classList.add('hidden');
         });
         document.querySelector(`[data-step="${step}"]`)?.classList.remove('hidden');
-        
+
         this.elements.progressSteps.forEach((stepEl, index) => {
             if (index < step) {
                 stepEl.classList.add('active');
@@ -291,7 +300,7 @@ class PonenciaFormHandler {
         if (this.elements.nextBtn) {
             this.elements.nextBtn.textContent = step === this.totalSteps ? 'Enviar' : 'Siguiente';
         }
-        
+
         this.currentStep = step;
     }
 
@@ -334,14 +343,14 @@ class PonenciaFormHandler {
     private async submitForm(): Promise<void> {
         try {
             this.updateFormData();
-            
+
             if (!this.formData.autores.autor1) {
                 this.showError('Se requiere al menos un autor principal');
                 this.showStep(1);
                 return;
             }
             const user = await this.authService.getUserId();
-           
+
             const ponencia: Ponencia = {
                 id: user, // Será generado por Firestore
                 titulo: this.formData.titulo,
@@ -354,9 +363,11 @@ class PonenciaFormHandler {
             };
 
             await this.ponenciaService.createPonencia(ponencia);
-            alert('¡Ponencia registrada exitosamente!');
-            window.location.href = ROUTES.REGISTRO_VALIDO;
-        
+            showSuccess('¡Ponencia registrada exitosamente!');
+            setTimeout(() => {
+                window.location.href = ROUTES.REGISTRO_VALIDO;
+            }, 1500);
+
         } catch (error) {
             console.error('Error al guardar la ponencia:', error);
             this.showError('Error al guardar la ponencia. Por favor intente nuevamente.');
@@ -364,7 +375,7 @@ class PonenciaFormHandler {
     }
 
     private showError(message: string): void {
-        alert(message);
+        showError(message);
     }
 }
 

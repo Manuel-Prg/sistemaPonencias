@@ -1,0 +1,362 @@
+/* Custom Notifications System Styles */
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+/* Toast Base */
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 320px;
+    max-width: 420px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.hide {
+    opacity: 0;
+    transform: translateX(400px);
+}
+
+/* Toast Icon */
+.toast-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toast Content */
+.toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-message {
+    color: white;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Toast Close Button */
+.toast-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Toast Progress Bar */
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: currentColor;
+    opacity: 0.3;
+    animation: progress 3s linear forwards;
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+/* Toast Types */
+.toast-success {
+    border-color: #10b981;
+}
+
+.toast-success .toast-icon {
+    color: #10b981;
+}
+
+.toast-success .toast-progress {
+    background: #10b981;
+}
+
+.toast-error {
+    border-color: #ef4444;
+}
+
+.toast-error .toast-icon {
+    color: #ef4444;
+}
+
+.toast-error .toast-progress {
+    background: #ef4444;
+}
+
+.toast-warning {
+    border-color: #f59e0b;
+}
+
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+.toast-warning .toast-progress {
+    background: #f59e0b;
+}
+
+.toast-info {
+    border-color: #3b82f6;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-info .toast-progress {
+    background: #3b82f6;
+}
+
+/* Modal Styles */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-modal.show {
+    opacity: 1;
+}
+
+.custom-modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.custom-modal.hide {
+    opacity: 0;
+}
+
+.custom-modal.hide .modal-content {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal Header */
+.modal-header {
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+}
+
+/* Modal Body */
+.modal-body {
+    margin-bottom: 24px;
+}
+
+.modal-body p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    text-align: center;
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* Modal Buttons */
+.modal-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+.modal-cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.modal-confirm-btn,
+.modal-ok-btn {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+.modal-confirm-btn:hover,
+.modal-ok-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.modal-btn-warning:hover {
+    background: #d97706;
+}
+
+.modal-btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.modal-btn-danger:hover {
+    background: #dc2626;
+}
+
+.modal-btn-primary {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .toast {
+        min-width: auto;
+        max-width: none;
+    }
+
+    .modal-content {
+        padding: 24px;
+        width: 95%;
+    }
+
+    .modal-title {
+        font-size: 20px;
+    }
+
+    .modal-body p {
+        font-size: 14px;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .toast {
+        padding: 12px;
+    }
+
+    .toast-message {
+        font-size: 13px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+}

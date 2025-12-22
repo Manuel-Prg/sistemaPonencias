@@ -9,6 +9,13 @@ import {
   checkPasswordPwned,
   type PasswordValidationResult
 } from '../../utils/passwordValidator';
+import {
+  showToast,
+  showConfirm,
+  showSuccess,
+  showError,
+  showWarning
+} from '../../utils/notifications';
 
 export class SigninForm {
   private authService: AuthService;
@@ -37,27 +44,40 @@ export class SigninForm {
     try {
       // Validate password strength before submitting
       if (!this.currentValidation || !this.currentValidation.isValid) {
-        throw new Error('Por favor, usa una contraseña más segura');
+        showError('Por favor, usa una contraseña más segura');
+        return;
       }
 
-      // Check if password has been pwned (optional, can be done server-side)
+      // Check if password has been pwned
       const pwnedResult = await checkPasswordPwned(credentials.password);
       if (pwnedResult.isPwned) {
-        const confirmSubmit = confirm(
-          `⚠️ Esta contraseña ha sido encontrada en ${pwnedResult.count.toLocaleString()} filtraciones de datos.\n\n` +
-          `Se recomienda usar una contraseña diferente. ¿Deseas continuar de todos modos?`
-        );
+        const confirmSubmit = await showConfirm({
+          title: '⚠️ Contraseña Comprometida',
+          message: `Esta contraseña ha sido encontrada en ${pwnedResult.count.toLocaleString()} filtraciones de datos.\n\nSe recomienda usar una contraseña diferente. ¿Deseas continuar de todos modos?`,
+          confirmText: 'Continuar',
+          cancelText: 'Cambiar contraseña',
+          type: 'warning'
+        });
+
         if (!confirmSubmit) {
           return;
         }
       }
 
       await this.authService.register(credentials);
-      window.location.href = '/autenticacion/iniciarSesion';
+
+      // Show success notification
+      showSuccess('¡Registro exitoso! Redirigiendo...');
+
+      // Redirect after a short delay to show the notification
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+
     } catch (error: unknown) {
       console.error('Error en registro:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      throw new Error(errorMessage);
+      showError(errorMessage);
     }
   }
 
@@ -65,11 +85,14 @@ export class SigninForm {
     e.preventDefault();
     try {
       await this.authService.registerWithGoogle();
-      window.location.href = '/ponente/datosPonencia';
+      showSuccess('¡Registro con Google exitoso!');
+      setTimeout(() => {
+        window.location.href = '/ponente/datosPonencia';
+      }, 1500);
     } catch (error) {
       console.error('Error en registro con Google:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      alert(errorMessage);
+      showError(errorMessage);
     }
   }
 
@@ -187,12 +210,7 @@ export class SigninForm {
       const email = (document.getElementById('email') as HTMLInputElement).value;
       const password = (document.getElementById('password') as HTMLInputElement).value;
 
-      try {
-        await this.handleSubmit({ nombre, email, password });
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-        alert(errorMessage);
-      }
+      await this.handleSubmit({ nombre, email, password });
     });
 
     this.googleButton?.addEventListener('click', this.handleGoogleSignin.bind(this));

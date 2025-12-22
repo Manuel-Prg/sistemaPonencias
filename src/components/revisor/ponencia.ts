@@ -2,6 +2,7 @@ import type { EstadoPonencia } from '../../lib/models/ponencia';
 import { PonenciaService } from '../../lib/services/ponencias/ponencia.service';
 import { AuthService } from '../../lib/services/auth/auth.service';
 import { UserService } from '../../lib/services/user/user.service';
+import { showSuccess, showError } from '../../utils/notifications';
 
 interface DialogElements {
     overlay: HTMLElement | null;
@@ -42,7 +43,7 @@ export class PonenciaHandlers {
 
     private showDialog(title: string, action: EstadoPonencia): void {
         if (this.loadingState) return;
-        
+
         this.currentAction = action;
         if (this.dialogElements.title) {
             this.dialogElements.title.textContent = title;
@@ -50,7 +51,7 @@ export class PonenciaHandlers {
         if (this.dialogElements.overlay) {
             this.dialogElements.overlay.style.display = 'flex';
         }
-        
+
         // Reset comments field
         if (this.dialogElements.comments) {
             this.dialogElements.comments.value = '';
@@ -69,7 +70,7 @@ export class PonenciaHandlers {
 
     private setLoadingState(loading: boolean): void {
         this.loadingState = loading;
-        
+
         // Disable all action buttons
         const buttons = document.querySelectorAll('.btn');
         buttons.forEach(button => {
@@ -110,15 +111,16 @@ export class PonenciaHandlers {
             );
 
             if (success) {
-                alert('La ponencia ha sido actualizada exitosamente');
-                // Redirect back to the list
-                window.location.href = '/revisor/revisor'; // Update this to match your route
+                showSuccess('La ponencia ha sido actualizada exitosamente');
+                setTimeout(() => {
+                    window.location.href = '/revisor/revisor';
+                }, 1500);
             } else {
                 throw new Error('Failed to update ponencia');
             }
         } catch (error) {
             console.error('Error in evaluarPonencia:', error);
-            alert('Hubo un error al actualizar la ponencia. Por favor, intente nuevamente.');
+            showError('Hubo un error al actualizar la ponencia. Por favor, intente nuevamente.');
         } finally {
             this.setLoadingState(false);
         }
@@ -128,9 +130,9 @@ export class PonenciaHandlers {
         if (!this.currentAction || !this.dialogElements.comments) return;
 
         // Validate comments if required for certain states
-        if ( this.currentAction === 'aceptada con correcciones') {
+        if (this.currentAction === 'aceptada con correcciones') {
             if (!this.dialogElements.comments.value.trim()) {
-                alert('Por favor, proporcione comentarios para explicar su decisión.');
+                showError('Por favor, proporcione comentarios para explicar su decisión.');
                 return;
             }
         }
@@ -146,15 +148,16 @@ export class PonenciaHandlers {
             );
 
             if (success) {
-                alert('La ponencia ha sido actualizada exitosamente');
-                // Redirect back to the list
-                window.location.href = '/revisor/revisor'; // Update this to match your route
+                showSuccess('La ponencia ha sido actualizada exitosamente');
+                setTimeout(() => {
+                    window.location.href = '/revisor/revisor';
+                }, 1500);
             } else {
                 throw new Error('Failed to update ponencia');
             }
         } catch (error) {
             console.error('Error in handleDialogAccept:', error);
-            alert('Hubo un error al actualizar la ponencia. Por favor, intente nuevamente.');
+            showError('Hubo un error al actualizar la ponencia. Por favor, intente nuevamente.');
         } finally {
             this.setLoadingState(false);
             this.hideDialog();
@@ -167,27 +170,27 @@ export class PonenciaHandlers {
             reject: document.querySelector('.btn.btn-reject'),
             acceptWithObs: document.querySelector('.btn.btn-accept-with-obs')
         };
-    
+
         if (buttons.accept) {
             buttons.accept.addEventListener('click', () => {
                 console.log('Aceptando ponencia');
                 this.evaluarPonencia('aceptada' as EstadoPonencia);
             });
         }
-    
+
         if (buttons.reject) {
             buttons.reject.addEventListener('click', () => {
                 console.log('Rechazando ponencia');
                 this.evaluarPonencia('rechazada' as EstadoPonencia);
             });
         }
-    
+
         if (buttons.acceptWithObs) {
-            buttons.acceptWithObs.addEventListener('click', () => 
+            buttons.acceptWithObs.addEventListener('click', () =>
                 this.showDialog('Aceptar con Observaciones', 'aceptada con correcciones' as EstadoPonencia)
             );
         }
-    
+
         // Debug log para verificar si los botones fueron encontrados
         console.log('Buttons found:', {
             accept: !!buttons.accept,
@@ -211,11 +214,11 @@ export class PonenciaHandlers {
     }
 
     private initializeDialogButtons(): void {
-        this.dialogElements.acceptButton?.addEventListener('click', 
+        this.dialogElements.acceptButton?.addEventListener('click',
             () => this.handleDialogAccept()
         );
 
-        this.dialogElements.cancelButton?.addEventListener('click', 
+        this.dialogElements.cancelButton?.addEventListener('click',
             () => this.hideDialog()
         );
     }

@@ -1,11 +1,11 @@
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  type Unsubscribe, 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  type Unsubscribe,
   sendPasswordResetEmail,
   type UserCredential,
-  signInWithPopup, 
-  GoogleAuthProvider 
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { firebase } from '../../firebase/config';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
@@ -41,7 +41,7 @@ export class AuthService {
     }
     return user.uid;
   }
-  
+
   async login({ email, password }: AuthCredentials): Promise<AuthResponse> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
@@ -89,7 +89,7 @@ export class AuthService {
       token
     };
   }
-//----------------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------------------------------------
   async registerWithGoogle(): Promise<void> {
     try {
       const result = await signInWithPopup(this.auth, this.googleProvider);
@@ -118,10 +118,12 @@ export class AuthService {
       if (error instanceof Error) {
         console.error('Error en el registro con Google:', error.message);
         if ((error as any).code === 'auth/popup-closed-by-user') {
-          alert('El registro con Google fue cancelado');
+          throw new Error('El registro con Google fue cancelado');
         }
+        throw error;
       } else {
         console.error('Error desconocido en el registro con Google:', error);
+        throw new Error('Error desconocido en el registro con Google');
       }
     }
   }
