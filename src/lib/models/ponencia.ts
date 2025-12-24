@@ -11,6 +11,7 @@ export interface Ponencia {
     estado: string;
     evaluaciones: Evaluacion[];
     userId: string;
+    archivoUrl?: string; // URL del archivo PDF/DOC subido
 }
 
 export interface Evaluacion {
@@ -19,7 +20,7 @@ export interface Evaluacion {
     correcciones?: string;
     fecha: Date;
 }
-  
+
 export interface PonenciaAsignada {
     ponencia: string;
     estado: string;
@@ -31,4 +32,4 @@ export enum EstadoPonencia {
     ACEPTADA = 'aceptada',
     RECHAZADA = 'rechazada',
     ACEPTADA_CON_CORRECCIONES = 'aceptada con correcciones'
-  }
+}

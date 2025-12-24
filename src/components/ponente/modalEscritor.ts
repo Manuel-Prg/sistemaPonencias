@@ -43,7 +43,7 @@ export class ModalHandlers {
 
   private initializeEventListeners(): void {
     // Event listeners para modal de ponencia
-    this.ponenciaBtn?.addEventListener('click', () => this.showPonenciaModal());
+    this.ponenciaBtn?.addEventListener('click', async () => await this.showPonenciaModal());
     this.closePonenciaBtn?.addEventListener('click', () => this.hidePonenciaModal());
 
     // Event listeners para modal de subida
@@ -73,9 +73,14 @@ export class ModalHandlers {
   }
 
   // Métodos para modal de ponencia
-  private showPonenciaModal(): void {
+  private async showPonenciaModal(): Promise<void> {
     if (this.ponenciaModal) {
       this.ponenciaModal.style.display = 'block';
+
+      // Cargar datos reales de la ponencia
+      const { PonenciaDataLoader } = await import('../../lib/services/ponencias/ponenciaData.service');
+      const loader = new PonenciaDataLoader();
+      await loader.renderPonenciaData('modalForm');
     }
   }
 
@@ -147,16 +152,55 @@ export class ModalHandlers {
   }
 
   private async uploadFile(formData: FormData): Promise<UploadResponse> {
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      // Obtener el ID de la ponencia del usuario actual
+      const { AuthService } = await import('../../lib/services/auth/auth.service');
+      const auth = new AuthService();
+      const user = await new Promise<any>((resolve) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+          unsubscribe();
+          resolve(user);
+        });
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      if (!user) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      // Obtener la ponencia del usuario
+      const { PonenciaService } = await import('../../lib/services/ponencias/ponencia.service');
+      const service = new PonenciaService();
+      const ponencias = await service.getPonencias();
+      const userPonencia = ponencias.find(p => p.userId === user.uid);
+
+      if (!userPonencia) {
+        throw new Error('No se encontró una ponencia asociada a tu usuario');
+      }
+
+      // Agregar el ID de la ponencia al formData
+      formData.append('ponenciaId', userPonencia.id);
+
+      // Obtener token de autenticación
+      const token = await user.getIdToken();
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in uploadFile:', error);
+      throw error;
     }
-
-    return await response.json();
   }
 
   private showError(message: string): void {

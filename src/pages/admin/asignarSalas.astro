@@ -1,7 +1,399 @@
 ---
-import AdminLayout from '../../components/shared/AdminLayout.astro';
+import AdminLayout from "../../components/shared/AdminLayout.astro";
+import "../../styles/pages/admin/targetAdmin.css";
 ---
 
 <AdminLayout>
-    asignar salas
+    <div class="admin-section">
+        <div class="section-header">
+            <h1 class="section-title">Gestión de Salas</h1>
+            <button class="admin-btn" id="createSalaBtn">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg>
+                Crear Nueva Sala
+            </button>
+        </div>
+
+        <div class="salas-grid" id="salasContainer">
+            <div class="loading">Cargando salas...</div>
+        </div>
+    </div>
 </AdminLayout>
+
+<!-- Modal para crear/editar sala -->
+<dialog id="salaModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle">Crear Nueva Sala</h2>
+        <form id="salaForm">
+            <div class="form-group">
+                <label for="salaName">Nombre de la Sala</label>
+                <input
+                    type="text"
+                    id="salaName"
+                    required
+                    placeholder="Ej: Sala A"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="salaCapacity">Capacidad</label>
+                <input
+                    type="number"
+                    id="salaCapacity"
+                    min="1"
+                    placeholder="Número de ponencias"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="salaLocation">Ubicación (opcional)</label>
+                <input
+                    type="text"
+                    id="salaLocation"
+                    placeholder="Ej: Edificio B, Piso 2"
+                />
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" id="cancelBtn">
+                    Cancelar
+                </button>
+                <button type="submit" class="submit-btn">Guardar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<script>
+    import { SalaManagementService } from "../../lib/services/salas/salaManagement.service";
+    import { showSuccess, showError } from "../../utils/notifications";
+    import type { Sala } from "../../lib/models/sala";
+
+    class SalaManager {
+        private service: SalaManagementService;
+        private modal: HTMLDialogElement;
+        private form: HTMLFormElement;
+        private container: HTMLElement;
+        private currentSalaId: string | null = null;
+
+        constructor() {
+            this.service = new SalaManagementService();
+            this.modal = document.getElementById(
+                "salaModal",
+            ) as HTMLDialogElement;
+            this.form = document.getElementById("salaForm") as HTMLFormElement;
+            this.container = document.getElementById(
+                "salasContainer",
+            ) as HTMLElement;
+
+            this.init();
+        }
+
+        private init() {
+            this.setupEventListeners();
+            this.loadSalas();
+        }
+
+        private setupEventListeners() {
+            // Botón crear sala
+            document
+                .getElementById("createSalaBtn")
+                ?.addEventListener("click", () => {
+                    this.openModal();
+                });
+
+            // Botón cancelar
+            document
+                .getElementById("cancelBtn")
+                ?.addEventListener("click", () => {
+                    this.closeModal();
+                });
+
+            // Submit formulario
+            this.form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                await this.handleSubmit();
+            });
+
+            // Cerrar modal al hacer clic fuera
+            this.modal.addEventListener("click", (e) => {
+                if (e.target === this.modal) {
+                    this.closeModal();
+                }
+            });
+        }
+
+        private openModal(sala?: Sala & { id: string }) {
+            this.currentSalaId = sala?.id || null;
+            const modalTitle = document.getElementById("modalTitle");
+
+            if (sala) {
+                modalTitle!.textContent = "Editar Sala";
+                (
+                    document.getElementById("salaName") as HTMLInputElement
+                ).value = sala.nombre || "";
+                (
+                    document.getElementById("salaCapacity") as HTMLInputElement
+                ).value = sala.capacidad?.toString() || "";
+                (
+                    document.getElementById("salaLocation") as HTMLInputElement
+                ).value = sala.ubicacion || "";
+            } else {
+                modalTitle!.textContent = "Crear Nueva Sala";
+                this.form.reset();
+            }
+
+            this.modal.showModal();
+        }
+
+        private closeModal() {
+            this.modal.close();
+            this.form.reset();
+            this.currentSalaId = null;
+        }
+
+        private async handleSubmit() {
+            const nombre = (
+                document.getElementById("salaName") as HTMLInputElement
+            ).value;
+            const capacidad =
+                parseInt(
+                    (
+                        document.getElementById(
+                            "salaCapacity",
+                        ) as HTMLInputElement
+                    ).value,
+                ) || 0;
+            const ubicacion = (
+                document.getElementById("salaLocation") as HTMLInputElement
+            ).value;
+
+            try {
+                if (this.currentSalaId) {
+                    // Actualizar sala existente
+                    await this.service.updateSala(this.currentSalaId, {
+                        nombre,
+                        capacidad,
+                        ubicacion,
+                    });
+                    showSuccess("Sala actualizada exitosamente");
+                } else {
+                    // Crear nueva sala
+                    await this.service.createSala({
+                        nombre,
+                        capacidad,
+                        ubicacion,
+                        integrantes: [],
+                    });
+                    showSuccess("Sala creada exitosamente");
+                }
+
+                this.closeModal();
+                await this.loadSalas();
+            } catch (error) {
+                showError((error as Error).message);
+            }
+        }
+
+        private async loadSalas() {
+            try {
+                this.container.innerHTML =
+                    '<div class="loading">Cargando salas...</div>';
+                const salas = await this.service.getAllSalas();
+
+                if (salas.length === 0) {
+                    this.container.innerHTML =
+                        '<div class="empty-message">No hay salas creadas</div>';
+                    return;
+                }
+
+                this.container.innerHTML = "";
+                salas.forEach((sala) => {
+                    this.container.appendChild(this.createSalaCard(sala));
+                });
+            } catch (error) {
+                showError("Error al cargar las salas");
+                this.container.innerHTML =
+                    '<div class="error-message">Error al cargar las salas</div>';
+            }
+        }
+
+        private createSalaCard(sala: Sala & { id: string }): HTMLElement {
+            const card = document.createElement("div");
+            card.className = "sala-card";
+
+            const ponenciasCount = sala.integrantes?.length || 0;
+            const capacidadText = sala.capacidad
+                ? `${ponenciasCount}/${sala.capacidad}`
+                : ponenciasCount;
+
+            card.innerHTML = `
+        <div class="sala-header">
+          <h3>${sala.nombre || "Sin nombre"}</h3>
+          <div class="sala-actions">
+            <button class="icon-btn edit-btn" data-id="${sala.id}" title="Editar">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+            <button class="icon-btn delete-btn" data-id="${sala.id}" title="Eliminar">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="sala-info">
+          <div class="info-item">
+            <span class="label">Ubicación:</span>
+            <span>${sala.ubicacion || "No especificada"}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Ponencias:</span>
+            <span>${capacidadText}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Moderador:</span>
+            <span>${sala.moderador ? "Asignado" : "Sin asignar"}</span>
+          </div>
+        </div>
+      `;
+
+            // Event listeners para los botones
+            card.querySelector(".edit-btn")?.addEventListener("click", () => {
+                this.openModal(sala);
+            });
+
+            card.querySelector(".delete-btn")?.addEventListener(
+                "click",
+                async () => {
+                    if (confirm("¿Estás seguro de eliminar esta sala?")) {
+                        try {
+                            await this.service.deleteSala(sala.id);
+                            showSuccess("Sala eliminada exitosamente");
+                            await this.loadSalas();
+                        } catch (error) {
+                            showError("Error al eliminar la sala");
+                        }
+                    }
+                },
+            );
+
+            return card;
+        }
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", () => {
+        new SalaManager();
+    });
+</script>
+
+<style>
+    .salas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .sala-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+    }
+
+    .sala-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .sala-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .sala-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #1f2937;
+    }
+
+    .sala-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .icon-btn {
+        padding: 0.5rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+
+    .icon-btn:hover {
+        background: #f3f4f6;
+    }
+
+    .edit-btn svg {
+        stroke: #3b82f6;
+    }
+
+    .delete-btn svg {
+        stroke: #ef4444;
+    }
+
+    .sala-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+    }
+
+    .info-item .label {
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .loading,
+    .empty-message,
+    .error-message {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+        grid-column: 1 / -1;
+    }
+
+    .error-message {
+        color: #ef4444;
+    }
+</style>

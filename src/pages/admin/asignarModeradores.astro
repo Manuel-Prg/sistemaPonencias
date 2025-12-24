@@ -1,7 +1,442 @@
 ---
-import AdminLayout from '../../components/shared/AdminLayout.astro';
+import AdminLayout from "../../components/shared/AdminLayout.astro";
+import "../../styles/pages/admin/targetAdmin.css";
 ---
 
 <AdminLayout>
-    asignar moderadores
+    <div class="admin-section">
+        <div class="section-header">
+            <h1 class="section-title">Asignar Moderadores a Salas</h1>
+            <button class="admin-btn" id="refreshBtn">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path
+                        d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                    ></path>
+                </svg>
+                Actualizar
+            </button>
+        </div>
+
+        <div class="assignment-container">
+            <!-- Columna de salas sin moderador -->
+            <div class="column">
+                <h2 class="column-title">Salas sin Moderador</h2>
+                <div class="items-list" id="salasContainer">
+                    <div class="loading">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Columna de moderadores disponibles -->
+            <div class="column">
+                <h2 class="column-title">Moderadores Disponibles</h2>
+                <div class="items-list" id="moderadoresContainer">
+                    <div class="loading">Cargando...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </AdminLayout>
+
+<!-- Modal para asignar moderador -->
+<dialog id="assignModal" class="modal">
+    <div class="modal-content">
+        <h2>Asignar Moderador</h2>
+        <div class="assignment-info">
+            <p><strong>Sala:</strong> <span id="selectedSalaName"></span></p>
+            <p>
+                <strong>Moderador:</strong>
+                <span id="selectedModeradorName"></span>
+            </p>
+        </div>
+        <div class="modal-buttons">
+            <button type="button" class="cancel-btn" id="cancelAssignBtn">
+                Cancelar
+            </button>
+            <button type="button" class="submit-btn" id="confirmAssignBtn">
+                Confirmar Asignación
+            </button>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    import { SalaManagementService } from "../../lib/services/salas/salaManagement.service";
+    import { showSuccess, showError } from "../../utils/notifications";
+    import type { Sala } from "../../lib/models/sala";
+
+    class ModeradorAssignmentManager {
+        private service: SalaManagementService;
+        private modal: HTMLDialogElement;
+        private salasContainer: HTMLElement;
+        private moderadoresContainer: HTMLElement;
+        private selectedSala: (Sala & { id: string }) | null = null;
+        private selectedModerador: any = null;
+
+        constructor() {
+            this.service = new SalaManagementService();
+            this.modal = document.getElementById(
+                "assignModal",
+            ) as HTMLDialogElement;
+            this.salasContainer = document.getElementById(
+                "salasContainer",
+            ) as HTMLElement;
+            this.moderadoresContainer = document.getElementById(
+                "moderadoresContainer",
+            ) as HTMLElement;
+
+            this.init();
+        }
+
+        private init() {
+            this.setupEventListeners();
+            this.loadData();
+        }
+
+        private setupEventListeners() {
+            // Botón refrescar
+            document
+                .getElementById("refreshBtn")
+                ?.addEventListener("click", () => {
+                    this.loadData();
+                });
+
+            // Botones del modal
+            document
+                .getElementById("cancelAssignBtn")
+                ?.addEventListener("click", () => {
+                    this.closeModal();
+                });
+
+            document
+                .getElementById("confirmAssignBtn")
+                ?.addEventListener("click", async () => {
+                    await this.handleAssignment();
+                });
+
+            // Cerrar modal al hacer clic fuera
+            this.modal.addEventListener("click", (e) => {
+                if (e.target === this.modal) {
+                    this.closeModal();
+                }
+            });
+        }
+
+        private async loadData() {
+            await Promise.all([this.loadSalas(), this.loadModerators()]);
+        }
+
+        private async loadSalas() {
+            try {
+                this.salasContainer.innerHTML =
+                    '<div class="loading">Cargando...</div>';
+                const salas = await this.service.getSalasWithoutModerator();
+
+                if (salas.length === 0) {
+                    this.salasContainer.innerHTML =
+                        '<div class="empty-message">Todas las salas tienen moderador asignado</div>';
+                    return;
+                }
+
+                this.salasContainer.innerHTML = "";
+                salas.forEach((sala) => {
+                    this.salasContainer.appendChild(this.createSalaItem(sala));
+                });
+            } catch (error) {
+                showError("Error al cargar las salas");
+                this.salasContainer.innerHTML =
+                    '<div class="error-message">Error al cargar</div>';
+            }
+        }
+
+        private async loadModerators() {
+            try {
+                this.moderadoresContainer.innerHTML =
+                    '<div class="loading">Cargando...</div>';
+                const moderadores = await this.service.getAvailableModerators();
+
+                if (moderadores.length === 0) {
+                    this.moderadoresContainer.innerHTML =
+                        '<div class="empty-message">No hay moderadores disponibles</div>';
+                    return;
+                }
+
+                this.moderadoresContainer.innerHTML = "";
+                moderadores.forEach((moderador) => {
+                    this.moderadoresContainer.appendChild(
+                        this.createModeradorItem(moderador),
+                    );
+                });
+            } catch (error) {
+                showError("Error al cargar los moderadores");
+                this.moderadoresContainer.innerHTML =
+                    '<div class="error-message">Error al cargar</div>';
+            }
+        }
+
+        private createSalaItem(sala: Sala & { id: string }): HTMLElement {
+            const item = document.createElement("div");
+            item.className = "assignment-item sala-item";
+            item.dataset.id = sala.id;
+
+            const ponenciasCount = sala.integrantes?.length || 0;
+
+            item.innerHTML = `
+        <div class="item-header">
+          <h3>${sala.nombre || "Sin nombre"}</h3>
+          <span class="badge">${ponenciasCount} ponencias</span>
+        </div>
+        <div class="item-info">
+          <small>${sala.ubicacion || "Sin ubicación"}</small>
+        </div>
+        <button class="select-btn" data-type="sala">Seleccionar</button>
+      `;
+
+            item.querySelector(".select-btn")?.addEventListener("click", () => {
+                this.selectSala(sala);
+            });
+
+            return item;
+        }
+
+        private createModeradorItem(moderador: any): HTMLElement {
+            const item = document.createElement("div");
+            item.className = "assignment-item moderador-item";
+            item.dataset.id = moderador.id;
+
+            const nombre = moderador.datos?.nombre || "Sin nombre";
+            const email = moderador.email || "Sin email";
+
+            item.innerHTML = `
+        <div class="item-header">
+          <h3>${nombre}</h3>
+        </div>
+        <div class="item-info">
+          <small>${email}</small>
+        </div>
+        <button class="select-btn" data-type="moderador">Seleccionar</button>
+      `;
+
+            item.querySelector(".select-btn")?.addEventListener("click", () => {
+                this.selectModerador(moderador);
+            });
+
+            return item;
+        }
+
+        private selectSala(sala: Sala & { id: string }) {
+            // Remover selección previa
+            document.querySelectorAll(".sala-item").forEach((item) => {
+                item.classList.remove("selected");
+            });
+
+            // Seleccionar nueva sala
+            const item = document.querySelector(
+                `.sala-item[data-id="${sala.id}"]`,
+            );
+            item?.classList.add("selected");
+            this.selectedSala = sala;
+
+            // Si ya hay un moderador seleccionado, abrir modal
+            if (this.selectedModerador) {
+                this.openModal();
+            }
+        }
+
+        private selectModerador(moderador: any) {
+            // Remover selección previa
+            document.querySelectorAll(".moderador-item").forEach((item) => {
+                item.classList.remove("selected");
+            });
+
+            // Seleccionar nuevo moderador
+            const item = document.querySelector(
+                `.moderador-item[data-id="${moderador.id}"]`,
+            );
+            item?.classList.add("selected");
+            this.selectedModerador = moderador;
+
+            // Si ya hay una sala seleccionada, abrir modal
+            if (this.selectedSala) {
+                this.openModal();
+            }
+        }
+
+        private openModal() {
+            if (!this.selectedSala || !this.selectedModerador) return;
+
+            const salaName = document.getElementById("selectedSalaName");
+            const moderadorName = document.getElementById(
+                "selectedModeradorName",
+            );
+
+            if (salaName && moderadorName) {
+                salaName.textContent = this.selectedSala.nombre || "Sin nombre";
+                moderadorName.textContent =
+                    this.selectedModerador.datos?.nombre || "Sin nombre";
+            }
+
+            this.modal.showModal();
+        }
+
+        private closeModal() {
+            this.modal.close();
+        }
+
+        private async handleAssignment() {
+            if (!this.selectedSala || !this.selectedModerador) {
+                showError("Debe seleccionar una sala y un moderador");
+                return;
+            }
+
+            try {
+                await this.service.assignModeradorToSala(
+                    this.selectedSala.id,
+                    this.selectedModerador.id,
+                );
+
+                showSuccess("Moderador asignado exitosamente");
+                this.closeModal();
+
+                // Limpiar selecciones
+                this.selectedSala = null;
+                this.selectedModerador = null;
+
+                // Recargar datos
+                await this.loadData();
+            } catch (error) {
+                showError("Error al asignar moderador");
+            }
+        }
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", () => {
+        new ModeradorAssignmentManager();
+    });
+</script>
+
+<style>
+    .assignment-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .column {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .column-title {
+        font-size: 1.25rem;
+        margin: 0 0 1.5rem 0;
+        color: #1f2937;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.75rem;
+    }
+
+    .items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .assignment-item {
+        background: #f9fafb;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .assignment-item:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+
+    .assignment-item.selected {
+        border-color: #3b82f6;
+        background: #dbeafe;
+    }
+
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .item-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: #1f2937;
+    }
+
+    .badge {
+        background: #3b82f6;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+
+    .item-info {
+        margin-bottom: 0.75rem;
+    }
+
+    .item-info small {
+        color: #6b7280;
+    }
+
+    .select-btn {
+        width: 100%;
+        padding: 0.5rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+    .select-btn:hover {
+        background: #2563eb;
+    }
+
+    .assignment-info {
+        background: #f9fafb;
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+    }
+
+    .assignment-info p {
+        margin: 0.5rem 0;
+        color: #374151;
+    }
+
+    @media (max-width: 768px) {
+        .assignment-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

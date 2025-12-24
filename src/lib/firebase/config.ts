@@ -10,7 +10,7 @@ class FirebaseClient {
 
   private constructor() {
     const isProd = import.meta.env.PROD;
-    
+
     // Configuración para producción (Netlify) usando PUBLIC_
     const prodConfig = {
       apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,

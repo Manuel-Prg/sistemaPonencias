@@ -282,25 +282,98 @@ const ratingInput = document.getElementById("rating") as HTMLInputElement;
 interface Presentation {
   titulo: string;
   resumen?: string;
+  id?: string;
 }
+
+let currentPonenciaId: string | null = null;
 
 function openDialog(presentation: Presentation): void {
   dialogTitle.textContent = presentation.titulo;
   dialogSummary.textContent = presentation.resumen || "No hay resumen disponible.";
   commentArea.value = "";
   ratingInput.value = "";
+  currentPonenciaId = presentation.id || null;
   dialog.showModal();
 }
 
 closeDialog.addEventListener("click", () => {
   dialog.close();
+  currentPonenciaId = null;
 });
 
-function handleReview(action: string): void {
+async function handleReview(action: string): Promise<void> {
+  if (!currentPonenciaId) {
+    console.error('No hay ponencia seleccionada');
+    return;
+  }
+
   const comment: string = commentArea.value;
   const rating: string = ratingInput.value;
-  console.log("Review submitted:", { action, comment, rating });
-  dialog.close();
+
+  // Validar que se proporcione comentario si se rechaza o acepta con correcciones
+  if ((action === 'reject' || action === 'accept_with_corrections') && !comment.trim()) {
+    const { showError } = await import('../../utils/notifications');
+    showError('Debe proporcionar un comentario para esta acción');
+    return;
+  }
+
+  try {
+    const { RevisorService } = await import('../../lib/services/revisor/revisor.services');
+    const { AuthService } = await import('../../lib/services/auth/auth.service');
+    const { EstadoPonencia } = await import('../../lib/models/ponencia');
+    const { showSuccess, showError } = await import('../../utils/notifications');
+
+    const authService = new AuthService();
+    const revisorService = new RevisorService();
+
+    // Obtener ID del revisor actual
+    const user: any = await new Promise((resolve) => {
+      const unsubscribe = authService.onAuthStateChanged((user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+
+    if (!user) {
+      showError('Usuario no autenticado');
+      return;
+    }
+
+    // Determinar el estado según la acción
+    let estado: string;
+    switch (action) {
+      case 'accept':
+        estado = EstadoPonencia.ACEPTADA;
+        break;
+      case 'reject':
+        estado = EstadoPonencia.RECHAZADA;
+        break;
+      case 'accept_with_corrections':
+        estado = EstadoPonencia.ACEPTADA_CON_CORRECCIONES;
+        break;
+      default:
+        showError('Acción no válida');
+        return;
+    }
+
+    // Guardar la evaluación
+    await revisorService.saveEvaluation(currentPonenciaId, user.uid, {
+      evaluacion: estado,
+      correcciones: comment
+    });
+
+    showSuccess('Evaluación guardada exitosamente');
+    dialog.close();
+    currentPonenciaId = null;
+
+    // Recargar la página para actualizar la lista
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  } catch (error) {
+    const { showError } = await import('../../utils/notifications');
+    showError(`Error al guardar la evaluación: ${(error as Error).message}`);
+  }
 }
 
 acceptPresentation.addEventListener("click", () => handleReview("accept"));
