@@ -16,11 +16,15 @@ class RevisorCards {
     this.ponenciasMap = new Map<string, Ponencia>();
   }
 
+  /* MODAL LOGIC */
+  private modalContainer: HTMLElement | null = null;
+  private currentRevisorId: string | null = null;
   /**
-   * Inicializa la carga y visualización de revisores
+   * Inicializa la carga y visualización de revisores y el modal
    */
   public async init(): Promise<void> {
     try {
+      this.crearModal();
       await this.cargarRevisores();
       this.configurarToggleButtons();
     } catch (error) {
@@ -29,6 +33,121 @@ class RevisorCards {
     }
   }
 
+  private crearModal(): void {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.display = 'none';
+    modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Asignar Ponencia</h3>
+            <button class="close-modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="ponencias-list" class="ponencias-selector">
+              Cargando ponencias...
+            </div>
+          </div>
+        </div>
+      `;
+    document.body.appendChild(modal);
+    this.modalContainer = modal;
+
+    // Cerrar modal
+    modal.querySelector('.close-modal')?.addEventListener('click', () => {
+      this.cerrarModal();
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.cerrarModal();
+    });
+  }
+
+  private cerrarModal(): void {
+    if (this.modalContainer) {
+      this.modalContainer.style.display = 'none';
+      this.currentRevisorId = null;
+    }
+  }
+
+  private async abrirModalAsignacion(revisorId: string): Promise<void> {
+    if (!this.modalContainer) return;
+    this.currentRevisorId = revisorId;
+
+    const ponenciasList = this.modalContainer.querySelector('#ponencias-list');
+    if (ponenciasList) {
+      ponenciasList.innerHTML = '<div class="loading">Cargando ponencias disponibles...</div>';
+    }
+
+    this.modalContainer.style.display = 'flex';
+
+    try {
+      // Cargar TODAS las ponencias (optimizar esto en el futuro)
+      // Nota: Deberíamos tener un método en el servicio para obtener ponencias 'pendientes de asignación'
+      // Por ahora simularemos con IDs conocidos o cargando un lote
+      const { PonenciaService } = await import('../../lib/services/ponencias/ponencia.service');
+      const ponenciaService = new PonenciaService();
+      const ponencias = await ponenciaService.getPonencias(); // Necesitamos un método getAll o similar
+
+      // Filtrar ponencias que YA están asignadas a este revisor
+      // Y priorizar las que tienen menos revisores
+      const revisores = await this.revisorService.getRevisores();
+      const currentRevisor = revisores.find(r => r.id === revisorId);
+
+      if (!currentRevisor) throw new Error("Revisor no encontrado");
+
+      const asignadasIds = currentRevisor.ponenciasAsignadas?.map(p => p.ponencia) || [];
+      const disponibles = ponencias.filter(p => !asignadasIds.includes(p.id));
+
+      if (disponibles.length === 0) {
+        if (ponenciasList) ponenciasList.innerHTML = '<p>No hay ponencias disponibles para asignar.</p>';
+        return;
+      }
+
+      if (ponenciasList) {
+        ponenciasList.innerHTML = '';
+        const list = document.createElement('div');
+        list.className = 'list-group';
+
+        disponibles.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'list-item';
+          item.innerHTML = `
+                      <div class="ponencia-info">
+                          <strong>${p.titulo}</strong>
+                          <small>${p.estado}</small>
+                      </div>
+                      <button class="assign-btn">Asignar</button>
+                  `;
+          item.querySelector('.assign-btn')?.addEventListener('click', () => this.asignarPonencia(p.id));
+          list.appendChild(item);
+        });
+        ponenciasList.appendChild(list);
+      }
+
+    } catch (error) {
+      console.error("Error al cargar ponencias para asignar", error);
+      if (ponenciasList) ponenciasList.innerHTML = '<p class="error">Error al cargar ponencias.</p>';
+    }
+  }
+
+  private async asignarPonencia(ponenciaId: string) {
+    if (!this.currentRevisorId) return;
+
+    try {
+      const { showSuccess, showError } = await import('../../utils/notifications');
+
+      await this.revisorService.assignPonenciaToRevisor(this.currentRevisorId, ponenciaId);
+
+      showSuccess('Ponencia asignada correctamente (max 2)');
+      this.cerrarModal();
+      this.cargarRevisores(); // Recargar UI
+    } catch (error: any) {
+      const { showError } = await import('../../utils/notifications');
+      showError(error.message || 'Error al asignar ponencia');
+    }
+  }
+
+
   /**
    * Carga los revisores y sus ponencias desde el servicio
    */
@@ -36,19 +155,19 @@ class RevisorCards {
     if (!this.container) return;
 
     const revisores = await this.revisorService.getRevisores();
-    
+
     // Limpiar el contenedor
     this.container.innerHTML = '';
-    
+
     // Verificar si hay revisores
     if (revisores.length === 0) {
       this.container.innerHTML = '<div class="no-data">No hay revisores disponibles</div>';
       return;
     }
-    
+
     // Obtener IDs de ponencias para cargarlas en batch
     const ponenciasIds = this.obtenerPonenciasIds(revisores);
-    
+
     // Cargar ponencias y crear el mapa
     if (ponenciasIds.length > 0) {
       const ponencias = await this.revisorService.getPresentations(ponenciasIds);
@@ -56,7 +175,7 @@ class RevisorCards {
         this.ponenciasMap.set(ponencia.id, ponencia);
       });
     }
-    
+
     // Generar las cards
     this.renderizarRevisores(revisores);
   }
@@ -66,7 +185,7 @@ class RevisorCards {
    */
   private obtenerPonenciasIds(revisores: Revisor[]): string[] {
     const ids: string[] = [];
-    
+
     revisores.forEach(revisor => {
       revisor.ponenciasAsignadas?.forEach(asignacion => {
         if (asignacion.ponencia && !ids.includes(asignacion.ponencia)) {
@@ -74,7 +193,7 @@ class RevisorCards {
         }
       });
     });
-    
+
     return ids;
   }
 
@@ -83,7 +202,7 @@ class RevisorCards {
    */
   private renderizarRevisores(revisores: Revisor[]): void {
     if (!this.container) return;
-    
+
     revisores.forEach((revisor, index) => {
       const card = this.crearRevisorCard(revisor, index);
       this.container?.appendChild(card);
@@ -96,14 +215,19 @@ class RevisorCards {
   private crearRevisorCard(revisor: Revisor, index: number): HTMLElement {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'presentation-card';
-    
+
     const cardId = `presentation-${index}`;
-    
+    // Verificar si puede recibir más ponencias
+    const numAsignadas = revisor.ponenciasAsignadas?.length || 0;
+    const puedeAsignar = numAsignadas < 2;
+    const btnDisabled = !puedeAsignar ? 'disabled' : '';
+    const btnTitle = !puedeAsignar ? 'Límite de 2 ponencias alcanzado' : 'Asignar nueva ponencia';
+
     cardDiv.innerHTML = `
       <div class="presentation-header">
         <h3 class="presentation-name">${revisor.datos?.nombre || 'Revisor sin nombre'}</h3>
         <div class="presentation-actions">
-          <button class="convert-btn">
+          <button class="convert-btn add-btn" data-revisor-id="${revisor.id}" ${btnDisabled} title="${btnTitle}" style="${!puedeAsignar ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
             Agregar
           </button>
@@ -126,7 +250,14 @@ class RevisorCards {
         </table>
       </div>
     `;
-    
+
+    // Listener para el botón Agregar
+    if (puedeAsignar) {
+      cardDiv.querySelector('.add-btn')?.addEventListener('click', () => {
+        this.abrirModalAsignacion(revisor.id);
+      });
+    }
+
     return cardDiv;
   }
 
@@ -147,17 +278,17 @@ class RevisorCards {
         </tr>
       `;
     }
-    
+
     return revisor.ponenciasAsignadas.map(asignacion => {
       const ponencia = this.ponenciasMap.get(asignacion.ponencia);
       const nombrePonencia = ponencia?.titulo || 'Ponencia sin título';
       const estado = asignacion.estado || 'pendiente';
-      
+
       const estadoClass = this.obtenerClaseEstado(estado);
-        /**
-       * 
-       *SOLO CAMBIE LOS SVG :C
-      */
+      /**
+     * 
+     *SOLO CAMBIE LOS SVG :C
+    */
       return `
         <tr>
           <td>
@@ -183,7 +314,7 @@ class RevisorCards {
    */
   private obtenerClaseEstado(estado: string): string {
     const estadoLower = estado.toLowerCase();
-    
+
     if (estadoLower === 'aprobado') return 'approved';
     if (estadoLower === 'rechazado') return 'rejected';
     return 'pending';
@@ -201,21 +332,21 @@ class RevisorCards {
    */
   private configurarToggleButtons(): void {
     const toggleButtons = document.querySelectorAll('.toggle-btn');
-    
+
     toggleButtons.forEach(button => {
       button.addEventListener('click', () => {
         const detailsId = button.getAttribute('data-id');
         if (!detailsId) return;
-        
+
         const detailsElement = document.getElementById(detailsId);
         if (!detailsElement) return;
-        
+
         const isHidden = detailsElement.style.display === 'none';
         detailsElement.style.display = isHidden ? 'block' : 'none';
-        
+
         // Actualizar el estado del botón
         button.setAttribute('data-active', isHidden ? 'true' : 'false');
-        
+
         // Rotar el icono
         const icon = button.querySelector('svg');
         if (icon) {

@@ -12,22 +12,25 @@ import { PonenciaService } from "../../lib/services/ponencias/ponencia.service";
 import type { Ponencia, EstadoPonencia } from "../../lib/models/ponencia";
 import BotonMobile from "../../components/shared/botonMobile.astro";
 
-// Genera las rutas estáticas para cada ponencia
-export async function getStaticPaths() {
-  const ponenciaService = new PonenciaService();
-  const ponencias = await ponenciaService.getPonencias();
+const { id } = Astro.params;
 
-  return ponencias.map((ponencia) => ({
-    params: { id: ponencia.id },
-    props: { ponencia },
-  }));
+if (!id) {
+  return Astro.redirect("/revisor/revisor");
 }
 
-interface Props {
-  ponencia: Ponencia;
+const ponenciaService = new PonenciaService();
+let ponencia;
+
+try {
+  ponencia = await ponenciaService.getPonenciaById(id);
+} catch (error) {
+  console.error("Error fetching ponencia:", error);
+  return Astro.redirect("/revisor/revisor");
 }
 
-const { ponencia } = Astro.props;
+if (!ponencia) {
+  return Astro.redirect("/revisor/revisor");
+}
 ---
 
 <html lang="es">
@@ -126,6 +129,63 @@ const { ponencia } = Astro.props;
         color: rgba(255, 255, 255, 0.6);
       }
 
+      /* Estilos del Diálogo (Global) */
+      .dialog-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: flex; /* Centrado flexbox */
+        justify-content: center;
+        align-items: center;
+      }
+
+      .dialog-content {
+        background: rgba(
+          40,
+          44,
+          52,
+          0.95
+        ); /* Fondo sólido oscuro para legibilidad */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+
+      .dialog-content h3 {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .dialog-content textarea {
+        min-height: 120px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        color: white;
+        font-size: 1rem;
+        resize: vertical;
+      }
+
+      .dialog-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
       @media (max-width: 1024px) {
         .container {
           flex-direction: column;
@@ -213,15 +273,6 @@ const { ponencia } = Astro.props;
 
         .container.with-comments .ponencia-card {
           max-width: 100% !important;
-        }
-        .dialog-overlay {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 90%;
-          max-height: 80vh;
-          z-index: 1000;
         }
 
         body {
@@ -461,7 +512,12 @@ const { ponencia } = Astro.props;
     <div class="backdrop" id="backdrop"></div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      import { PonenciaService } from "../../lib/services/ponencias/ponencia.service";
+      import { AuthService } from "../../lib/services/auth/auth.service";
+      import { showSuccess, showError } from "../../utils/notifications";
+      import { EstadoPonencia } from "../../lib/models/ponencia";
+
+      document.addEventListener("DOMContentLoaded", async () => {
         const container = document.querySelector(".container");
         const ponenciaCard = document.querySelector(".ponencia-card");
         const comentariosCard = document.getElementById("comentariosCard");
@@ -473,13 +529,74 @@ const { ponencia } = Astro.props;
         ) as HTMLTextAreaElement;
         const backdrop = document.getElementById("backdrop");
 
+        // Elementos del diálogo genérico
+        const dialogOverlay = document.getElementById("dialogOverlay");
+        const dialogTitle = document.getElementById("dialogTitle");
+        const dialogComments = document.getElementById(
+          "dialogComments",
+        ) as HTMLTextAreaElement;
+        const dialogAccept = document.getElementById("dialogAccept");
+        const dialogCancel = document.getElementById("dialogCancel");
+
+        // Servicios
+        const ponenciaService = new PonenciaService();
+        const authService = new AuthService();
+
+        // Obtener usuario actual
+        let currentUser: any = null;
+        try {
+          currentUser = await new Promise((resolve) => {
+            const unsubscribe = authService.onAuthStateChanged((user) => {
+              unsubscribe();
+              resolve(user);
+            });
+          });
+        } catch (error) {
+          console.error("Error getting user:", error);
+        }
+
+        // Función para actualizar estado
+        const updateStatus = async (
+          ponenciaId: string,
+          estado: string,
+          comentarios?: string,
+        ) => {
+          if (!currentUser) {
+            showError("No hay sesión activa");
+            return;
+          }
+
+          try {
+            const success = await ponenciaService.updatePonenciaStatus(
+              currentUser.uid,
+              ponenciaId,
+              estado as any,
+              comentarios,
+            );
+
+            if (success) {
+              showSuccess("Evaluación guardada exitosamente");
+              setTimeout(() => {
+                window.location.href = "/revisor/revisor";
+              }, 1500);
+            } else {
+              showError("Error al guardar la evaluación");
+            }
+          } catch (error) {
+            console.error("Error updating status:", error);
+            showError("Ocurrió un error inesperado");
+          }
+        };
+
+        // --- Manejo de "Aceptar con observaciones" (Panel lateral) ---
+
         // Mostrar panel de observaciones
         btnAceptarConObs?.addEventListener("click", () => {
           container?.classList.add("with-comments");
           ponenciaCard?.classList.add("with-comments");
           comentariosCard?.classList.add("visible");
           backdrop?.classList.add("visible");
-          observacionesText?.focus();
+          if (observacionesText) observacionesText.focus();
         });
 
         // Ocultar panel de observaciones
@@ -496,7 +613,7 @@ const { ponencia } = Astro.props;
         // Manejar cancelar
         btnCancelarObs?.addEventListener("click", ocultarPanelObservaciones);
 
-        // Manejar guardar
+        // Manejar guardar observaciones
         btnGuardarObs?.addEventListener("click", () => {
           const observaciones = observacionesText?.value.trim();
 
@@ -505,13 +622,90 @@ const { ponencia } = Astro.props;
             return;
           }
 
-          // Aquí puedes agregar la lógica para guardar las observaciones
-          console.log("Guardando observaciones:", observaciones);
-          ocultarPanelObservaciones();
+          const btn = btnAceptarConObs as HTMLButtonElement;
+          const ponenciaId = btn?.dataset.ponenciaId;
+
+          if (ponenciaId) {
+            updateStatus(
+              ponenciaId,
+              EstadoPonencia.ACEPTADA_CON_CORRECCIONES,
+              observaciones,
+            );
+          }
         });
 
         // Cerrar panel al hacer clic en el backdrop
         backdrop?.addEventListener("click", ocultarPanelObservaciones);
+
+        // --- Manejo de "Aceptar" y "Rechazar" (Diálogo modal) ---
+
+        let currentAction: "accept" | "reject" | null = null;
+        let currentPonenciaId: string | null = null;
+
+        const showDialog = (
+          action: "accept" | "reject",
+          ponenciaId: string,
+        ) => {
+          currentAction = action;
+          currentPonenciaId = ponenciaId;
+
+          if (dialogTitle && dialogComments && dialogOverlay) {
+            dialogTitle.textContent =
+              action === "accept" ? "Aceptar Ponencia" : "Rechazar Ponencia";
+            dialogComments.placeholder =
+              action === "accept"
+                ? "Comentarios opcionales..."
+                : "Motivo del rechazo (obligatorio)...";
+            dialogComments.value = "";
+            dialogOverlay.style.display = "flex";
+            dialogComments.focus();
+          }
+        };
+
+        const hideDialog = () => {
+          if (dialogOverlay) dialogOverlay.style.display = "none";
+          currentAction = null;
+          currentPonenciaId = null;
+        };
+
+        // Botón Aceptar (Directo)
+        const btnAccept = document.querySelector(".btn-accept");
+        btnAccept?.addEventListener("click", (e) => {
+          const target = e.currentTarget as HTMLButtonElement;
+          const pid = target.dataset.ponenciaId;
+          if (pid) showDialog("accept", pid);
+        });
+
+        // Botón Rechazar (Directo)
+        const btnReject = document.querySelector(".btn-reject");
+        btnReject?.addEventListener("click", (e) => {
+          const target = e.currentTarget as HTMLButtonElement;
+          const pid = target.dataset.ponenciaId;
+          if (pid) showDialog("reject", pid);
+        });
+
+        // Confirmar acción en diálogo
+        dialogAccept?.addEventListener("click", () => {
+          if (!currentPonenciaId || !currentAction) return;
+
+          const comments = dialogComments?.value.trim();
+
+          if (currentAction === "reject" && !comments) {
+            alert("Debe ingresar un motivo para rechazar la ponencia.");
+            return;
+          }
+
+          const estado =
+            currentAction === "accept"
+              ? EstadoPonencia.ACEPTADA
+              : EstadoPonencia.RECHAZADA;
+
+          updateStatus(currentPonenciaId, estado, comments);
+          hideDialog();
+        });
+
+        // Cancelar diálogo
+        dialogCancel?.addEventListener("click", hideDialog);
 
         // Manejar botón Regresar
         const btnRegresar = document.getElementById("logout-btn");
