@@ -193,7 +193,6 @@ export class DashboardManager {
     });
   }
   private async updateWelcomeMessage(userData: any) {
-    console.log('userData', userData);
     const welcomeElement = document.querySelector('.welcome');
     if (welcomeElement) {
       welcomeElement.textContent = `¡Bienvenido ${userData.datos?.nombre}!`;
@@ -202,7 +201,6 @@ export class DashboardManager {
 
 
   public async initialize(): Promise<void> {
-    console.log('initialize');
 
     const user = await new Promise<FirebaseUser | null>((resolve) => {
       const unsubscribe = this.authService.onAuthStateChanged((user) => {
@@ -212,7 +210,6 @@ export class DashboardManager {
     });
 
     if (!user) {
-      console.log('No user found, redirecting to login');
       await this.authService.signOut();
       window.location.href = '/';
       return;
@@ -263,7 +260,6 @@ export class DashboardManager {
 
 export async function initializeRevisorPage(): Promise<void> {
   const dashboard = new DashboardManager();
-  console.log('initializeRevisorPage');
   await dashboard.initialize();
 }
 

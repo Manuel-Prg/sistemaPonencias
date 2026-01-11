@@ -42,11 +42,35 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
                 />
                 <i class="fas fa-search search-icon"></i>
             </div>
+            <div class="timer-section">
+                <div class="timer-display">
+                    <span id="timer">00:00:00</span>
+                </div>
+                <div class="timer-controls">
+                    <button
+                        id="start-timer"
+                        class="timer-btn start"
+                        title="Iniciar"><i class="fas fa-play"></i></button
+                    >
+                    <button
+                        id="pause-timer"
+                        class="timer-btn pause"
+                        title="Pausar"><i class="fas fa-pause"></i></button
+                    >
+                    <button
+                        id="reset-timer"
+                        class="timer-btn reset"
+                        title="Reiniciar"><i class="fas fa-redo"></i></button
+                    >
+                </div>
+            </div>
+
             <div class="table-container">
                 <div class="table-header">
                     <div class="header-cell">Título</div>
                     <div class="header-cell">Autor</div>
-                    <div class="header-cell">Acción</div>
+                    <div class="header-cell">Asistencia</div>
+                    <div class="header-cell">Acciones</div>
                 </div>
                 <div class="table-body"></div>
             </div>
@@ -56,4 +80,5 @@ import HeaderLayout from "../../components/shared/headerLayout.astro";
             initializeSalaPage();
         </script>
     </body>
+
 </html>

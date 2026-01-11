@@ -1,6 +1,6 @@
 import { firebase } from '../../firebase/config';
-import type  { Ponencia } from '../../models/ponencia';
-import  { EstadoPonencia } from '../../models/ponencia';
+import type { Ponencia } from '../../models/ponencia';
+import { EstadoPonencia } from '../../models/ponencia';
 import { doc, getDoc, updateDoc, setDoc, onSnapshot, collection, getDocs, query, where } from 'firebase/firestore';
 import type { Sala } from '../../models/sala';
 import { AuthService } from '../auth/auth.service';
@@ -70,12 +70,12 @@ export class SalaService {
                 });
             } catch (error) {
                 console.error('Error setting up sala updates:', error);
-                return () => {}; // Return empty cleanup function in case of error
+                return () => { }; // Return empty cleanup function in case of error
             }
         };
 
         // Start the listener setup process and store the cleanup function
-        let unsubscribe: () => void = () => {};
+        let unsubscribe: () => void = () => { };
         setupSalaListener().then(cleanupFn => {
             unsubscribe = cleanupFn;
         });
@@ -103,7 +103,7 @@ export class SalaService {
         try {
             const docRef = doc(this.db, 'salas', salaId);
             const docSnap = await getDoc(docRef);
-            
+
             if (!docSnap.exists()) {
                 throw new Error('Sala no encontrada');
             }
@@ -135,7 +135,7 @@ export class SalaService {
         try {
             const sala = await this.getSalaById(salaId);
             const ponencias = await this.getPonenciasBySala(sala.integrantes || []);
-            
+
             return {
                 total: ponencias.length,
                 pendientes: ponencias.filter(p => p.estado === EstadoPonencia.PENDIENTE).length,
@@ -144,6 +144,36 @@ export class SalaService {
         } catch (error) {
             console.error('Error getting sala status:', error);
             throw new Error('Error al obtener el estado de la sala');
+        }
+    }
+    // Metodos para el moderador
+    async updatePonenciaAttendance(ponenciaId: string, asistencia: boolean): Promise<void> {
+        try {
+            const docRef = doc(this.db, 'ponencias', ponenciaId);
+            await updateDoc(docRef, { asistencia });
+        } catch (error) {
+            console.error('Error updating attendance:', error);
+            throw new Error('Error al actualizar asistenica');
+        }
+    }
+
+    async addModeratorNote(ponenciaId: string, nota: string): Promise<void> {
+        try {
+            const docRef = doc(this.db, 'ponencias', ponenciaId);
+            await updateDoc(docRef, { notasModerador: nota });
+        } catch (error) {
+            console.error('Error adding moderator note:', error);
+            throw new Error('Error al guardar nota del moderador');
+        }
+    }
+
+    async reorderPonencias(salaId: string, newOrder: string[]): Promise<void> {
+        try {
+            const docRef = doc(this.db, 'salas', salaId);
+            await updateDoc(docRef, { integrantes: newOrder });
+        } catch (error) {
+            console.error('Error reordering ponencias:', error);
+            throw new Error('Error al reordenar ponencias');
         }
     }
 }

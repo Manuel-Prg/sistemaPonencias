@@ -12,6 +12,10 @@ export interface Ponencia {
     evaluaciones: Evaluacion[];
     userId: string;
     archivoUrl?: string; // URL del archivo PDF/DOC subido
+    asistencia?: boolean; // Si el ponente esta presente
+    inicioReal?: Timestamp; // Hora real de inicio
+    finReal?: Timestamp; // Hora real de fin
+    notasModerador?: string; // Notas sobre inasistencias o cambios
 }
 
 export interface Evaluacion {

@@ -121,6 +121,7 @@ body {
 }
 
 @media (max-width: 768px) {
+
   .table-header,
   .table-body .table-row {
     grid-template-columns: 1fr;
@@ -172,7 +173,99 @@ body {
   background: #2ecc71;
   color: white;
 }
+
 .ponencia-date {
   font-size: 0.8rem;
   color: #777;
+}
+
+/* Timer Section */
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timer-display {
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: monospace;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.timer-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.timer-btn.start {
+  background: #2ecc71;
+}
+
+.timer-btn.pause {
+  background: #f1c40f;
+  color: #000;
+}
+
+.timer-btn.reset {
+  background: #e74c3c;
+}
+
+.timer-btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* Next Up Highlight */
+.table-row.next-up {
+  background: rgba(255, 255, 255, 0.15);
+  border-left: 4px solid #f1c40f;
+}
+
+/* Controls */
+.center-text {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.attendance-check {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.move-end-btn {
+  background: #3498db;
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.ponencia-note {
+  font-size: 0.8rem;
+  color: #f1c40f;
+  margin-top: 0.3rem;
+  font-style: italic;
 }
