@@ -1,62 +1,45 @@
-// src/middleware/auth.middleware.ts
-import type { User, UserRole } from '../lib/models/user';
-import { AuthService } from '../lib/services/auth/auth.service';
-import { UserService } from '../lib/services/user/user.service';
-import type { User as FirebaseUser } from 'firebase/auth';
+import { defineMiddleware } from "astro:middleware";
+import { UserRole } from "../lib/models/user";
 
-export class AuthMiddleware {
-  private static instance: AuthMiddleware;
-  private authService: AuthService;
+const PUBLIC_ROUTES = [
+  '/',
+  '/registro',
+  '/recuperarPassword',
+  '/api/auth/login',
+  '/api/auth/register'
+];
 
+const ROLE_BASED_ROUTES = {
+  '/admin': UserRole.ADMIN,
+  '/revisor': UserRole.REVISOR,
+  '/escritor': UserRole.ESCRITOR,
+  '/moderador': UserRole.MODERADOR,
+  '/ponente': UserRole.PONENTE,
+};
 
-  private constructor() {
-    this.authService = new AuthService();
+export const onRequest = defineMiddleware(async ({ cookies, url, redirect }, next) => {
+  // Permitir acceso a rutas públicas y recursos estáticos
+  if (PUBLIC_ROUTES.includes(url.pathname) || url.pathname.startsWith('/_astro') || url.pathname.startsWith('/favicon')) {
+    return next();
   }
 
-  public static getInstance(): AuthMiddleware {
-    if (!AuthMiddleware.instance) {
-      AuthMiddleware.instance = new AuthMiddleware();
-    }
-    return AuthMiddleware.instance;
+  const session = cookies.get('session');
+  const roleCookie = cookies.get('role');
+
+  if (!session || !session.value) {
+    return redirect('/');
   }
 
-  async checkAuth(requiredRoles?: UserRole[]): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.authService.onAuthStateChanged(async (user) => {
-        if (!user) {
-          this.redirectToLogin();
-          return resolve(false);
-        }
-
-        if (requiredRoles?.length) {
-          const hasRole = await this.checkRole(user, requiredRoles);
-          if (!hasRole) {
-            this.redirectToUnauthorized();
-            return resolve(false);
-          }
-        }
-
-        resolve(true);
-      });
-    });
-  }
-
-  private async checkRole(firebaseUser: FirebaseUser, requiredRoles: string[]): Promise<boolean> {
-    try {
-      const userService = new UserService();
-      const userData = await userService.getUserById(firebaseUser.uid);
-      return requiredRoles.includes(userData.rol);
-    } catch (error) {
-      console.error('Error al verificar rol:', error);
-      return false;
+  // Check role-based access
+  for (const [routePrefix, requiredRole] of Object.entries(ROLE_BASED_ROUTES)) {
+    if (url.pathname.startsWith(routePrefix)) {
+      if (!roleCookie || roleCookie.value !== requiredRole) {
+        // Redirect to home if unauthorized for this specific route
+        // Ideally we would redirect to their specific dashboard, but for now home/login is safe
+        return redirect('/');
+      }
     }
   }
 
-  private redirectToLogin(): void {
-    window.location.href = '/login';
-  }
-
-  private redirectToUnauthorized(): void {
-    window.location.href = '/unauthorized';
-  }
-}
+  return next();
+});

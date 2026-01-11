@@ -148,8 +148,11 @@ export class AuthService {
       console.log('credentials', credentials);
       const userCredential = await createUserWithEmailAndPassword(this.auth, credentials.email, credentials.password);
 
+      const user = userCredential.user.uid;
+      if (!user) throw new Error('No se pudo obtener la información del usuario');
+
       await this.userService.createUser({
-        uid: userCredential.user.uid,
+        uid: user,
         datos: { nombre: credentials.nombre },
         rol: UserRole.PONENTE,
         creado: new Date().toISOString(),

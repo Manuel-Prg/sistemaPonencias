@@ -66,6 +66,14 @@ export class SigninForm {
 
       await this.authService.register(credentials);
 
+      // Get user and set cookie
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const token = await user.getIdToken();
+        document.cookie = `session=${token}; path=/; max-age=2592000; samesite=strict`;
+        document.cookie = `role=${UserRole.PONENTE}; path=/; max-age=2592000; samesite=strict`;
+      }
+
       // Show success notification
       showSuccess('¡Registro exitoso! Redirigiendo...');
 
@@ -85,6 +93,15 @@ export class SigninForm {
     e.preventDefault();
     try {
       await this.authService.registerWithGoogle();
+
+      // Get user and set cookie
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const token = await user.getIdToken();
+        document.cookie = `session=${token}; path=/; max-age=2592000; samesite=strict`;
+        document.cookie = `role=${UserRole.PONENTE}; path=/; max-age=2592000; samesite=strict`;
+      }
+
       showSuccess('¡Registro con Google exitoso!');
       setTimeout(() => {
         window.location.href = '/ponente/datosPonencia';

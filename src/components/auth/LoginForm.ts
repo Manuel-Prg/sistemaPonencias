@@ -42,7 +42,7 @@ export class LoginForm {
       }
     }
 
-    return routes[userData.rol] || '/autenticacion/iniciarSesion';
+    return routes[userData.rol] || '/';
   }
 
   async handleSubmit(credentials: AuthCredentials): Promise<void> {
@@ -62,6 +62,13 @@ export class LoginForm {
       // Obtener datos completos del usuario
       const userData = await this.userService.getUserById(firebaseUser.uid);
 
+      // Set session cookie
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const token = await user.getIdToken();
+        document.cookie = `session=${token}; path=/; max-age=2592000; samesite=strict`;
+        document.cookie = `role=${userData.rol}; path=/; max-age=2592000; samesite=strict`;
+      }
       // Obtener URL de redirección basada en el rol y estado de ponencia
       const redirectUrl = await this.getRedirectUrl(userData);
       window.location.href = redirectUrl;
@@ -89,6 +96,12 @@ export class LoginForm {
       // Obtener datos completos del usuario
       const userData = await this.userService.getUserById(firebaseUser.uid);
 
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const token = await user.getIdToken();
+        document.cookie = `session=${token}; path=/; max-age=2592000; samesite=strict`;
+        document.cookie = `role=${userData.rol}; path=/; max-age=2592000; samesite=strict`;
+      }
       // Usar la misma lógica de redirección que el login normal
       const redirectUrl = await this.getRedirectUrl(userData);
       window.location.href = redirectUrl;

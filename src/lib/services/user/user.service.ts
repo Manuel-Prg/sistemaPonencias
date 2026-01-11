@@ -9,7 +9,7 @@ export class UserService {
     console.log('uid', uid);
     const docRef = doc(this.db, 'users', uid);
     const docSnap = await getDoc(docRef);
-    
+
     if (!docSnap.exists()) {
       throw new Error('Usuario no encontrado');
     }
@@ -25,7 +25,7 @@ export class UserService {
     });
   }
 
-  
+
 
   async checkUserExists(uid: string): Promise<boolean> {
     const docRef = doc(this.db, 'users', uid);
@@ -34,8 +34,10 @@ export class UserService {
   }
 
   async createUser(userData: User): Promise<void> {
+    console.log('userData', userData);
     const docRef = doc(this.db, 'users', userData.uid);
     await setDoc(docRef, userData);
+    console.log('Usuario creado exitosamente');
   }
 
   async getUserData(uid: string): Promise<User> {
