@@ -214,7 +214,7 @@ export class DashboardManager {
     if (!user) {
       console.log('No user found, redirecting to login');
       await this.authService.signOut();
-      window.location.href = '/autenticacion/iniciarSesion';
+      window.location.href = '/';
       return;
     }
 
@@ -255,7 +255,7 @@ export class DashboardManager {
     } catch (error) {
       console.error('Error initializing revisor page:', error);
       await this.authService.signOut();
-      window.location.href = '/autenticacion/iniciarSesion';
+      window.location.href = '/';
     }
   }
 

@@ -5,7 +5,8 @@ import {
   sendPasswordResetEmail,
   type UserCredential,
   signInWithPopup,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  confirmPasswordReset
 } from 'firebase/auth';
 import { firebase } from '../../firebase/config';
 import type { AuthCredentials, AuthResponse } from '../../models/auth';
@@ -75,6 +76,14 @@ export class AuthService {
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.auth, email);
+    } catch (error) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  async confirmPasswordReset(oobCode: string, newPassword: string): Promise<void> {
+    try {
+      await confirmPasswordReset(this.auth, oobCode, newPassword);
     } catch (error) {
       throw this.handleAuthError(error);
     }

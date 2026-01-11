@@ -20,6 +20,19 @@ export class LoginForm {
     this.form = null;
     this.googleButton = null;
     this.attachListeners();
+    this.initAccessibilityObserver();
+  }
+
+  private initAccessibilityObserver(): void {
+    // Observer to add title to dynamically injected iframes (e.g. by Firebase/Google)
+    const observer = new MutationObserver(() => {
+      const iframes = document.querySelectorAll('iframe:not([title])');
+      iframes.forEach(iframe => {
+        iframe.setAttribute('title', 'Autenticación con Google');
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   private async getRedirectUrl(userData: User): Promise<string> {
