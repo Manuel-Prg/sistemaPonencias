@@ -206,7 +206,7 @@ export class SalaManager {
     if (!user) {
       console.log('No user found, redirecting to login');
       await this.authService.signOut();
-      window.location.href = '/autenticacion/iniciarSesion';
+      window.location.href = '/';
       return;
     }
 

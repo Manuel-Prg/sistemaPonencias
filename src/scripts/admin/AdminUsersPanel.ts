@@ -72,10 +72,10 @@ export class AdminUsers {
       this.elements.mainWrapper.classList.toggle("sidebar-collapsed", this.isCollapsed);
       this.elements.sidebarCollapseBtn!.classList.toggle("collapsed", this.isCollapsed);
       this.elements.sidebarCollapseBtn!.innerHTML = this.isCollapsed
-          ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
              <path d="M9 18l6-6-6-6"/>
            </svg>`
-          : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
              <path d="M15 18l-6-6 6-6"/>
            </svg>`;
     });
@@ -91,7 +91,7 @@ export class AdminUsers {
   private bindEvents(): void {
     this.elements.searchInput.addEventListener("input", this.debounce(this.handleSearch.bind(this), 300));
     this.elements.filterBtns.forEach((btn) =>
-        btn.addEventListener("click", this.handleFilter.bind(this))
+      btn.addEventListener("click", this.handleFilter.bind(this))
     );
     if (this.elements.addReviewerBtn) {
       this.elements.addReviewerBtn.addEventListener("click", () => this.elements.modal.showModal());
@@ -114,7 +114,7 @@ export class AdminUsers {
   private setupAuthStateListener(): void {
     this.authService.onAuthStateChanged((user) => {
       if (!user) {
-        window.location.href = "/autenticacion/iniciarSesion";
+        window.location.href = "/";
       }
     });
   }
@@ -170,7 +170,7 @@ export class AdminUsers {
     }
     if (searchTerm) {
       filteredUsers = filteredUsers.filter((user) =>
-          user.datos?.nombre?.toLowerCase().includes(searchTerm)
+        user.datos?.nombre?.toLowerCase().includes(searchTerm)
       );
     }
     this.renderUsers(filteredUsers);

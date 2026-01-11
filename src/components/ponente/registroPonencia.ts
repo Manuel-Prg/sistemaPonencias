@@ -8,7 +8,7 @@ import { Timestamp } from "firebase/firestore";
 import { showError, showSuccess, showConfirm } from "../../utils/notifications";
 
 const ROUTES = {
-    LOGIN: "../autenticacion/iniciarSesion",
+    LOGIN: "/",
     DATOS: "/ponente/datosPonente",
     REGISTRO_VALIDO: "/ponente/registroValido",
     HERE: "/ponente/datosPonencia"

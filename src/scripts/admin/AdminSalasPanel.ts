@@ -126,7 +126,7 @@ export class AdminSalas {
     private setupAuthStateListener(): void {
         this.authService.onAuthStateChanged((user) => {
             if (!user) {
-                window.location.href = "/autenticacion/iniciarSesion";
+                window.location.href = "/";
             }
         });
     }
@@ -248,7 +248,7 @@ export class AdminSalas {
         const fotosIntegrantes = this.createUserPhotos(sala.integrantes ?? []);
         card.innerHTML = `
             <div class="sala-header">
-                <h2>${this.escapeHtml(sala.titulo)}</h2>
+                <h2>${this.escapeHtml(sala.titulo ?? "Sin Título")}</h2>
                 <div class="header-avatars">
             
                 </div>
@@ -257,11 +257,11 @@ export class AdminSalas {
                 <p>${this.escapeHtml(fechaString)}</p>
                 <div class="sala-row">
                     <span>Integrantes: ${sala.integrantes.length}</span>
-                    <span>Tema: ${this.escapeHtml(sala.tema)}</span>
+                    <span>Tema: ${this.escapeHtml(sala.tema ?? "Sin Tema")}</span>
                 </div>
                 <div class="sala-row">
-                    <span>Estado de la sala: ${this.escapeHtml(sala.estado)}</span>
-                    <span class="tiempo-transcurrido">Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido)}</span>
+                    <span>Estado de la sala: ${this.escapeHtml(sala.estado ?? "Desconocido")}</span>
+                    <span class="tiempo-transcurrido">Tiempo transcurrido: ${this.escapeHtml(sala.tiempoTranscurrido ?? "0h 0m")}</span>
                 </div>
             </div>
         `;
