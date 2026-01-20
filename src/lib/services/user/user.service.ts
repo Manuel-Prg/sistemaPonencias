@@ -1,42 +1,42 @@
-import { firebase } from '../../firebase/config';
+import { BaseService } from '../base.service';
 import type { User } from '../../models/user';
-import { doc, getDoc, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { onSnapshot, type DocumentSnapshot } from 'firebase/firestore';
 
-export class UserService {
-  private db = firebase.getFirestore();
+export class UserService extends BaseService<User> {
+  protected collectionName = 'users';
+
+  protected convertData(doc: DocumentSnapshot): User {
+    return { uid: doc.id, ...doc.data() } as User;
+  }
+
+  protected convertQueryData(doc: any): User {
+    return { uid: doc.id, ...doc.data() } as User;
+  }
 
   async getUserById(uid: string): Promise<User> {
     console.log('uid', uid);
-    const docRef = doc(this.db, 'users', uid);
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
+    const user = await super.getById(uid);
+    if (!user) {
       throw new Error('Usuario no encontrado');
     }
-
-    return { uid: docSnap.id, ...docSnap.data() } as User;
+    return user;
   }
 
   async updateUser(uid: string, data: Partial<User>): Promise<void> {
-    const docRef = doc(this.db, 'users', uid);
-    await updateDoc(docRef, {
+    await super.update(uid, {
       ...data,
       actualizado: new Date().toISOString()
     });
   }
 
-
-
   async checkUserExists(uid: string): Promise<boolean> {
-    const docRef = doc(this.db, 'users', uid);
-    const docSnap = await getDoc(docRef);
-    return docSnap.exists();
+    const docSnap = await super.getById(uid);
+    return !!docSnap;
   }
 
   async createUser(userData: User): Promise<void> {
     console.log('userData', userData);
-    const docRef = doc(this.db, 'users', userData.uid);
-    await setDoc(docRef, userData);
+    await super.create(userData.uid, userData);
     console.log('Usuario creado exitosamente');
   }
 
@@ -45,10 +45,10 @@ export class UserService {
   }
 
   setupRealtimeUpdates(uid: string, callback: (userData: User) => void): () => void {
-    const userRef = doc(this.db, 'users', uid);
+    const userRef = this.docRef(uid);
     return onSnapshot(userRef, (snapshot) => {
       if (snapshot.exists()) {
-        const userData = { uid: snapshot.id, ...snapshot.data() } as User;
+        const userData = this.convertData(snapshot);
         callback(userData);
       }
     });

@@ -1,3 +1,4 @@
+import { BaseService } from '../base.service';
 import {
     collection,
     doc,
@@ -8,18 +9,39 @@ import {
     updateDoc,
     documentId,
     Timestamp,
-    type Firestore
+    type DocumentSnapshot
 } from 'firebase/firestore';
-import { firebase } from '../../firebase/config';
 import type { Ponencia, Evaluacion } from '../../models/ponencia';
-import type { Revisor, RevisorData } from '../../models/revisor';
+import type { Revisor } from '../../models/revisor';
 
-export class RevisorService {
-    private db: Firestore;
-    private readonly COLLECTION = 'ponencias';
+export class RevisorService extends BaseService<Ponencia> {
+    protected collectionName = 'ponencias';
 
-    constructor() {
-        this.db = firebase.getFirestore();
+    protected convertData(docSnap: DocumentSnapshot): Ponencia {
+        const data = docSnap.data();
+        if (!data) return {} as Ponencia;
+
+        const creado = data.creado instanceof Timestamp
+            ? data.creado.toDate()
+            : data.creado;
+
+        const evaluaciones = data.evaluaciones?.map((evaluation: any) => ({
+            ...evaluation,
+            fecha: evaluation.fecha instanceof Timestamp
+                ? evaluation.fecha.toDate()
+                : evaluation.fecha
+        })) || [];
+
+        return {
+            ...data,
+            id: docSnap.id,
+            creado,
+            evaluaciones
+        } as Ponencia;
+    }
+
+    protected convertQueryData(doc: any): Ponencia {
+        return this.convertData(doc);
     }
 
     async getRevisores(): Promise<Revisor[]> {
@@ -45,40 +67,8 @@ export class RevisorService {
     }
 
     async getPresentations(presentationIds: string[]): Promise<Ponencia[]> {
-        try {
-            if (!presentationIds.length) return [];
-
-            const presentationsRef = collection(this.db, this.COLLECTION);
-            const q = query(presentationsRef, where(documentId(), 'in', presentationIds));
-            const querySnapshot = await getDocs(q);
-
-            return querySnapshot.docs.map(doc => {
-                const data = doc.data();
-
-                // Validar el campo creado
-                const creado = data.creado instanceof Timestamp
-                    ? data.creado.toDate()
-                    : data.creado;
-
-                // Validar y transformar evaluaciones
-                const evaluaciones = data.evaluaciones?.map((evaluation: any) => ({
-                    ...evaluation,
-                    fecha: evaluation.fecha instanceof Timestamp
-                        ? evaluation.fecha.toDate()
-                        : evaluation.fecha
-                })) || [];
-
-                return {
-                    ...data,
-                    id: doc.id,
-                    creado,
-                    evaluaciones
-                } as Ponencia;
-            });
-        } catch (error) {
-            console.error('Error getting presentations:', error);
-            throw error;
-        }
+        if (!presentationIds.length) return [];
+        return this.getAll([where(documentId(), 'in', presentationIds)]);
     }
 
     async saveEvaluation(
@@ -87,7 +77,7 @@ export class RevisorService {
         evaluation: Partial<Evaluacion>
     ): Promise<void> {
         try {
-            const presentationRef = doc(this.db, this.COLLECTION, presentationId);
+            const presentationRef = doc(this.db, this.collectionName, presentationId);
             const presentationDoc = await getDoc(presentationRef);
 
             if (!presentationDoc.exists()) {
@@ -125,7 +115,7 @@ export class RevisorService {
                 evaluaciones: updatedEvaluaciones
             });
         } catch (error) {
-            console.error('Error saving evaluation:', error);
+            this.handleError('saveEvaluation', error);
             throw error;
         }
     }
@@ -153,7 +143,7 @@ export class RevisorService {
             }
 
             // 3. Obtener/Validar ponencia
-            const ponenciaRef = doc(this.db, this.COLLECTION, ponenciaId);
+            const ponenciaRef = doc(this.db, this.collectionName, ponenciaId);
             const ponenciaDoc = await getDoc(ponenciaRef);
 
             if (!ponenciaDoc.exists()) {
@@ -172,7 +162,7 @@ export class RevisorService {
             });
 
         } catch (error) {
-            console.error('Error assigning ponencia:', error);
+            this.handleError('assignPonenciaToRevisor', error);
             throw error;
         }
     }

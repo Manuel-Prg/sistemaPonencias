@@ -1,118 +1,90 @@
-import { firebase } from '../../firebase/config';
-import {
-    collection,
-    doc,
-    getDocs,
-    getDoc,
-    setDoc,
-    updateDoc,
-    deleteDoc,
-    query,
-    where,
-    Timestamp
-} from 'firebase/firestore';
+import { BaseService } from '../base.service';
 import type { Sala } from '../../models/sala';
 import { UserService } from '../user/user.service';
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    Timestamp,
+    type DocumentSnapshot,
+    addDoc
+} from 'firebase/firestore';
 
-export class SalaManagementService {
-    private db = firebase.getFirestore();
+export class SalaManagementService extends BaseService<Sala> {
+    protected collectionName = 'salas';
     private userService = new UserService();
-    private readonly COLLECTION = 'salas';
 
-    /**
-     * Crea una nueva sala
-     */
+    protected convertData(doc: DocumentSnapshot): Sala {
+        return {
+            id: doc.id,
+            ...doc.data()
+        } as Sala;
+    }
+
+    protected convertQueryData(doc: any): Sala {
+        return this.convertData(doc);
+    }
+
     async createSala(sala: Omit<Sala, 'id'>): Promise<string> {
         try {
-            const salasRef = collection(this.db, this.COLLECTION);
-            const newSalaRef = doc(salasRef);
-
             const salaData = {
                 ...sala,
                 creado: Timestamp.now(),
                 actualizado: Timestamp.now()
             };
-
-            await setDoc(newSalaRef, salaData);
-            return newSalaRef.id;
+            const docRef = await addDoc(this.collectionRef, salaData);
+            return docRef.id;
         } catch (error) {
-            console.error('Error creating sala:', error);
+            this.handleError('createSala', error);
             throw new Error('Error al crear la sala');
         }
     }
 
-    /**
-     * Obtiene todas las salas
-     */
     async getAllSalas(): Promise<(Sala & { id: string })[]> {
         try {
-            const salasRef = collection(this.db, this.COLLECTION);
-            const snapshot = await getDocs(salasRef);
-
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            } as Sala & { id: string }));
+            const salas = await this.getAll();
+            return salas as (Sala & { id: string })[];
         } catch (error) {
-            console.error('Error getting salas:', error);
+            this.handleError('getAllSalas', error);
             throw new Error('Error al obtener las salas');
         }
     }
 
-    /**
-     * Obtiene una sala por ID
-     */
     async getSalaById(salaId: string): Promise<Sala & { id: string }> {
         try {
-            const salaRef = doc(this.db, this.COLLECTION, salaId);
-            const salaDoc = await getDoc(salaRef);
-
-            if (!salaDoc.exists()) {
+            const sala = await super.getById(salaId);
+            if (!sala) {
                 throw new Error('Sala no encontrada');
             }
-
-            return {
-                id: salaDoc.id,
-                ...salaDoc.data()
-            } as Sala & { id: string };
+            return sala as Sala & { id: string };
         } catch (error) {
-            console.error('Error getting sala:', error);
+            this.handleError('getSalaById', error);
             throw error;
         }
     }
 
-    /**
-     * Actualiza una sala
-     */
     async updateSala(salaId: string, data: Partial<Sala>): Promise<void> {
         try {
-            const salaRef = doc(this.db, this.COLLECTION, salaId);
-            await updateDoc(salaRef, {
+            await super.update(salaId, {
                 ...data,
                 actualizado: Timestamp.now()
             });
         } catch (error) {
-            console.error('Error updating sala:', error);
+            this.handleError('updateSala', error);
             throw new Error('Error al actualizar la sala');
         }
     }
 
-    /**
-     * Elimina una sala
-     */
     async deleteSala(salaId: string): Promise<void> {
         try {
-            const salaRef = doc(this.db, this.COLLECTION, salaId);
-            await deleteDoc(salaRef);
+            await super.delete(salaId);
         } catch (error) {
-            console.error('Error deleting sala:', error);
+            this.handleError('deleteSala', error);
             throw new Error('Error al eliminar la sala');
         }
     }
 
-    /**
-     * Asigna un moderador a una sala
-     */
     async assignModeradorToSala(salaId: string, moderadorId: string): Promise<void> {
         try {
             // Actualizar el usuario con la sala asignada
@@ -121,19 +93,15 @@ export class SalaManagementService {
             });
 
             // Actualizar la sala con el moderador
-            const sala = await this.getSalaById(salaId);
             await this.updateSala(salaId, {
                 moderador: moderadorId
             });
         } catch (error) {
-            console.error('Error assigning moderador:', error);
+            this.handleError('assignModeradorToSala', error);
             throw new Error('Error al asignar moderador a la sala');
         }
     }
 
-    /**
-     * Asigna ponencias a una sala
-     */
     async assignPonenciasToSala(salaId: string, ponenciaIds: string[]): Promise<void> {
         try {
             const sala = await this.getSalaById(salaId);
@@ -146,14 +114,11 @@ export class SalaManagementService {
                 integrantes: updatedPonencias
             });
         } catch (error) {
-            console.error('Error assigning ponencias:', error);
+            this.handleError('assignPonenciasToSala', error);
             throw new Error('Error al asignar ponencias a la sala');
         }
     }
 
-    /**
-     * Remueve ponencias de una sala
-     */
     async removePonenciasFromSala(salaId: string, ponenciaIds: string[]): Promise<void> {
         try {
             const sala = await this.getSalaById(salaId);
@@ -166,14 +131,11 @@ export class SalaManagementService {
                 integrantes: updatedPonencias
             });
         } catch (error) {
-            console.error('Error removing ponencias:', error);
+            this.handleError('removePonenciasFromSala', error);
             throw new Error('Error al remover ponencias de la sala');
         }
     }
 
-    /**
-     * Obtiene todos los moderadores disponibles (sin sala asignada)
-     */
     async getAvailableModerators(): Promise<any[]> {
         try {
             const usersRef = collection(this.db, 'users');
@@ -191,21 +153,19 @@ export class SalaManagementService {
             // Filtrar solo los que no tienen sala asignada
             return moderadores.filter((mod: any) => !mod.salaAsignada);
         } catch (error) {
-            console.error('Error getting available moderators:', error);
+            this.handleError('getAvailableModerators', error);
             throw new Error('Error al obtener moderadores disponibles');
         }
     }
 
-    /**
-     * Obtiene salas sin moderador asignado
-     */
     async getSalasWithoutModerator(): Promise<(Sala & { id: string })[]> {
         try {
             const salas = await this.getAllSalas();
             return salas.filter(sala => !sala.moderador);
         } catch (error) {
-            console.error('Error getting salas without moderator:', error);
+            this.handleError('getSalasWithoutModerator', error);
             throw new Error('Error al obtener salas sin moderador');
         }
     }
 }
+

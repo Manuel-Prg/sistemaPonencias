@@ -1,134 +1,140 @@
-import { firebase } from "../../firebase/config";
-import type { EstadoPonencia, Ponencia } from "../../models/ponencia";
-import { 
-    collection, 
-    getDocs, 
-    getDoc, 
-    doc, 
-    setDoc, 
-    updateDoc, 
-    type Firestore,
-    Timestamp,
-    query,
+import { BaseService } from '../base.service';
+import type { EstadoPonencia, Ponencia } from '../../models/ponencia';
+import { RevisorService } from '../revisor/revisor.services';
+import type { Revisor } from '../../models/revisor';
+import {
     where,
-    arrayUnion
+    Timestamp,
+    doc,
+    setDoc,
+    updateDoc,
+    getDoc,
+    arrayUnion,
+    type DocumentSnapshot
 } from 'firebase/firestore';
 
-export class PonenciaService {
-    private db: Firestore;
-    private readonly COLLECTION = 'ponencias';
+export class PonenciaService extends BaseService<Ponencia> {
+    protected collectionName = 'ponencias';
 
-    constructor() {
-        this.db = firebase.getFirestore();
+    protected convertData(docSnap: DocumentSnapshot): Ponencia {
+        const data = docSnap.data();
+        if (!data) return {} as Ponencia;
+
+        const creado = data.creado instanceof Timestamp
+            ? data.creado.toDate()
+            : data.creado;
+
+        const evaluaciones = data.evaluaciones ? data.evaluaciones.map((evaluation: any) => ({
+            ...evaluation,
+            fecha: evaluation.fecha instanceof Timestamp ? evaluation.fecha.toDate() : evaluation.fecha
+        })) : [];
+
+        return {
+            ...data,
+            id: docSnap.id,
+            creado,
+            evaluaciones
+        } as Ponencia;
     }
 
-    async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {  
-        try {  
-          console.log('IDs consultados:', ids);  
-          const ponenciasRef = collection(this.db, this.COLLECTION);  
-          const q = query(ponenciasRef, where('userId', 'in', ids));  
-          const ponenciasSnapshot = await getDocs(q);  
-          
-          console.log('Documentos encontrados:', ponenciasSnapshot.docs.length);  
-          
-          const ponencias = ponenciasSnapshot.docs.map((doc) => {  
-            console.log('Documento individual:', doc.data());  
-            return doc.data() as Ponencia;  
-          });  
-          
-          return ponencias;  
-        } catch (error) {  
-          console.error('Error en la consulta:', error);  
-          throw error;  
-        }  
-      }
-    
-    async getPonencias(): Promise<Ponencia[]> {
+    protected convertQueryData(doc: any): Ponencia {
+        return this.convertData(doc);
+    }
+
+    async getPonenciasByIds(ids: string[]): Promise<Ponencia[]> {
         try {
-            const ponenciasRef = collection(this.db, this.COLLECTION);
-            const ponenciasSnapshot = await getDocs(ponenciasRef);
-            const ponencias: Ponencia[] = [];
-            
-            ponenciasSnapshot.forEach(doc => {
-                const data = doc.data();
-                // Convert Firestore Timestamp to Date
-                const ponencia: Ponencia = {
-                    ...data,
-                    id: doc.id,
-                    creado: data.creado.toDate(),
-                    evaluaciones: data.evaluaciones ? data.evaluaciones.map((evaluation: any) => ({
-                        ...evaluation,
-                        fecha: evaluation.fecha
-                    })) : []
-                } as Ponencia;
-                ponencias.push(ponencia);
-            });
-            
-            return ponencias;
+            console.log('IDs consultados:', ids);
+            return this.getAll([where('userId', 'in', ids)]);
         } catch (error) {
-            console.error('Error getting ponencias:', error);
+            this.handleError('getPonenciasByIds', error);
             throw error;
         }
+    }
+
+    async getPonencias(): Promise<Ponencia[]> {
+        return this.getAll();
     }
 
     async getPonenciaById(id: string): Promise<Ponencia> {
+        const ponencia = await super.getById(id);
+        if (!ponencia) {
+            throw new Error('Ponencia not found');
+        }
+        return ponencia;
+    }
+
+    private revisorService = new RevisorService();
+
+    async createPonencia(ponencia: Ponencia): Promise<void> {
         try {
-            const ponenciaRef = doc(this.db, this.COLLECTION, id);
-            const ponenciaDoc = await getDoc(ponenciaRef);
-            
-            if (!ponenciaDoc.exists()) {
-                throw new Error('Ponencia not found');
+            // 1. Obtener y seleccionar revisores
+            const allRevisores = await this.revisorService.getRevisores();
+            // Filtrar revisores que no hayan alcanzado el límite de 2 (o configurable)
+            const candidatos = allRevisores.filter(r => (r.ponenciasAsignadas?.length || 0) < 2);
+
+            if (candidatos.length < 3) {
+                console.warn('No hay suficientes revisores disponibles para asignar 3. Se asignarán los disponibles.');
             }
-            
-            const data = ponenciaDoc.data();
-            // Convert Firestore Timestamp to Date
-            const ponencia: Ponencia = {
-                ...data,
-                id: ponenciaDoc.id,
-                creado: data.creado.toDate(),
-                evaluaciones: data.evaluaciones ? data.evaluaciones.map((evaluation: any) => ({
-                    ...evaluation,
-                    fecha: evaluation.fecha.toDate()
-                })) : []
-            } as Ponencia;
-            
-            return ponencia;
+
+            const revisoresSeleccionados = this.seleccionarRevisores(candidatos, 3);
+
+            // 2. Preparar evaluaciones iniciales
+            const evaluacionesIniciales = revisoresSeleccionados.map(revisor => ({
+                revisor: revisor.id,
+                evaluacion: 'pendiente',
+                fecha: Timestamp.now()
+            }));
+
+            // 3. Preparar datos de la ponencia (guardar con evaluaciones iniciales)
+            const { id, ...ponenciaData } = ponencia;
+
+            const ponenciaToSave = {
+                ...ponenciaData,
+                creado: ponencia.creado,
+                evaluaciones: [
+                    ...(ponencia.evaluaciones?.map(evaluation => ({
+                        ...evaluation,
+                        fecha: Timestamp.fromDate(evaluation.fecha)
+                    })) || []),
+                    ...evaluacionesIniciales
+                ]
+            };
+
+            const newDocRef = doc(this.db, this.collectionName, id);
+            await setDoc(newDocRef, ponenciaToSave);
+
+            // 4. Actualizar a los revisores asignados
+            // Esto actualiza el documento del revisor para que vea la ponencia en su lista
+            await Promise.all(revisoresSeleccionados.map(revisor =>
+                this.revisorService.assignPonenciaToRevisor(revisor.id, id)
+            ));
+
         } catch (error) {
-            console.error('Error getting ponencia:', error);
+            this.handleError('createPonencia', error);
             throw error;
         }
     }
 
+    private seleccionarRevisores(candidatos: any[], cantidad: number): any[] {
+        const candidatosConMetadata = candidatos.map(r => ({
+            revisor: r,
+            carga: r.ponenciasAsignadas?.length || 0,
+            rand: Math.random()
+        }));
 
+        candidatosConMetadata.sort((a, b) => {
+            if (a.carga !== b.carga) return a.carga - b.carga;
+            return a.rand - b.rand;
+        });
 
-    async createPonencia(ponencia: Ponencia): Promise<void> {
-        try {
-            // Remove id as Firestore will generate one
-            const { id, ...ponenciaData } = ponencia;
-            
-            // Ensure creado is a Firestore Timestamp
-            const ponenciaToSave = {
-                ...ponenciaData,
-                creado: ponencia.creado,
-                evaluaciones: ponencia.evaluaciones?.map(evaluation => ({
-                    ...evaluation,
-                    fecha: Timestamp.fromDate(evaluation.fecha)
-                })) || []
-            };
-            
-            const newDocRef = doc(this.db, this.COLLECTION, id);
-            await setDoc(newDocRef, ponenciaToSave);
-        } catch (error) {
-            console.error('Error creating ponencia:', error);
-            throw error;
-        }
+        return candidatosConMetadata.slice(0, cantidad).map(x => x.revisor);
     }
 
     async updatePonencia(id: string, ponencia: Ponencia): Promise<void> {
         try {
             // Remove id from the data to update
             const { id: _, ...updateData } = ponencia;
-            
+
             // Convert dates to Firestore Timestamps
             const ponenciaToUpdate = {
                 ...updateData,
@@ -138,11 +144,10 @@ export class PonenciaService {
                     fecha: Timestamp.fromDate(evaluation.fecha)
                 })) || []
             };
-            
-            const ponenciaRef = doc(this.db, this.COLLECTION, id);
-            await updateDoc(ponenciaRef, ponenciaToUpdate);
+
+            await super.update(id, ponenciaToUpdate as unknown as Partial<Ponencia>);
         } catch (error) {
-            console.error('Error updating ponencia:', error);
+            this.handleError('updatePonencia', error);
             throw error;
         }
     }
@@ -150,13 +155,13 @@ export class PonenciaService {
     async updatePonenciaStatus(
         id: string,
         ponencia: string,
-        estado: EstadoPonencia, 
+        estado: EstadoPonencia,
         comentarios?: string
     ): Promise<boolean> {
         try {
-            const ponenciaRef = doc(this.db, 'ponencias', ponencia);
+            const ponenciaRef = doc(this.db, this.collectionName, ponencia);
             const ponenciaDoc = await getDoc(ponenciaRef);
-            
+
             if (!ponenciaDoc.exists()) {
                 throw new Error('Ponencia no encontrada');
             }
@@ -164,7 +169,7 @@ export class PonenciaService {
             const data = ponenciaDoc.data();
             const evaluaciones = data.evaluaciones || [];
             const evaluacionIndex = evaluaciones.findIndex(
-                (evaluation: any) => evaluation .revisor === id
+                (evaluation: any) => evaluation.revisor === id
             );
 
             if (evaluacionIndex >= 0) {
@@ -175,7 +180,7 @@ export class PonenciaService {
                     correcciones: comentarios || '',
                     fecha: new Date().toISOString()
                 };
-                
+
                 await updateDoc(ponenciaRef, {
                     estado: estado,
                     evaluaciones: evaluaciones,
@@ -197,7 +202,7 @@ export class PonenciaService {
 
             return true;
         } catch (error) {
-            console.error('Error updating ponencia in Firebase:', error);
+            this.handleError('updatePonenciaStatus', error);
             return false;
         }
     }
