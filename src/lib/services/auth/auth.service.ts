@@ -192,6 +192,56 @@ export class AuthService {
     return this.auth.currentUser;
   }
 
+
+  async createModerator({ nombre, email, password }: { nombre: string; email: string; password: string }): Promise<void> {
+    let secondApp: any;
+    try {
+      // 1. Crear app secundaria para no cerrar sesión del admin
+      const { initializeApp, deleteApp } = await import('firebase/app');
+      const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
+
+      const firebaseConfig = {
+        apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
+        authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.PUBLIC_FIREBASE_APP_ID,
+        measurementId: import.meta.env.PUBLIC_FIREBASE_MEASUREMENT_ID
+      };
+
+      secondApp = initializeApp(firebaseConfig, 'SecondaryApp');
+      const secondAuth = getAuth(secondApp);
+
+      // 2. Crear usuario en Auth
+      const userCredential = await createUserWithEmailAndPassword(secondAuth, email, password);
+      const uid = userCredential.user.uid;
+
+      // 3. Crear documento de usuario con rol 'moderador'
+      await this.userService.createUser({
+        uid: uid,
+        datos: { nombre, email },
+        rol: UserRole.MODERADOR,
+        creado: new Date().toISOString(),
+        actualizado: new Date().toISOString()
+      });
+
+      // 4. Limpiar app secundaria
+      await deleteApp(secondApp);
+
+    } catch (error: any) {
+      if (secondApp) {
+        const { deleteApp } = await import('firebase/app');
+        await deleteApp(secondApp);
+      }
+      console.error('Error creating moderator:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        throw new Error('El correo electrónico ya está registrado.');
+      }
+      throw new Error('Error al crear el moderador: ' + error.message);
+    }
+  }
+
   handleAuthError(error: any): Error {
     switch (error.code) {
       case 'auth/user-not-found':

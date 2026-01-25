@@ -27,7 +27,19 @@ class ToastManager {
         if (!this.container) {
             this.container = document.createElement('div');
             this.container.className = 'toast-container';
-            document.body.appendChild(this.container);
+            // Use Popover API to promote to Top Layer (above dialogs)
+            try {
+                this.container.setAttribute('popover', 'manual');
+                document.body.appendChild(this.container);
+                if (typeof this.container.showPopover === 'function') {
+                    this.container.showPopover();
+                }
+            } catch (e) {
+                // Fallback for browsers without popover support
+                if (!this.container.isConnected) {
+                    document.body.appendChild(this.container);
+                }
+            }
         }
     }
 

@@ -7,12 +7,20 @@ import {
 import { firebase } from "../../lib/firebase/config";
 import type { User } from "../../lib/models/user";
 import { AuthService } from "../../lib/services/auth/auth.service";
+import { showSuccess, showError } from "../../utils/notifications";
 
 interface AdminUsersElements {
   searchInput: HTMLInputElement;
   usersGrid: HTMLElement;
   addReviewerBtn: HTMLButtonElement | null;
+  addModeratorBtn: HTMLButtonElement | null;
   modal: HTMLDialogElement;
+  addModeratorModal: HTMLDialogElement;
+  credentialsModal: HTMLDialogElement;
+  addModeratorForm: HTMLFormElement | null;
+  createdEmail: HTMLElement;
+  createdPassword: HTMLElement;
+  copyBtns: NodeListOf<HTMLButtonElement>;
   filterBtns: NodeListOf<HTMLButtonElement>;
   logoutBtn: HTMLButtonElement;
   sidebarToggle: HTMLElement;
@@ -43,7 +51,14 @@ export class AdminUsers {
       searchInput: document.getElementById("searchUsers") as HTMLInputElement,
       usersGrid: document.getElementById("usersGrid") as HTMLElement,
       addReviewerBtn: document.getElementById("addReviewer") as HTMLButtonElement | null,
+      addModeratorBtn: document.getElementById("addModerator") as HTMLButtonElement | null,
       modal: document.getElementById("addReviewerModal") as HTMLDialogElement,
+      addModeratorModal: document.getElementById("addModeratorModal") as HTMLDialogElement,
+      credentialsModal: document.getElementById("credentialsModal") as HTMLDialogElement,
+      addModeratorForm: document.getElementById("addModeratorForm") as HTMLFormElement | null,
+      createdEmail: document.getElementById("createdEmail") as HTMLElement,
+      createdPassword: document.getElementById("createdPassword") as HTMLElement,
+      copyBtns: document.querySelectorAll(".copy-btn") as NodeListOf<HTMLButtonElement>,
       filterBtns: document.querySelectorAll(".filter-btn") as NodeListOf<HTMLButtonElement>,
       logoutBtn: document.getElementById("logout-btn") as HTMLButtonElement,
       userSearchInput: document.getElementById("userSearchInput") as HTMLInputElement,
@@ -96,11 +111,85 @@ export class AdminUsers {
     if (this.elements.addReviewerBtn) {
       this.elements.addReviewerBtn.addEventListener("click", () => this.elements.modal.showModal());
     }
+    if (this.elements.addModeratorBtn) {
+      this.elements.addModeratorBtn.addEventListener("click", () => this.elements.addModeratorModal.showModal());
+    }
+    if (this.elements.addModeratorForm) {
+      this.elements.addModeratorForm.addEventListener("submit", this.handleAddModerator.bind(this));
+    }
+
+    this.elements.copyBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => this.handleCopy(e));
+    });
+
     this.elements.logoutBtn.addEventListener("click", this.handleLogout.bind(this));
     this.elements.userSearchInput.addEventListener("input", this.debounce(this.searchUsersToConvert.bind(this), 300));
 
     // Función global para cerrar el modal, si es necesario
     (window as any).closeModal = () => this.elements.modal.close();
+  }
+
+  private async handleCopy(e: Event): Promise<void> {
+    const btn = (e.target as HTMLElement).closest('.copy-btn') as HTMLButtonElement;
+    const targetId = btn.dataset.target;
+    if (!targetId) return;
+
+    const element = document.getElementById(targetId);
+    if (element && element.textContent) {
+      try {
+        await navigator.clipboard.writeText(element.textContent);
+
+        // Feedback visual
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        setTimeout(() => {
+          btn.innerHTML = originalIcon;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    }
+  }
+
+  private async handleAddModerator(e: Event): Promise<void> {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const submitBtn = form.querySelector('.submit-btn') as HTMLButtonElement;
+
+    // Get values
+    const nameInput = document.getElementById('modName') as HTMLInputElement;
+    const emailInput = document.getElementById('modEmail') as HTMLInputElement;
+
+    const nombre = nameInput.value.trim();
+    const email = emailInput.value.trim();
+
+    if (!nombre || !email) return;
+
+    // Generate random password (8 chars)
+    const password = Math.random().toString(36).slice(-8);
+
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creando...';
+
+      await this.authService.createModerator({ nombre, email, password });
+
+      this.elements.addModeratorModal.close();
+      form.reset();
+      await this.fetchUsers();
+
+      // Show credentials modal
+      this.elements.createdEmail.textContent = email;
+      this.elements.createdPassword.textContent = password;
+      this.elements.credentialsModal.showModal();
+
+    } catch (error: any) {
+      console.error('Error creating moderator:', error);
+      showError(error.message || 'Error al crear moderador');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Crear';
+    }
   }
 
   private debounce(func: (...args: any[]) => void, delay: number): (...args: any[]) => void {
@@ -211,6 +300,7 @@ export class AdminUsers {
       ponente: "Ponente",
       revisor: "Revisor",
       admin: "Administrador",
+      moderador: "Moderador"
     };
     return userTypeMap[userRole] || "Ponente";
   }
@@ -261,13 +351,13 @@ export class AdminUsers {
   private async convertUserToReviewer(userId: string): Promise<void> {
     try {
       await updateDoc(doc(this.db, "users", userId), { rol: "revisor" });
-      alert("Usuario convertido a revisor.");
+      showSuccess("Usuario convertido a revisor.");
       this.elements.userSearchInput.value = "";
       this.elements.searchResultsContainer.innerHTML = "";
       await this.fetchUsers();
     } catch (error) {
       console.error("Convert to reviewer error:", error);
-      alert("Error al convertir usuario.");
+      showError("Error al convertir usuario.");
     }
   }
 }

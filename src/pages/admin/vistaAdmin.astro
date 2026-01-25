@@ -65,6 +65,23 @@ import "../../scripts/admin/AdminSalasPanel";
                         </svg>
                         <span>Asignar Aleatoriamente</span>
                     </button>
+                    <button class="admin-btn" id="addModerator">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                            ></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M12 11h.01"></path>
+                            <path d="M16 11h4"></path>
+                        </svg>
+                        <span>Agregar Moderador</span>
+                    </button>
                     <button class="admin-btn" id="addSpecialtyArea">
                         <svg
                             viewBox="0 0 24 24"
@@ -97,6 +114,9 @@ import "../../scripts/admin/AdminSalasPanel";
                         <button class="filter-btn" data-filter="admin"
                             >Administradores</button
                         >
+                        <button class="filter-btn" data-filter="moderador"
+                            >Moderadores</button
+                        >
                     </div>
                 </div>
                 <div class="users-grid" id="usersGrid"></div>
@@ -105,7 +125,7 @@ import "../../scripts/admin/AdminSalasPanel";
     </div>
 </AdminLayout>
 <dialog id="addReviewerModal" class="modal">
-    <div class="modal-content">
+    <div class="admin-modal-content">
         <h2>Convertir a Revisor</h2>
         <div class="form-group">
             <label for="userSearchInput">Buscar Usuario</label>
@@ -127,7 +147,7 @@ import "../../scripts/admin/AdminSalasPanel";
 </dialog>
 
 <dialog id="addSpecialtyAreaModal" class="modal">
-    <div class="modal-content">
+    <div class="admin-modal-content">
         <h2>Agregar Área de Especialidad</h2>
         <div class="form-group">
             <label for="specialtyAreaName">Nombre del Área</label>
@@ -147,6 +167,132 @@ import "../../scripts/admin/AdminSalasPanel";
                 type="button"
                 class="submit-btn"
                 onclick="addSpecialtyArea()">Agregar</button
+            >
+        </div>
+    </div>
+</dialog>
+<dialog id="addModeratorModal" class="modal">
+    <div class="admin-modal-content">
+        <h2>Nuevo Moderador</h2>
+        <form id="addModeratorForm">
+            <div class="form-group">
+                <label for="modName">Nombre Completo</label>
+                <input
+                    type="text"
+                    id="modName"
+                    required
+                    minlength="3"
+                    placeholder="Nombre Apellido"
+                />
+            </div>
+            <div class="form-group">
+                <label for="modEmail">Correo Electrónico</label>
+                <input
+                    type="email"
+                    id="modEmail"
+                    required
+                    placeholder="correo@ejemplo.com"
+                />
+            </div>
+            <div class="modal-buttons">
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="document.getElementById('addModeratorModal').close()"
+                    >Cancelar</button
+                >
+                <button type="submit" class="submit-btn">Crear</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+<dialog id="credentialsModal" class="modal">
+    <div class="admin-modal-content success-content">
+        <div class="success-icon">
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <h2>Moderador Creado</h2>
+        <p class="warning-text">
+            ¡Guarda estas credenciales! No se podrán ver después.
+        </p>
+
+        <div class="credentials-box">
+            <div class="credential-item">
+                <label>Correo Electrónico:</label>
+                <div class="copy-field">
+                    <span id="createdEmail"></span>
+                    <button
+                        class="icon-btn copy-btn"
+                        data-target="createdEmail"
+                        title="Copiar"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="credential-item">
+                <label>Contraseña:</label>
+                <div class="copy-field">
+                    <span id="createdPassword" class="password-highlight"
+                    ></span>
+                    <button
+                        class="icon-btn copy-btn"
+                        data-target="createdPassword"
+                        title="Copiar"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-buttons center-btn">
+            <button
+                class="submit-btn"
+                onclick="document.getElementById('credentialsModal').close()"
+                >Entendido</button
             >
         </div>
     </div>

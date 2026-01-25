@@ -9,6 +9,7 @@ import "../../styles/components/logos.css";
 import "../../styles/components/mobile-menu.css";
 import "../../styles/pages/main.css";
 import "../../styles/pages/admin/vistaAdmin.css";
+import "../../styles/components/notifications.css";
 ---
 
 <!doctype html>
@@ -55,7 +56,7 @@ import "../../styles/pages/admin/vistaAdmin.css";
                 <h2>Panel Admin</h2>
             </div>
             <nav class="sidebar-nav">
-                <ul>
+                <ul class="nav-list">
                     <li>
                         <a href="/admin/vistaAdmin" class="sidebar-link">
                             <svg
@@ -139,26 +140,29 @@ import "../../styles/pages/admin/vistaAdmin.css";
                             <span>Asignar Moderadores</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="/" class="sidebar-link" id="logout-btn">
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <path
-                                    d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
-                                ></path>
-                                <polyline points="16 17 21 12 16 7"></polyline>
-                                <line x1="21" y1="12" x2="9" y2="12"></line>
-                            </svg>
-                            <span>Cerrar Sesión</span>
-                        </a>
-                    </li>
                 </ul>
+                <div class="sidebar-footer">
+                    <a
+                        href="/"
+                        class="sidebar-link logout-link"
+                        id="logout-btn"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                            ></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </div>
             </nav>
         </aside>
 

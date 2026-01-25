@@ -227,7 +227,7 @@ class RevisorCards {
       <div class="presentation-header">
         <h3 class="presentation-name">${revisor.datos?.nombre || 'Revisor sin nombre'}</h3>
         <div class="presentation-actions">
-          <button class="convert-btn add-btn" data-revisor-id="${revisor.id}" ${btnDisabled} title="${btnTitle}" style="${!puedeAsignar ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+          <button type="button" class="convert-btn add-btn" data-revisor-id="${revisor.id}" ${btnDisabled} title="${btnTitle}" style="${!puedeAsignar ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
             Agregar
           </button>
@@ -253,7 +253,9 @@ class RevisorCards {
 
     // Listener para el botón Agregar
     if (puedeAsignar) {
-      cardDiv.querySelector('.add-btn')?.addEventListener('click', () => {
+      cardDiv.querySelector('.add-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         this.abrirModalAsignacion(revisor.id);
       });
     }

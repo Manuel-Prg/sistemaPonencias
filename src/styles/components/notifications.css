@@ -10,6 +10,33 @@
     flex-direction: column;
     gap: 12px;
     pointer-events: none;
+    /* Ensure no UA styles interfere when using popover */
+    background: transparent;
+    padding: 0;
+    border: none;
+    margin: 0;
+    width: auto;
+    height: auto;
+    inset: auto;
+    left: auto;
+    bottom: auto;
+}
+
+.toast-container:popover-open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: unset;
+    top: 20px;
+    right: 20px;
+    bottom: auto;
+    left: auto;
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
 }
 
 /* Toast Base */
