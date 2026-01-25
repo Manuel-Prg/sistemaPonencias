@@ -328,6 +328,7 @@ import "../../styles/pages/admin/targetAdmin.css";
 </script>
 
 <style>
+    /* Container Grid */
     .assignment-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -335,103 +336,168 @@ import "../../styles/pages/admin/targetAdmin.css";
         margin-top: 2rem;
     }
 
+    /* Column Styles - Glassmorphism */
     .column {
-        background: white;
-        border-radius: 8px;
+        background: rgba(30, 30, 40, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
         padding: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        min-height: 500px;
     }
 
     .column-title {
         font-size: 1.25rem;
         margin: 0 0 1.5rem 0;
-        color: #1f2937;
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: 0.75rem;
+        color: white;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
 
+    /* Items List */
     .items-list {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        max-height: 600px;
+        flex: 1;
         overflow-y: auto;
+        padding-right: 5px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(168, 85, 247, 0.5) transparent;
     }
 
+    /* Assignment Item Card */
     .assignment-item {
-        background: #f9fafb;
-        border: 2px solid #e5e7eb;
-        border-radius: 6px;
-        padding: 1rem;
-        transition: all 0.2s;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
+        position: relative;
+        overflow: hidden;
     }
 
     .assignment-item:hover {
-        border-color: #3b82f6;
-        background: #eff6ff;
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-color: rgba(168, 85, 247, 0.3);
     }
 
     .assignment-item.selected {
-        border-color: #3b82f6;
-        background: #dbeafe;
+        background: linear-gradient(
+            135deg,
+            rgba(168, 85, 247, 0.15) 0%,
+            rgba(216, 180, 254, 0.05) 100%
+        );
+        border: 1px solid rgba(168, 85, 247, 0.5);
+        box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
     }
 
+    /* Item Header */
     .item-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
     }
 
     .item-header h3 {
         margin: 0;
-        font-size: 1rem;
-        color: #1f2937;
-    }
-
-    .badge {
-        background: #3b82f6;
+        font-size: 1.1rem;
         color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
+        font-weight: 600;
     }
 
+    /* Badge */
+    .badge {
+        background: rgba(168, 85, 247, 0.2);
+        color: #d8b4fe;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    /* Item Info */
     .item-info {
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
     }
 
     .item-info small {
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        display: block;
     }
 
+    /* Select Button */
     .select-btn {
         width: 100%;
-        padding: 0.5rem;
-        background: #3b82f6;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
         color: white;
-        border: none;
-        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
         cursor: pointer;
         font-weight: 500;
-        transition: background 0.2s;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
     }
 
-    .select-btn:hover {
-        background: #2563eb;
+    .assignment-item:hover .select-btn {
+        background: rgba(168, 85, 247, 0.8);
+        border-color: rgba(168, 85, 247, 0.8);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
 
+    .assignment-item.selected .select-btn {
+        background: #a855f7;
+        border-color: #a855f7;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Modal Styling Fixes for this specific page */
     .assignment-info {
-        background: #f9fafb;
-        padding: 1rem;
-        border-radius: 6px;
-        margin: 1rem 0;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .assignment-info p {
-        margin: 0.5rem 0;
-        color: #374151;
+        margin: 0.75rem 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+
+    .assignment-info span {
+        color: #d8b4fe;
+        font-weight: 600;
+    }
+
+    .loading,
+    .empty-message,
+    .error-message {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-style: italic;
+    }
+
+    .error-message {
+        color: #fca5a5;
     }
 
     @media (max-width: 768px) {

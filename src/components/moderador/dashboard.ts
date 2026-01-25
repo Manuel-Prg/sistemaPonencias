@@ -1,6 +1,7 @@
 import { SalaService } from '../../lib/services/salas/sala.service';
 import { AuthService } from '../../lib/services/auth/auth.service';
 import { UserService } from '../../lib/services/user/user.service';
+import { showError } from '../../utils/notifications';
 import type { Ponencia } from '../../lib/models/ponencia';
 import { EstadoPonencia } from '../../lib/models/ponencia';
 import type { User as FirebaseUser } from 'firebase/auth';
@@ -203,7 +204,7 @@ export class SalaManager {
       await this.salaService.updatePonenciaAttendance(ponenciaId, isPresent);
     } catch (error) {
       console.error('Error updating attendance', error);
-      alert('Error al actualizar asistencia');
+      showError('Error al actualizar asistencia');
       // Revert if failed (optional, implementing require full state reload or targeted update)
     }
   }
@@ -232,7 +233,7 @@ export class SalaManager {
 
     } catch (error) {
       console.error('Error moving ponencia:', error);
-      alert('Error al mover la ponencia');
+      showError('Error al mover la ponencia');
     }
   }
 
@@ -256,7 +257,7 @@ export class SalaManager {
       // Realtime listener handles UI update
     } catch (error) {
       console.error('Error handling ponencia action:', error);
-      alert('Error al procesar la acción');
+      showError('Error al procesar la acción');
     }
   }
 

@@ -1,5 +1,6 @@
 import { AuthService } from "../../lib/services/auth/auth.service";
 import { UserService } from "../../lib/services/user/user.service";
+import { showSuccess, showError } from "../../utils/notifications";
 import type { UserData } from "../../lib/models/user";
 import type { RevisorData } from "../../lib/models/revisor";
 import type { User as FirebaseUser } from "firebase/auth";
@@ -141,37 +142,11 @@ export class RevisorDataManager {
   }
 
   private showSuccessMessage(): void {
-    const container = document.querySelector('.form-container');
-    const message = document.createElement('div');
-    message.className = 'alert alert-success';
-    message.textContent = 'Datos guardados exitosamente';
-    message.style.cssText = `
-        background-color: #d4edda;
-        color: #155724;
-        padding: 1rem;
-        margin-top: 1rem;
-        border-radius: 4px;
-        text-align: center;
-      `;
-    container?.appendChild(message);
-    setTimeout(() => message.remove(), 3000);
+    showSuccess('Datos guardados exitosamente');
   }
 
   private showErrorMessage(error: any): void {
-    const container = document.querySelector('.form-container');
-    const message = document.createElement('div');
-    message.className = 'alert alert-danger';
-    message.textContent = `Error: ${error.message || 'No se pudieron guardar los datos'}`;
-    message.style.cssText = `
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 1rem;
-        margin-top: 1rem;
-        border-radius: 4px;
-        text-align: center;
-      `;
-    container?.appendChild(message);
-    setTimeout(() => message.remove(), 3000);
+    showError(`Error: ${error.message || 'No se pudieron guardar los datos'}`);
   }
 }
 

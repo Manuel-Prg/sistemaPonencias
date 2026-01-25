@@ -1,6 +1,7 @@
 ---
 import AdminLayout from "../../components/shared/AdminLayout.astro";
 import "../../styles/pages/admin/targetAdmin.css";
+import "../../styles/components/notifications.css";
 ---
 
 <AdminLayout>
@@ -78,7 +79,11 @@ import "../../styles/pages/admin/targetAdmin.css";
 
 <script>
     import { SalaManagementService } from "../../lib/services/salas/salaManagement.service";
-    import { showSuccess, showError } from "../../utils/notifications";
+    import {
+        showSuccess,
+        showError,
+        showConfirm,
+    } from "../../utils/notifications";
     import type { Sala } from "../../lib/models/sala";
 
     class SalaManager {
@@ -281,7 +286,13 @@ import "../../styles/pages/admin/targetAdmin.css";
             card.querySelector(".delete-btn")?.addEventListener(
                 "click",
                 async () => {
-                    if (confirm("¿Estás seguro de eliminar esta sala?")) {
+                    if (
+                        await showConfirm({
+                            title: "Eliminar Sala",
+                            message: "¿Estás seguro de eliminar esta sala?",
+                            type: "danger",
+                        })
+                    ) {
                         try {
                             await this.service.deleteSala(sala.id);
                             showSuccess("Sala eliminada exitosamente");
