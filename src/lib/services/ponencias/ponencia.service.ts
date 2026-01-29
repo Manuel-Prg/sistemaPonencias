@@ -1,7 +1,6 @@
 import { BaseService } from '../base.service';
 import type { EstadoPonencia, Ponencia } from '../../models/ponencia';
 import { RevisorService } from '../revisor/revisor.services';
-import type { Revisor } from '../../models/revisor';
 import {
     where,
     Timestamp,
@@ -69,11 +68,19 @@ export class PonenciaService extends BaseService<Ponencia> {
         try {
             // 1. Obtener y seleccionar revisores
             const allRevisores = await this.revisorService.getRevisores();
-            // Filtrar revisores que no hayan alcanzado el límite de 2 (o configurable)
-            const candidatos = allRevisores.filter(r => (r.ponenciasAsignadas?.length || 0) < 2);
+            console.log('Revisores disponibles:', allRevisores);
+            // Filtrar revisores que:
+            // a) No hayan alcanzado el límite de 2 ponencias asignadas
+            // b) Su área de interés coincida con el tema de la ponencia
+            const candidatos = allRevisores.filter(r =>
+                r.datos.areaInteres === ponencia.tema
+            );
+
+            console.table(candidatos);
+
 
             if (candidatos.length < 3) {
-                console.warn('No hay suficientes revisores disponibles para asignar 3. Se asignarán los disponibles.');
+                console.warn(`Solo hay ${candidatos.length} revisores disponibles con el tema ${ponencia.tema} para asignar 3. Se asignarán los disponibles.`);
             }
 
             const revisoresSeleccionados = this.seleccionarRevisores(candidatos, 3);

@@ -25,4 +25,5 @@ export interface UserData {
   institucion?: string;
   departamento?: string;
   modalidad?: string;
+  areaInteres?: string;
 }

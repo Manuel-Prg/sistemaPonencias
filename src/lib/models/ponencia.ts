@@ -15,6 +15,7 @@ export interface Ponencia {
     asistencia?: boolean; // Si el ponente esta presente
     inicioReal?: Timestamp; // Hora real de inicio
     finReal?: Timestamp; // Hora real de fin
+    tema: string;
     notasModerador?: string; // Notas sobre inasistencias o cambios
 }
 

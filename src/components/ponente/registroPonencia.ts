@@ -355,6 +355,7 @@ class PonenciaFormHandler {
                 id: user, // Será generado por Firestore
                 titulo: this.formData.titulo,
                 resumen: this.formData.resumen,
+                tema: this.formData.tema,
                 autores: Object.values(this.formData.autores),
                 creado: Timestamp.now(),
                 estado: EstadoPonencia.PENDIENTE,

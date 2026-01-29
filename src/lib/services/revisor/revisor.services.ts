@@ -133,11 +133,6 @@ export class RevisorService extends BaseService<Ponencia> {
             const revisorData = revisorDoc.data();
             const ponenciasAsignadas = revisorData.ponenciasAsignadas || [];
 
-            // 2. Validaciones
-            if (ponenciasAsignadas.length >= 2) {
-                throw new Error('El revisor ya tiene el máximo de 2 ponencias asignadas');
-            }
-
             if (ponenciasAsignadas.some((p: any) => p.ponencia === ponenciaId)) {
                 throw new Error('Esta ponencia ya está asignada a este revisor');
             }
